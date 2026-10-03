@@ -1,0 +1,17 @@
+{
+  "name": "UPL Stories - Generador Instagram",
+  "short_name": "UPL Stories",
+  "description": "Generador de historias para Instagram de Universitarios por la Libertad - UTN FRRO",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#140622",
+  "theme_color": "#240c3c",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
