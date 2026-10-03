@@ -119,7 +119,7 @@ const PRESETS = {
     ],
     format: 'combined',
     hasLine: true,
-    gremium: 'FAGDUT Y APUTN (NO DOCENTE)',
+    gremium: 'FAGDUT - APUTN (NO DOCENTE)',
     status: 'La facultad estará cerrada.',
     extra: '',
     yOffset: 0,
@@ -637,15 +637,11 @@ function toggleGremioSelection(targetGremio) {
     newSelected = [...selected, targetGremio];
   }
 
-  // Format combined string
-  let resultText = '';
-  if (newSelected.length === 1) {
-    resultText = newSelected[0];
-  } else if (newSelected.length === 2) {
-    resultText = `${newSelected[0]} Y ${newSelected[1]}`;
-  } else if (newSelected.length === 3) {
-    resultText = `${newSelected[0]}, ${newSelected[1]} Y ${newSelected[2]}`;
-  }
+  // Preserve standard order: FAGDUT, SIDUT, APUTN (NO DOCENTE)
+  newSelected.sort((a, b) => BASE_GREMIOS.indexOf(a) - BASE_GREMIOS.indexOf(b));
+
+  // Separate multiple gremios with " - " as requested by the user
+  const resultText = newSelected.join(' - ');
 
   state.paro.gremium = resultText;
   dom.paroGremium.value = resultText;
@@ -1078,22 +1074,23 @@ function renderParoContent(context, width, height) {
       drawTextWithSpacing(context, dayText, 540, currentY + dayFontSize, 1.5, 'center');
       context.restore();
 
-      currentY += Math.round(dayFontSize * 1.35);
+      currentY += Math.round(dayFontSize * 1.25);
     }
 
-    // 2. Date
+    // 2. Date (Exact proportion and weight matching user reference)
     if (dateText) {
       context.save();
-      const baseDateSize = validDays.length > 2 ? 105 : (validDays.length === 2 ? 136 : 168);
+      // For 2 days: 108px with weight 800 matches reference '14 Y 16/10' without being overly thick/grueso
+      const baseDateSize = validDays.length > 2 ? 88 : (validDays.length === 2 ? 108 : 152);
       const dateFontSize = Math.round(baseDateSize * scale);
-      context.font = `900 ${dateFontSize}px "Montserrat", sans-serif`;
+      context.font = `800 ${dateFontSize}px "Montserrat", sans-serif`;
       context.fillStyle = '#ffffff';
       context.textBaseline = 'alphabetic';
       // 0 letter spacing for native crisp numbers & slashes
       drawTextWithSpacing(context, dateText, 540, currentY + dateFontSize, 0, 'center');
       context.restore();
 
-      currentY += Math.round(dateFontSize * 1.15);
+      currentY += Math.round(dateFontSize * 1.08);
     }
   } else {
     // ==========================================
