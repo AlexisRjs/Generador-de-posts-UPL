@@ -1853,16 +1853,28 @@ async function performOcrOnImage(imageSource) {
     const norm = extractedText.toLowerCase();
 
     // 2. Intelligent Bedelía Sheet Fingerprinting
-    // Check Table 4 Fingerprint (44 subjects with diagonal stamp: Sintaxis y Semántica, Matemática Superior, Cimentaciones, etc.)
-    const isTable4 = (norm.includes('sintaxis') || norm.includes('semantica') || norm.includes('semdnica') || norm.includes('lenguajes')) &&
-                     (norm.includes('superior') || norm.includes('cimentaciones') || norm.includes('reacciones') || norm.includes('calor'));
+    // Check Table 4 Fingerprint (44 subjects with diagonal Bedelía stamp)
+    // Matches on any unique subjects present in this sheet (Cimentaciones, Rec. Humanos, Biotecnología, Microbiología, Operativa, Automatización, etc.)
+    const isTable4 = 
+      norm.includes('cimentacion') ||
+      norm.includes('rechumano') ||
+      norm.includes('rec.humano') ||
+      norm.includes('rec humano') ||
+      norm.includes('biotecnolog') ||
+      norm.includes('microbiolog') ||
+      norm.includes('gestion urbana') ||
+      norm.includes('gestionurbana') ||
+      norm.includes('operativ') ||
+      norm.includes('sintaxis') ||
+      (norm.includes('superior') && !norm.includes('algoritmos')) ||
+      (norm.includes('automa') && !norm.includes('algoritmos')) ||
+      (norm.includes('reaccion') && !norm.includes('algoritmos'));
+
     if (isTable4) {
       state.mesa.hasLoadedData = true;
       state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_4));
-      if (!state.mesa.date || state.mesa.date === 'Martes 17/10') {
-        state.mesa.date = 'VIERNES 18/10';
-        if (dom.mesaDate) dom.mesaDate.value = 'VIERNES 18/10';
-      }
+      state.mesa.date = 'VIERNES 18/10';
+      if (dom.mesaDate) dom.mesaDate.value = 'VIERNES 18/10';
       if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
       renderMesaCasillasUI();
       saveAndRender();
@@ -1938,7 +1950,7 @@ async function performOcrOnImage(imageSource) {
 }
 
 function parseCasillasFromOcrText(rawText) {
-  const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 3);
+  const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 2);
   const results = [];
 
   let currentTurno = '2-Tarde';
@@ -1948,8 +1960,7 @@ function parseCasillasFromOcrText(rawText) {
 
   const turnoRegex = /\b(1-Mañana|2-Tarde|3-Noche|Mañana|Tarde|Noche)\b/i;
   const espRegex = /\b(ISI|IC|IQ|UDB|IE|IM|LAR|EM|181|1S1|lSl|UD8|U0B|lE|1E|lQ|1Q|lM|1M|lC|1C)\b/i;
-  const timeRegex = /\b(\d{1,2}[:.]\d{2}(?:[:.]\d{1,2})?|\d{4,5})\b/;
-  const aulaRegex = /\b(?:Aula\s*)?(\d{2,3}(?:\/\d{2,3})*(?:\/\d+)*|JavaLab|Lab\.[a-z0-9]+)\b/i;
+  const aulaRegex = /\b(?:Aula\s*)?(\d{2,3}(?:\/\d{1,3})*|JavaLab|Lab\.[a-z0-9]+)\b/i;
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
@@ -1987,28 +1998,21 @@ function parseCasillasFromOcrText(rawText) {
       line = line.replace(espMatch[0], ' ');
     }
 
-    // 3. Detect and update Classroom / Aula
+    // 3. Extract Exam Time FIRST (from end of line or explicit HH:MM)
+    // CRITICAL: Extracting and removing time FIRST prevents hour digits (e.g. 15, 18, 19) from ever being matched as Aulas!
+    const timeMatch = line.match(/\b(\d{1,2})[:.](\d{2})(?:[:.]\d{2})?\s*$/) || line.match(/\b(\d{1,2})[:.](\d{2})(?:[:.]\d{2})?\b/);
+    if (timeMatch) {
+      const hh = timeMatch[1].padStart(2, '0');
+      const mm = timeMatch[2].padEnd(2, '0');
+      currentTime = `${hh}:${mm}`;
+      line = line.replace(timeMatch[0], ' ');
+    }
+
+    // 4. Detect and update Classroom / Aula (at start or left of subject)
     const aulaMatch = line.match(aulaRegex);
     if (aulaMatch) {
       currentAula = aulaMatch[1];
       line = line.replace(aulaMatch[0], ' ');
-    }
-
-    // 4. Detect and update Exam Time
-    const timeMatch = line.match(timeRegex);
-    if (timeMatch) {
-      let rawT = timeMatch[1].replace('.', ':');
-      if (rawT.includes(':')) {
-        const parts = rawT.split(':');
-        const hh = parts[0].padStart(2, '0');
-        const mm = (parts[1] || '00').slice(0, 2).padEnd(2, '0');
-        currentTime = `${hh}:${mm}`;
-      } else if (rawT.length === 4) {
-        currentTime = `${rawT.slice(0, 2)}:${rawT.slice(2, 4)}`;
-      } else if (rawT.length === 5) {
-        currentTime = `${rawT.slice(0, 2)}:${rawT.slice(2, 4)}`;
-      }
-      line = line.replace(timeMatch[0], ' ');
     }
 
     // 5. Clean subject text from OCR noise and diagonal stamp tokens
@@ -2023,15 +2027,16 @@ function parseCasillasFromOcrText(rawText) {
     // Skip pure garbage / tiny fragments
     if (materia.length < 3) continue;
 
-    // Fuzzy match against UTN subject catalog
+    // 6. Fuzzy match against UTN subject catalog
     const matchedSubject = matchCatalogSubject(materia, UTN_SUBJECT_CATALOG);
-    if (matchedSubject) {
-      materia = matchedSubject;
-    }
+    // ONLY accept recognized university subjects to prevent OCR noise cards (e.g. "eimmegeoma OZ", "pm Smuacon NN")
+    if (!matchedSubject) continue;
 
-    // Smart career determination from official catalog:
+    materia = matchedSubject;
+
+    // 7. Smart career determination from official catalog:
     let finalEsp = currentEsp;
-    if (matchedSubject && UTN_SUBJECT_CAREER_MAP[matchedSubject]) {
+    if (UTN_SUBJECT_CAREER_MAP[matchedSubject]) {
       const mappedCareer = UTN_SUBJECT_CAREER_MAP[matchedSubject];
       // If row has no explicit career tag or currentEsp is generic/mismatched, use mapped career
       if (!espMatch || (finalEsp !== mappedCareer && mappedCareer !== 'UDB')) {
