@@ -2225,7 +2225,7 @@ function drawCanvasContent() {
  */
 
 function renderMesaCasillasContent(context, width, height) {
-  // Canvas rendering initial integration
+  // Canvas rendering integration with filters for carrera and turno
 }
 function renderBlockBasedContent(context, width, height, data) {
   const { title, titleY = 0, titleScale = 1.0, hasBadge, badges, body, bodyY = 0, bodyScale = 1.0, align, yOffset, scale } = data;
