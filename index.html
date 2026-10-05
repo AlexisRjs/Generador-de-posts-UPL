@@ -22,6 +22,8 @@
     rel="stylesheet">
 
   <link rel="stylesheet" href="./style.css">
+  <!-- Tesseract.js for OCR table extraction -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 
 <body>
@@ -64,17 +66,17 @@
     <!-- Template Selector Tabs (INFO vs PARO vs MESA) -->
     <div class="mode-selector-container">
       <div class="segmented-control" role="tablist">
-        <button id="tab-info" class="segment-btn active" role="tab" aria-selected="true" data-mode="info">
+        <button id="tab-mesa" class="segment-btn active" role="tab" aria-selected="true" data-mode="mesa">
+          <span class="segment-emoji">📅</span>
+          <span class="segment-label">Mesa de Examen</span>
+        </button>
+        <button id="tab-info" class="segment-btn" role="tab" aria-selected="false" data-mode="info">
           <span class="segment-emoji">🔔</span>
           <span class="segment-label">Aviso / Importante</span>
         </button>
         <button id="tab-paro" class="segment-btn" role="tab" aria-selected="false" data-mode="paro">
           <span class="segment-emoji">🛑</span>
           <span class="segment-label">Paro Anunciado</span>
-        </button>
-        <button id="tab-mesa" class="segment-btn" role="tab" aria-selected="false" data-mode="mesa">
-          <span class="segment-emoji">📅</span>
-          <span class="segment-label">Mesa de Examen</span>
         </button>
       </div>
     </div>
@@ -103,8 +105,230 @@
       <!-- FORM COLUMN (Editor) -->
       <section id="editor-section" class="editor-pane active">
 
+        <!-- ==================== FORMULARIO: MESA DE EXAMEN (Extracción desde foto) ==================== -->
+        <div id="form-mesa" class="form-mode-content active">
+          <!-- Card de Fecha de la Mesa de Examen -->
+          <div class="section-card" style="border-left: 4px solid var(--primary-accent, #9333ea);">
+            <div class="field-label-split" style="margin-bottom: 6px;">
+              <span class="field-label">📅 Fecha de la Mesa de Examen</span>
+              <span class="label-hint">Espacio entre título y materias</span>
+            </div>
+            <div class="field-item">
+              <input type="text" id="mesa-date" class="input-text text-center font-bold" value="Martes 17/10" placeholder="Ej: Martes 17/10">
+            </div>
+            <div class="quick-chips-wrap" style="margin-top: 8px;">
+              <div class="chips-grid" id="mesa-quick-days">
+                <button type="button" class="chip-item" data-day="LUNES">LUN</button>
+                <button type="button" class="chip-item active" data-day="MARTES">MAR</button>
+                <button type="button" class="chip-item" data-day="MIÉRCOLES">MIÉ</button>
+                <button type="button" class="chip-item" data-day="JUEVES">JUE</button>
+                <button type="button" class="chip-item" data-day="VIERNES">VIE</button>
+                <button type="button" class="chip-item" data-day="SÁBADO">SÁB</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card de Carga de Foto -->
+          <div class="section-card upload-section-card">
+            <div class="field-label-split" style="margin-bottom: 6px;">
+              <span class="field-label">📸 Foto de Mesa de Examen</span>
+              <span class="card-badge-chip">Extracción Automática</span>
+            </div>
+            <p class="upload-description">
+              Sube la foto o planilla de exámenes para extraer las materias, aulas y horarios y colocarlas en casillas blancas en el flyer.
+            </p>
+
+            <!-- Dropzone interactivo -->
+            <div id="mesa-dropzone" class="upload-dropzone">
+              <input type="file" id="mesa-file-input" accept="image/*" class="file-input-hidden">
+              <div class="dropzone-content">
+                <div class="dropzone-icon">
+                  <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <div class="dropzone-text">
+                  <strong>Arrastra tu foto aquí</strong> o toca para seleccionarla
+                </div>
+                <div class="dropzone-subtext">Formatos: PNG, JPG, WEBP o capturas de pantalla</div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción de Carga -->
+            <div class="upload-actions-row">
+              <button type="button" id="btn-trigger-upload-mesa" class="btn-action-upload">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Subir Foto</span>
+              </button>
+              <button type="button" id="btn-load-sample-mesa" class="btn-action-sample" title="Cargar planilla estándar">
+                <span>⚡ Ejemplo 1 (20 materias)</span>
+              </button>
+              <button type="button" id="btn-load-sample-mesa2" class="btn-action-sample" style="border-color: #9333ea; background: rgba(147, 51, 234, 0.12);" title="Cargar planilla completa de 45 materias con todos los turnos">
+                <span>⚡ Ejemplo 2 (45 materias)</span>
+              </button>
+            </div>
+
+            <!-- Estado de carga / Progreso / Thumbnail -->
+            <div id="mesa-upload-status" class="upload-status-card hidden">
+              <img id="mesa-preview-thumb" class="upload-thumb" alt="Vista previa foto subida">
+              <div class="upload-status-info">
+                <div class="status-info-top">
+                  <span id="mesa-file-name" class="status-filename">foto mesa de examen.png</span>
+                  <span id="mesa-detection-badge" class="badge-count">20 casillas</span>
+                </div>
+                <div id="mesa-ocr-progress-wrap" class="ocr-progress-wrap hidden">
+                  <div class="ocr-progress-bar"><div id="mesa-ocr-progress" class="ocr-progress-fill"></div></div>
+                  <span id="mesa-ocr-status-text" class="ocr-status-text">Leyendo casillas de la foto...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtro por Especialidad / Carrera -->
+          <div class="section-card filter-section-card">
+            <div class="field-label-split" style="margin-bottom: 8px;">
+              <span class="field-label">Filtrar por Especialidad</span>
+              <div class="selection-actions">
+                <button type="button" id="btn-select-all-casillas" class="btn-mini-text">Todas</button>
+                <span class="sep">•</span>
+                <button type="button" id="btn-deselect-all-casillas" class="btn-mini-text">Ninguna</button>
+              </div>
+            </div>
+
+            <div id="mesa-filter-chips" class="filter-chips-grid">
+              <button type="button" class="chip-filter active" data-esp="TODAS">TODAS</button>
+              <button type="button" class="chip-filter" data-esp="ISI">ISI</button>
+              <button type="button" class="chip-filter" data-esp="IC">IC</button>
+              <button type="button" class="chip-filter" data-esp="IQ">IQ</button>
+              <button type="button" class="chip-filter" data-esp="IE">IE</button>
+              <button type="button" class="chip-filter" data-esp="IM">IM</button>
+              <button type="button" class="chip-filter" data-esp="UDB">UDB</button>
+            </div>
+
+            <!-- Filtro por Turno (Mañana, Tarde, Noche) -->
+            <div class="field-label-split" style="margin-top: 10px; margin-bottom: 6px;">
+              <span class="field-label-sm" style="font-weight: 700; color: var(--text-secondary);">Filtrar por Turno</span>
+            </div>
+            <div id="mesa-turno-chips" class="filter-chips-grid turno-chips-grid">
+              <button type="button" class="chip-turno active" data-turno="TODOS">TODOS</button>
+              <button type="button" class="chip-turno" data-turno="1-Mañana">Mañana</button>
+              <button type="button" class="chip-turno" data-turno="2-Tarde">Tarde</button>
+              <button type="button" class="chip-turno" data-turno="3-Noche">Noche</button>
+            </div>
+
+            <div class="casilla-add-row" style="margin-top: 10px;">
+              <button type="button" id="btn-add-casilla" class="btn-add-casilla">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Añadir Casilla Manual</span>
+              </button>
+              <span id="mesa-selected-count" class="selected-count-label">20 casillas activas</span>
+            </div>
+          </div>
+
+          <!-- Lista de Casillas Extraídas (Editables para corregir si algo se filtró mal) -->
+          <div class="section-card">
+            <div class="field-label-split" style="margin-bottom: 8px;">
+              <span class="field-label">Casillas en el Flyer</span>
+              <span class="label-hint">Edita cualquier dato manualmente</span>
+            </div>
+
+            <div id="mesa-casillas-container" class="casillas-list-scroll">
+              <!-- Renderizado dinámico desde app.js -->
+            </div>
+          </div>
+
+          <!-- Ajustes de Diseño de las Casillas en el Flyer -->
+          <details class="section-card accordion-card" open>
+            <summary class="accordion-summary">
+              <span class="summary-title">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
+                </svg>
+                Ajustes de Casillas en el Flyer
+              </span>
+              <span class="chevron-icon">›</span>
+            </summary>
+            <div class="accordion-content">
+              <!-- Modo de Distribución para Grandes Cantidades de Materias -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Modo de Distribución</span>
+                </div>
+                <div class="format-toggle-group">
+                  <button type="button" id="btn-distrib-auto" class="format-btn active" data-distrib="auto">Auto</button>
+                  <button type="button" id="btn-distrib-pages" class="format-btn" data-distrib="pages">Dividir en Partes</button>
+                  <button type="button" id="btn-distrib-all" class="format-btn" data-distrib="all">Todo en 1 Historia</button>
+                </div>
+                <span class="helper-text" id="distrib-helper-text">Optimiza automáticamente la densidad y columnas según la cantidad de materias.</span>
+              </div>
+
+              <!-- Paginador de Historias (Visible cuando se divide en partes) -->
+              <div id="mesa-pagination-wrap" class="mesa-pagination-wrap hidden">
+                <div class="pagination-header">
+                  <span class="field-label-sm" style="font-weight: 700;">Navegación de Partes</span>
+                  <span id="mesa-page-info" class="page-info-badge">Parte 1 de 3 (16 materias)</span>
+                </div>
+                <div class="pagination-controls">
+                  <button type="button" id="btn-prev-page" class="btn-page-nav" title="Parte anterior">◀ Anterior</button>
+                  <div id="mesa-page-pills" class="page-pills-list"></div>
+                  <button type="button" id="btn-next-page" class="btn-page-nav" title="Parte siguiente">Siguiente ▶</button>
+                </div>
+                <div class="pagination-density-row">
+                  <span class="field-label-sm">Materias por historia:</span>
+                  <div class="density-buttons">
+                    <button type="button" class="btn-density" data-density="20">20</button>
+                    <button type="button" class="btn-density" data-density="30">30</button>
+                    <button type="button" class="btn-density active" data-density="45">45</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Columnas en el Flyer</span>
+                </div>
+                <div class="format-toggle-group">
+                  <button type="button" id="btn-cols-auto" class="format-btn active" data-cols="auto">Auto</button>
+                  <button type="button" id="btn-cols-1" class="format-btn" data-cols="1">1 Col</button>
+                  <button type="button" id="btn-cols-2" class="format-btn" data-cols="2">2 Col</button>
+                  <button type="button" id="btn-cols-3" class="format-btn" data-cols="3">3 Col</button>
+                </div>
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Posición Vertical</span>
+                  <span id="mesa-y-val" class="slider-num">0px</span>
+                </div>
+                <input type="range" id="mesa-y-offset" min="-180" max="180" value="0" step="5" class="range-slider">
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Tamaño / Escala de Casillas</span>
+                  <span id="mesa-scale-val" class="slider-num">100%</span>
+                </div>
+                <input type="range" id="mesa-scale" min="60" max="130" value="100" step="2" class="range-slider">
+              </div>
+              <button type="button" id="btn-reset-mesa-adjustments" class="btn-text-action">Restablecer ajustes</button>
+            </div>
+          </details>
+        </div>
+
+      
+
         <!-- ==================== FORMULARIO: INFO / AVISO ==================== -->
-        <div id="form-info" class="form-mode-content active">
+        <div id="form-info" class="form-mode-content">
           <!-- Quick Presets Carousel -->
           <div class="section-card presets-card">
             <div class="card-header-compact">
@@ -275,6 +499,8 @@
         </div>
 
 
+        
+
         <!-- ==================== FORMULARIO: PARO ==================== -->
         <div id="form-paro" class="form-mode-content">
           <!-- Quick Presets Carousel -->
@@ -424,153 +650,7 @@
           </details>
         </div>
 
-        <!-- ==================== FORMULARIO: MESA DE EXAMEN ==================== -->
-        <div id="form-mesa" class="form-mode-content">
-          <!-- Quick Presets Carousel -->
-          <div class="section-card presets-card">
-            <div class="card-header-compact">
-              <span class="card-badge-chip">Cargar plantilla rápida de mesas</span>
-            </div>
-            <div class="chips-scroll">
-              <button type="button" class="preset-chip" data-preset="mesa-especial">📅 Mesas Especiales</button>
-              <button type="button" class="preset-chip" data-preset="mesa-inscripcion">📝 Inscripción Mesa</button>
-              <button type="button" class="preset-chip" data-preset="mesa-enganche">🔗 Fecha de Enganche</button>
-              <button type="button" class="preset-chip" data-preset="mesa-ordinario">🎓 Turno Ordinario</button>
-            </div>
-          </div>
-
-
-          <!-- Título Principal -->
-          <div class="section-card">
-            <div class="field-group">
-              <label for="mesa-title" class="field-label">
-                <span>Título Principal</span>
-                <span class="label-hint">Mayúsculas automáticas</span>
-              </label>
-              <textarea id="mesa-title" class="input-text title-input" rows="2"
-                placeholder="MESAS ESPECIALES&#10;DE OCTUBRE"></textarea>
-              
-              <!-- Ajuste de posición y tamaño individual del título -->
-              <div class="block-fine-adjustments">
-                <div class="block-adjust-row">
-                  <span class="block-adjust-label">Posición Y:</span>
-                  <input type="range" id="mesa-title-y" class="range-slider range-slider-sm" min="-120" max="120" value="0" step="2">
-                  <span id="mesa-title-y-val" class="slider-num-sm">0px</span>
-                </div>
-                <div class="block-adjust-row">
-                  <span class="block-adjust-label">Tamaño:</span>
-                  <input type="range" id="mesa-title-scale" class="range-slider range-slider-sm" min="70" max="140" value="100" step="2">
-                  <span id="mesa-title-scale-val" class="slider-num-sm">100%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bloques Destacados (Multi-bloque dinámico con ajustadores individuales) -->
-          <div class="section-card">
-            <div class="field-label-split" style="margin-bottom: 8px;">
-              <div class="card-switch-header">
-                <label class="switch-container">
-                  <input type="checkbox" id="mesa-has-badge" checked>
-                  <span class="switch-slider"></span>
-                </label>
-                <div class="switch-label-wrap">
-                  <span class="field-label-inline">Bloques Destacados</span>
-                  <span class="label-hint">Cápsula de fecha + subtítulo lateral</span>
-                </div>
-              </div>
-              <button type="button" id="btn-add-badge-mesa" class="btn-add-badge" title="Añadir otro bloque destacado">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span>Añadir Bloque</span>
-              </button>
-            </div>
-
-            <div id="mesa-badges-container" class="badges-list-container">
-              <!-- Renderizado dinámicamente desde app.js -->
-            </div>
-          </div>
-
-          <!-- Cuerpo del Mensaje -->
-          <div class="section-card">
-            <div class="field-group">
-              <div class="field-label-split">
-                <label for="mesa-body" class="field-label">Cuerpo del Comunicado</label>
-                <div class="align-toggles" role="group" aria-label="Alineación">
-                  <button type="button" id="btn-align-left-mesa" class="align-btn active" title="Alinear a la izquierda">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="21" y1="6" x2="3" y2="6"></line>
-                      <line x1="15" y1="12" x2="3" y2="12"></line>
-                      <line x1="17" y1="18" x2="3" y2="18"></line>
-                    </svg>
-                  </button>
-                  <button type="button" id="btn-align-center-mesa" class="align-btn" title="Centrar texto">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="18" y1="6" x2="6" y2="6"></line>
-                      <line x1="21" y1="12" x2="3" y2="12"></line>
-                      <line x1="18" y1="18" x2="6" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <textarea id="mesa-body" class="input-text body-textarea" rows="6"
-                placeholder="REQUISITOS:&#10;Tener cursada y regularizada toda la carrera, excepto Proyecto Final.&#10;&#10;Una vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito."></textarea>
-              <div class="helper-text">
-                💡 Los títulos que terminen con <code>:</code> (como <strong>REQUISITOS:</strong>) se destacan
-                automáticamente en negrita.
-              </div>
-
-              <!-- Ajuste de posición y tamaño individual del cuerpo -->
-              <div class="block-fine-adjustments">
-                <div class="block-adjust-row">
-                  <span class="block-adjust-label">Posición Y:</span>
-                  <input type="range" id="mesa-body-y" class="range-slider range-slider-sm" min="-120" max="120" value="0" step="2">
-                  <span id="mesa-body-y-val" class="slider-num-sm">0px</span>
-                </div>
-                <div class="block-adjust-row">
-                  <span class="block-adjust-label">Tamaño:</span>
-                  <input type="range" id="mesa-body-scale" class="range-slider range-slider-sm" min="70" max="140" value="100" step="2">
-                  <span id="mesa-body-scale-val" class="slider-num-sm">100%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Ajustes Generales de Diseño / Fine-tuning -->
-          <details class="section-card accordion-card">
-            <summary class="accordion-summary">
-              <span class="summary-title">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <path
-                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                  </path>
-                </svg>
-                Ajuste Global de Historia
-              </span>
-              <span class="chevron-icon">›</span>
-            </summary>
-            <div class="accordion-content">
-              <div class="slider-group">
-                <div class="slider-header">
-                  <span>Desplazamiento Global Y</span>
-                  <span id="mesa-y-val" class="slider-num">0px</span>
-                </div>
-                <input type="range" id="mesa-y-offset" min="-180" max="180" value="0" step="5" class="range-slider">
-              </div>
-              <div class="slider-group">
-                <div class="slider-header">
-                  <span>Escala Global</span>
-                  <span id="mesa-scale-val" class="slider-num">100%</span>
-                </div>
-                <input type="range" id="mesa-scale" min="80" max="125" value="100" step="2" class="range-slider">
-              </div>
-              <button type="button" id="btn-reset-mesa-adjustments" class="btn-text-action">Restablecer ajustes</button>
-            </div>
-          </details>
-        </div>
+        
 
       </section>
 
@@ -583,14 +663,18 @@
               <span class="status-indicator"></span>
               <span id="preview-dimensions">1080 × 1920 (9:16)</span>
             </div>
-            <div class="toolbar-tools">
-              <button type="button" id="btn-toggle-ref" class="btn-tool" title="Comparar con imagen de referencia">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-                <span>Comparar</span>
-              </button>
+            
+          </div>
+
+          <!-- Multi-Story Navigation Bar (Visible when content spans 2 stories) -->
+          <div id="story-parts-bar" class="story-parts-bar hidden">
+            <div class="parts-badge">
+              <span class="pulse-dot"></span>
+              <span id="story-parts-label">Contenido repartido en 2 historias HD</span>
+            </div>
+            <div class="parts-buttons" id="story-parts-buttons">
+              <button type="button" class="btn-part-switch active" data-page="1">Historia 1 (Parte 1/2)</button>
+              <button type="button" class="btn-part-switch" data-page="2">Historia 2 (Parte 2/2)</button>
             </div>
           </div>
 
@@ -600,9 +684,6 @@
             <div class="canvas-container">
               <!-- Live Canvas (Logical 1080x1920) -->
               <canvas id="output-canvas" width="1080" height="1920"></canvas>
-
-              <!-- Reference Overlay for Pixel Verification -->
-              <img id="ref-overlay" class="reference-overlay hidden" alt="Referencia original">
 
               <!-- Loading spinner -->
               <div id="canvas-loading" class="canvas-loading-spinner hidden">
@@ -639,7 +720,16 @@
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        <span>Descargar Historia HD</span>
+        <span id="btn-download-text">Descargar Historia HD</span>
+      </button>
+
+      <button id="btn-download-all" class="action-btn btn-secondary hidden" title="Descargar todas las partes de la mesa de examen">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Descargar Todas las Partes</span>
       </button>
 
       <button id="btn-share" class="action-btn btn-secondary" title="Compartir directo a Instagram o WhatsApp">
