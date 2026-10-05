@@ -2223,37 +2223,520 @@ function drawCanvasContent() {
  * Render Casillas Blancas for MESA DE EXAMEN
  * Places clean, modern white cards with subject, classroom, time and career badges
  */
-
 function renderMesaCasillasContent(context, width, height) {
-  if (!state.mesa.hasLoadedData || (state.mesa.casillas || []).length === 0) {
+  const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
+  const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
+  const allCasillas = state.mesa.casillas || [];
+
+  const activeCasillas = allCasillas.filter(c => {
+    if (c.enabled === false) return false;
+    if (currentFilter !== 'TODAS' && (c.esp || '').toUpperCase().trim() !== currentFilter) {
+      return false;
+    }
+    if (currentTurno !== 'TODOS') {
+      const cTurno = (c.turno || '').toUpperCase().trim();
+      const searchTurno = currentTurno.replace('1-', '').replace('2-', '').replace('3-', '');
+      if (!cTurno.includes(searchTurno)) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // Determine pagination: fit all 45 subjects in 1 story by default!
+  let totalPages = 1;
+  const itemsPerPage = state.mesa.itemsPerPage || 45;
+
+  if (state.mesa.distribMode === 'all') {
+    totalPages = 1;
+  } else if (state.mesa.distribMode === 'pages') {
+    totalPages = 2;
+  } else if (state.mesa.distribMode === '3pages') {
+    totalPages = 3;
+  } else {
+    // Auto mode: default to 1 single story for up to 48 subjects
+    if (activeCasillas.length <= 48) {
+      totalPages = 1;
+    } else {
+      totalPages = Math.ceil(activeCasillas.length / itemsPerPage);
+    }
+  }
+
+  state.pagination.mesa.totalPages = totalPages;
+  const currentPage = Math.min(Math.max(1, state.pagination.mesa.currentPage || 1), totalPages);
+  state.pagination.mesa.currentPage = currentPage;
+  state.mesa.currentPage = currentPage;
+
+  let pageCasillas = activeCasillas;
+  if (totalPages > 1) {
+    const countPerPage = Math.ceil(activeCasillas.length / totalPages);
+    const startIdx = (currentPage - 1) * countPerPage;
+    pageCasillas = activeCasillas.slice(startIdx, startIdx + countPerPage);
+  }
+
+  const scale = state.mesa.scale || 1.0;
+  let startY = 485 + (state.mesa.yOffset || 0);
+
+  // If the user has not loaded or entered exam data yet, do not render the story cards
+  if (!state.mesa.hasLoadedData || activeCasillas.length === 0) {
     context.save();
+    const boxX = 120;
+    const boxY = 600;
+    const boxW = 840;
+    const boxH = 440;
+
     context.fillStyle = 'rgba(255, 255, 255, 0.10)';
-    roundRect(context, 120, 600, 840, 440, 24);
+    roundRect(context, boxX, boxY, boxW, boxH, 24);
     context.fill();
-    context.fillStyle = '#ffffff';
-    context.font = '800 32px "Montserrat", sans-serif';
+
+    context.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    context.lineWidth = 2.5;
+    context.setLineDash([12, 10]);
+    roundRect(context, boxX, boxY, boxW, boxH, 24);
+    context.stroke();
+    context.setLineDash([]);
+
+    // Icon
+    context.font = '68px "Montserrat", sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('PLANILLA DE EXÁMENES', 540, 795);
+    context.fillText('📸', 540, boxY + 110);
+
+    // Title
+    context.fillStyle = '#ffffff';
+    context.font = '800 32px "Montserrat", sans-serif';
+    context.fillText('PLANILLA DE EXÁMENES', 540, boxY + 195);
+
+    // Instructions
+    context.fillStyle = 'rgba(255, 255, 255, 0.82)';
+    context.font = '600 22px "Montserrat", sans-serif';
+    context.fillText('Sube una foto o planilla en el editor para', 540, boxY + 260);
+    context.fillText('generar las materias en casillas blancas', 540, boxY + 298);
+
+    // Quick action hint
+    context.fillStyle = '#fde047';
+    context.font = '700 20px "Montserrat", sans-serif';
+    context.fillText('⚡ O prueba con los botones de Ejemplo 1 y 2', 540, boxY + 368);
+
     context.restore();
     return;
   }
 
-  // Plain text title for Exam Date
+  // Plain text title for Exam Date (Between Header and Subject Cards)
   if (state.mesa.date && state.mesa.date.trim()) {
     const dateText = state.mesa.date.trim().toUpperCase();
-    const dateFontSize = Math.round(34 * (state.mesa.scale || 1.0));
+    const dateFontSize = Math.round(34 * scale);
     const dateY = 464 + (state.mesa.yOffset || 0);
 
     context.save();
     context.fillStyle = '#ffffff';
-    context.font = '800 ' + dateFontSize + 'px "Montserrat", sans-serif';
+    context.font = `800 ${dateFontSize}px "Montserrat", sans-serif`;
     context.textAlign = 'center';
     context.textBaseline = 'middle';
+    context.shadowColor = 'rgba(0, 0, 0, 0.6)';
+    context.shadowBlur = 8;
+    context.shadowOffsetY = 2;
     drawTextWithSpacing(context, dateText, width / 2, dateY, 2.0, 'center');
     context.restore();
+
+    startY = dateY + Math.round(30 * scale);
+  }
+
+  // Available vertical height strictly bounded well before the eagle (Eagle starts at Y = 1474)
+  const maxBottom = SAFE_BOUNDS.BOTTOM - 10; // 1370px, leaving 104px of breathing room!
+  const availH = Math.max(200, maxBottom - startY);
+
+  // Determine Columns: 'auto' | '1' | '2' | '3'
+  let numCols = 2;
+  if (state.mesa.columns === '1') {
+    numCols = 1;
+  } else if (state.mesa.columns === '2') {
+    numCols = 2;
+  } else if (state.mesa.columns === '3') {
+    numCols = 3;
+  } else {
+    // Auto mode: choose optimal columns so cards fit and fill vertical space
+    // <= 8 subjects: 1 column
+    // <= 22 subjects: 2 columns
+    // > 22 subjects: 3 columns (e.g. 45 subjects in 15 rows fit in 1 story)
+    numCols = pageCasillas.length <= 8 ? 1 : (pageCasillas.length <= 22 ? 2 : 3);
+  }
+
+  if (numCols === 1) {
+    // Single Column Layout (Clean full-width cards with adaptive height & typography)
+    const count = pageCasillas.length;
+    const cardW = Math.round(940 * scale);
+    const cardX = Math.round((width - cardW) / 2);
+
+    let targetGap = count <= 5 ? 18 : (count <= 8 ? 14 : 10);
+    const gapY = targetGap * scale;
+    const maxCardH = 125 * scale;
+    const rawH = Math.floor((availH - (count - 1) * gapY) / count);
+    const cardH = Math.max(76 * scale, Math.min(maxCardH, rawH));
+
+    const totalBlockH = (count - 1) * gapY + count * cardH;
+    const extraH = availH - totalBlockH;
+    if (extraH > 30 && extraH < 500) {
+      startY += Math.round(Math.min(180, extraH * 0.25));
+    }
+
+    pageCasillas.forEach((c, i) => {
+      const cardY = startY + i * (cardH + gapY);
+      const espColor = getCarreraColor(c.esp);
+
+      // Card Shadow & White Background
+      context.save();
+      context.shadowColor = 'rgba(0, 0, 0, 0.22)';
+      context.shadowBlur = 10 * scale;
+      context.shadowOffsetY = 4 * scale;
+      context.fillStyle = '#ffffff';
+      roundRect(context, cardX, cardY, cardW, cardH, 16 * scale);
+      context.fill();
+      context.restore();
+
+      // Left Color Accent Strip
+      context.save();
+      context.fillStyle = espColor;
+      roundRect(context, cardX, cardY, 8 * scale, cardH, 4 * scale);
+      context.fill();
+      context.restore();
+
+      // Badge Especialidad (ISI, IC, etc.)
+      const pillH = Math.min(38 * scale, Math.max(26 * scale, Math.round(cardH * 0.36)));
+      const pillY = cardY + Math.round((cardH - pillH) / 2);
+      const pillX = cardX + Math.round(22 * scale);
+
+      context.save();
+      const espFontSize = Math.min(20 * scale, Math.max(14 * scale, Math.round(pillH * 0.55)));
+      context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
+      const espText = (c.esp || 'ISI').toUpperCase();
+      const espTextW = context.measureText(espText).width;
+      const pillW = Math.max(Math.round(65 * scale), espTextW + Math.round(20 * scale));
+
+      context.fillStyle = espColor;
+      roundRect(context, pillX, pillY, pillW, pillH, 8 * scale);
+      context.fill();
+
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(espText, pillX + pillW / 2, pillY + pillH / 2);
+      context.restore();
+
+      // Badge Aula
+      const aulaX = pillX + pillW + Math.round(14 * scale);
+      context.save();
+      const aulaFontSize = Math.min(18 * scale, Math.max(13 * scale, Math.round(pillH * 0.52)));
+      context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
+      const aulaText = `AULA ${c.aula || 'TBA'}`.toUpperCase();
+      const aulaTextW = context.measureText(aulaText).width;
+      const aulaPillW = aulaTextW + Math.round(22 * scale);
+
+      context.fillStyle = '#f3e8ff';
+      roundRect(context, aulaX, pillY, aulaPillW, pillH, 8 * scale);
+      context.fill();
+
+      context.fillStyle = '#4c1575';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(aulaText, aulaX + aulaPillW / 2, pillY + pillH / 2);
+      context.restore();
+
+      // Horario (Right aligned - BIG & BOLD)
+      const horaPillW = Math.round(155 * scale);
+      const horaX = cardX + cardW - horaPillW - Math.round(20 * scale);
+
+      context.save();
+      context.fillStyle = '#faf5ff';
+      context.strokeStyle = '#d8b4fe';
+      context.lineWidth = 1.5 * scale;
+      roundRect(context, horaX, pillY, horaPillW, pillH, 8 * scale);
+      context.fill();
+      context.stroke();
+
+      context.fillStyle = '#4a044e';
+      const horaFontSize = Math.min(22 * scale, Math.max(16 * scale, Math.round(cardH * 0.25)));
+      context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(`⏰ ${c.hora || '18:00'} hs`, horaX + horaPillW / 2, pillY + pillH / 2);
+      context.restore();
+
+      // Materia Name (Middle text)
+      const textLeft = aulaX + aulaPillW + Math.round(18 * scale);
+      const textMaxW = horaX - textLeft - Math.round(16 * scale);
+
+      context.save();
+      context.fillStyle = '#0f0322';
+      const materiaFontSize = Math.min(26 * scale, Math.max(18 * scale, Math.round(cardH * 0.28)));
+      context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+
+      let materiaStr = c.materia || 'Materia';
+      while (context.measureText(materiaStr).width > textMaxW && materiaStr.length > 3) {
+        materiaStr = materiaStr.slice(0, -2).trim();
+      }
+      if (materiaStr !== c.materia) materiaStr += '...';
+
+      context.fillText(materiaStr, textLeft, cardY + cardH / 2);
+      context.restore();
+    });
+  } else if (numCols === 3) {
+    // 3-Column Grid Layout (Optimized for 45 subjects in 1 story, and adapts for fewer)
+    const rows = Math.ceil(pageCasillas.length / 3);
+    
+    // Adaptive gaps & card height
+    let targetGap;
+    if (rows <= 5) targetGap = 16;
+    else if (rows <= 8) targetGap = 12;
+    else if (rows <= 11) targetGap = 8;
+    else if (rows <= 13) targetGap = 6;
+    else targetGap = 4;
+    const gapY = targetGap * scale;
+
+    const gapX = Math.round(12 * scale);
+    const cardW = Math.round(314 * scale);
+    const totalColsW = 3 * cardW + 2 * gapX;
+    const col0X = Math.round((width - totalColsW) / 2);
+    const col1X = col0X + cardW + gapX;
+    const col2X = col1X + cardW + gapX;
+
+    const maxCardH = 100 * scale;
+    const rawH = Math.floor((availH - (rows - 1) * gapY) / rows);
+    const cardH = Math.max(52 * scale, Math.min(maxCardH, rawH));
+
+    const totalBlockH = (rows - 1) * gapY + rows * cardH;
+    const extraH = availH - totalBlockH;
+    if (extraH > 30 && extraH < 500) {
+      startY += Math.round(Math.min(180, extraH * 0.25));
+    }
+
+    pageCasillas.forEach((c, i) => {
+      const col = i % 3;
+      const row = Math.floor(i / 3);
+      const cardX = col === 0 ? col0X : (col === 1 ? col1X : col2X);
+      const cardY = startY + row * (cardH + gapY);
+      const espColor = getCarreraColor(c.esp);
+
+      // Card Background & Drop Shadow
+      context.save();
+      context.shadowColor = 'rgba(0, 0, 0, 0.20)';
+      context.shadowBlur = Math.max(4, Math.round(6 * scale));
+      context.shadowOffsetY = Math.max(1, Math.round(2 * scale));
+      context.fillStyle = '#ffffff';
+      roundRect(context, cardX, cardY, cardW, cardH, Math.max(6, Math.round(10 * scale)));
+      context.fill();
+      context.restore();
+
+      // Left Accent Strip
+      context.save();
+      context.fillStyle = espColor;
+      roundRect(context, cardX, cardY, Math.max(4, Math.round(5 * scale)), cardH, 3 * scale);
+      context.fill();
+      context.restore();
+
+      // --- ROW 1: Materia Name (HERO TEXT - Prominent & Bold) ---
+      const materiaX = cardX + Math.max(8, Math.round(10 * scale));
+      const materiaY = cardY + Math.round(cardH * 0.32);
+      const materiaMaxW = cardW - Math.max(14, Math.round(18 * scale));
+      const materiaFontSize = Math.min(21 * scale, Math.max(13 * scale, Math.round(cardH * 0.255)));
+
+      context.save();
+      context.fillStyle = '#0f0322';
+      context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+
+      let materiaStr = c.materia || 'Materia';
+      while (context.measureText(materiaStr).width > materiaMaxW && materiaStr.length > 3) {
+        materiaStr = materiaStr.slice(0, -2).trim();
+      }
+      if (materiaStr !== c.materia) materiaStr += '...';
+
+      context.fillText(materiaStr, materiaX, materiaY);
+      context.restore();
+
+      // --- ROW 2: Especialidad + Aula + Horario ---
+      const bottomCenterY = cardY + cardH - Math.round(cardH * 0.30);
+      const pillH = Math.min(24 * scale, Math.max(18 * scale, Math.round(cardH * 0.34)));
+      const pillY = bottomCenterY - Math.round(pillH / 2);
+
+      // Esp Pill
+      const espX = materiaX;
+      context.save();
+      const espFontSize = Math.min(13.5 * scale, Math.max(10.5 * scale, Math.round(pillH * 0.58)));
+      context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
+      const espText = (c.esp || 'ISI').toUpperCase();
+      const espW = context.measureText(espText).width + Math.max(7, Math.round(9 * scale));
+      context.fillStyle = espColor;
+      roundRect(context, espX, pillY, espW, pillH, Math.max(4, Math.round(5 * scale)));
+      context.fill();
+
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(espText, espX + espW / 2, bottomCenterY);
+      context.restore();
+
+      // Aula Pill
+      const aulaX = espX + espW + Math.max(4, Math.round(5 * scale));
+      context.save();
+      const aulaFontSize = Math.min(13 * scale, Math.max(10 * scale, Math.round(pillH * 0.55)));
+      context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
+      const aulaText = `${c.aula || 'TBA'}`;
+      const aulaW = context.measureText(aulaText).width + Math.max(8, Math.round(10 * scale));
+      context.fillStyle = '#f3e8ff';
+      roundRect(context, aulaX, pillY, aulaW, pillH, Math.max(4, Math.round(5 * scale)));
+      context.fill();
+
+      context.fillStyle = '#4c1575';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(aulaText, aulaX + aulaW / 2, bottomCenterY);
+      context.restore();
+
+      // Horario (Right aligned)
+      const horaRightX = cardX + cardW - Math.max(6, Math.round(8 * scale));
+      const horaFontSize = Math.min(17 * scale, Math.max(13 * scale, Math.round(cardH * 0.255)));
+      context.save();
+      context.fillStyle = '#4a044e';
+      context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'right';
+      context.textBaseline = 'middle';
+      context.fillText(`⏰ ${c.hora || '18:00'}`, horaRightX, bottomCenterY);
+      context.restore();
+    });
+  } else {
+    // 2-Column Grid Layout (Optimized for maximum readability and visual breathing space)
+    const rows = Math.ceil(pageCasillas.length / 2);
+    
+    // Adaptive gaps & card height
+    let targetGap;
+    if (rows <= 5) targetGap = 18;
+    else if (rows <= 8) targetGap = 14;
+    else if (rows <= 11) targetGap = 10;
+    else if (rows <= 14) targetGap = 6;
+    else targetGap = 4;
+    const gapY = targetGap * scale;
+
+    const gapX = Math.round(20 * scale);
+    const cardW = Math.round(472 * scale);
+    const col0X = Math.round(54 * scale);
+    const col1X = col0X + cardW + gapX;
+
+    const maxCardH = 120 * scale;
+    const rawH = Math.floor((availH - (rows - 1) * gapY) / rows);
+    const cardH = Math.max(50 * scale, Math.min(maxCardH, rawH));
+
+    const totalBlockH = (rows - 1) * gapY + rows * cardH;
+    const extraH = availH - totalBlockH;
+    if (extraH > 30 && extraH < 500) {
+      startY += Math.round(Math.min(180, extraH * 0.25));
+    }
+
+    pageCasillas.forEach((c, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const cardX = col === 0 ? col0X : col1X;
+      const cardY = startY + row * (cardH + gapY);
+      const espColor = getCarreraColor(c.esp);
+
+      // Card Background & Drop Shadow
+      context.save();
+      context.shadowColor = 'rgba(0, 0, 0, 0.20)';
+      context.shadowBlur = Math.max(4, Math.round(8 * scale));
+      context.shadowOffsetY = Math.max(2, Math.round(3 * scale));
+      context.fillStyle = '#ffffff';
+      roundRect(context, cardX, cardY, cardW, cardH, Math.max(8, Math.round(14 * scale)));
+      context.fill();
+      context.restore();
+
+      // Left Accent Strip
+      context.save();
+      context.fillStyle = espColor;
+      roundRect(context, cardX, cardY, Math.max(4, Math.round(6 * scale)), cardH, 3 * scale);
+      context.fill();
+      context.restore();
+
+      // --- ROW 1: Materia Name (HERO TEXT - Prominent & Bold) ---
+      const materiaX = cardX + Math.max(12, Math.round(15 * scale));
+      const materiaY = cardY + Math.round(cardH * 0.32);
+      const materiaMaxW = cardW - Math.max(20, Math.round(26 * scale));
+      const materiaFontSize = Math.min(24 * scale, Math.max(15 * scale, Math.round(cardH * 0.26)));
+
+      context.save();
+      context.fillStyle = '#0f0322';
+      context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+
+      let materiaStr = c.materia || 'Materia';
+      while (context.measureText(materiaStr).width > materiaMaxW && materiaStr.length > 3) {
+        materiaStr = materiaStr.slice(0, -2).trim();
+      }
+      if (materiaStr !== c.materia) materiaStr += '...';
+
+      context.fillText(materiaStr, materiaX, materiaY);
+      context.restore();
+
+      // --- ROW 2: Especialidad + Aula + BIG Horario ---
+      const bottomCenterY = cardY + cardH - Math.round(cardH * 0.29);
+      const pillH = Math.min(28 * scale, Math.max(20 * scale, Math.round(cardH * 0.32)));
+      const pillY = bottomCenterY - Math.round(pillH / 2);
+
+      // Esp Pill
+      const espX = materiaX;
+      context.save();
+      const espFontSize = Math.min(15 * scale, Math.max(11 * scale, Math.round(pillH * 0.58)));
+      context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
+      const espText = (c.esp || 'ISI').toUpperCase();
+      const espW = context.measureText(espText).width + Math.max(12, Math.round(15 * scale));
+      context.fillStyle = espColor;
+      roundRect(context, espX, pillY, espW, pillH, Math.max(5, Math.round(6 * scale)));
+      context.fill();
+
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(espText, espX + espW / 2, bottomCenterY);
+      context.restore();
+
+      // Aula Pill
+      const aulaX = espX + espW + Math.max(6, Math.round(8 * scale));
+      context.save();
+      const aulaFontSize = Math.min(14.5 * scale, Math.max(10.5 * scale, Math.round(pillH * 0.55)));
+      context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
+      const aulaText = `Aula ${c.aula || 'TBA'}`;
+      const aulaW = context.measureText(aulaText).width + Math.max(12, Math.round(15 * scale));
+      context.fillStyle = '#f3e8ff';
+      roundRect(context, aulaX, pillY, aulaW, pillH, Math.max(5, Math.round(6 * scale)));
+      context.fill();
+
+      context.fillStyle = '#4c1575';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(aulaText, aulaX + aulaW / 2, bottomCenterY);
+      context.restore();
+
+      // Horario (Right aligned - BIG & BOLD)
+      const horaRightX = cardX + cardW - Math.max(10, Math.round(14 * scale));
+      const horaFontSize = Math.min(21 * scale, Math.max(15 * scale, Math.round(cardH * 0.25)));
+      context.save();
+      context.fillStyle = '#4a044e';
+      context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'right';
+      context.textBaseline = 'middle';
+      context.fillText(`⏰ ${c.hora || '18:00'} hs`, horaRightX, bottomCenterY);
+      context.restore();
+    });
   }
 }
+
+/**
+ * Universal Block-Based Renderer (used for INFO)
+ * Supports title, multi-badge list, and body with independent position & scale per block
+ */
 function renderBlockBasedContent(context, width, height, data) {
   const { title, titleY = 0, titleScale = 1.0, hasBadge, badges, body, bodyY = 0, bodyScale = 1.0, align, yOffset, scale } = data;
 
