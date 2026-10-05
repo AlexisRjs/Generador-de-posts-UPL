@@ -2238,6 +2238,21 @@ function renderMesaCasillasContent(context, width, height) {
     context.restore();
     return;
   }
+
+  // Plain text title for Exam Date
+  if (state.mesa.date && state.mesa.date.trim()) {
+    const dateText = state.mesa.date.trim().toUpperCase();
+    const dateFontSize = Math.round(34 * (state.mesa.scale || 1.0));
+    const dateY = 464 + (state.mesa.yOffset || 0);
+
+    context.save();
+    context.fillStyle = '#ffffff';
+    context.font = '800 ' + dateFontSize + 'px "Montserrat", sans-serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    drawTextWithSpacing(context, dateText, width / 2, dateY, 2.0, 'center');
+    context.restore();
+  }
 }
 function renderBlockBasedContent(context, width, height, data) {
   const { title, titleY = 0, titleScale = 1.0, hasBadge, badges, body, bodyY = 0, bodyScale = 1.0, align, yOffset, scale } = data;
