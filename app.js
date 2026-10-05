@@ -4,13 +4,108 @@
  */
 
 // ============================================================================
+// Sample Mesa de Examen Data (Extracted from foto mesa de examen.png - Bedelía UTN FRRO)
+// ============================================================================
+const SAMPLE_MESA_CASILLAS = [
+  { id: 'c-1', enabled: true, esp: 'IQ', aula: '301', materia: 'Integración II', hora: '14:00', turno: '2-Tarde' },
+  { id: 'c-2', enabled: true, esp: 'IQ', aula: '301', materia: 'Introducción a Equipos y Procesos', hora: '14:00', turno: '2-Tarde' },
+  { id: 'c-3', enabled: true, esp: 'IQ', aula: '302', materia: 'Fisicoquímica', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c-4', enabled: true, esp: 'IQ', aula: '302', materia: 'Tecnología de la Energía Térmica', hora: '18:30', turno: '2-Tarde' },
+  { id: 'c-5', enabled: true, esp: 'ISI', aula: '210', materia: 'Comunicaciones / Comunicación de Datos', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c-6', enabled: true, esp: 'ISI', aula: '210', materia: 'Redes de Información / Redes de Datos', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c-7', enabled: true, esp: 'ISI', aula: '210', materia: 'Administración Gerencial / Gestión Gerencial', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c-8', enabled: true, esp: 'ISI', aula: '501/502', materia: 'Ingeniería de Software / Ing. y Calidad', hora: '18:30', turno: '2-Tarde' },
+  { id: 'c-9', enabled: true, esp: 'ISI', aula: '501/502', materia: 'Seminario Integrador', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c-10', enabled: true, esp: 'ISI', aula: '501/502', materia: 'Habilitación Profesional', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c-11', enabled: true, esp: 'UDB', aula: '217', materia: 'Legislación y Economía', hora: '18:00', turno: '2-Tarde' },
+  { id: 'c-12', enabled: true, esp: 'ISI', aula: 'JavaLab', materia: 'Lenguaje de Programación Java (Electiva)', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-13', enabled: true, esp: 'IC', aula: '405', materia: 'Análisis Estructural I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-14', enabled: true, esp: 'IC', aula: '405', materia: 'Tránsito y Transporte', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-15', enabled: true, esp: 'IC', aula: '405', materia: 'Teoría de la Decisión', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-16', enabled: true, esp: 'IC', aula: '405', materia: 'Vialidad Especial', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-17', enabled: true, esp: 'IC', aula: '405', materia: 'Hidrología y Obras Hidráulicas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-18', enabled: true, esp: 'IC', aula: '410', materia: 'Vías de Comunicación I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-19', enabled: true, esp: 'IC', aula: '410', materia: 'Vías de Comunicación II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c-20', enabled: true, esp: 'IC', aula: '410', materia: 'Instalaciones Eléctricas y Acústicas', hora: '19:00', turno: '3-Noche' }
+];
+
+// Sample 2: Large Table from Bedelía UTN FRRO (foto de mesa de examen2.png - 45 materias con Mañana, Tarde y Noche)
+const SAMPLE_MESA_CASILLAS_2 = [
+  // 1-Mañana
+  { id: 'c2-1', enabled: true, esp: 'ISI', aula: '211', materia: 'Algoritmos y Estructuras de Datos', hora: '08:00', turno: '1-Mañana' },
+
+  // 2-Tarde
+  { id: 'c2-2', enabled: true, esp: 'ISI', aula: '303', materia: 'Lógica y Estruc. Discretas / Matemática Discreta', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c2-3', enabled: true, esp: 'ISI', aula: '501', materia: 'Inteligencia Artificial', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c2-4', enabled: true, esp: 'ISI', aula: '501', materia: 'Desarrollo de Software', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c2-5', enabled: true, esp: 'ISI', aula: 'Lab.5to', materia: 'Técnica y Tecnología Avanzada', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c2-6', enabled: true, esp: 'ISI', aula: '201', materia: 'Entornos Gráficos', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c2-7', enabled: true, esp: 'UDB', aula: '308/309', materia: 'Análisis Matemático II', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c2-8', enabled: true, esp: 'UDB', aula: '105', materia: 'Química', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c2-9', enabled: true, esp: 'UDB', aula: '105', materia: 'Química General / Química Aplicada', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c2-10', enabled: true, esp: 'UDB', aula: '401/2/3/5', materia: 'Física II', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c2-11', enabled: true, esp: 'IQ', aula: '301', materia: 'Termodinámica', hora: '14:00', turno: '2-Tarde' },
+  { id: 'c2-12', enabled: true, esp: 'IQ', aula: '302', materia: 'Química de los Alimentos', hora: '18:00', turno: '2-Tarde' },
+  { id: 'c2-13', enabled: true, esp: 'IQ', aula: '302', materia: 'Introd. a la Bromatología', hora: '18:00', turno: '2-Tarde' },
+
+  // 3-Noche
+  { id: 'c2-14', enabled: true, esp: 'ISI', aula: '210', materia: 'Sistemas Operativos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-15', enabled: true, esp: 'ISI', aula: '210', materia: 'Infraestructura Tecnológica (Electiva.)', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-16', enabled: true, esp: 'IE', aula: '12', materia: 'Cálculo Numérico', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-17', enabled: true, esp: 'IE', aula: '12', materia: 'Control Automático', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-18', enabled: true, esp: 'IE', aula: '12', materia: 'Fundamentos de Informat.', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-19', enabled: true, esp: 'IE', aula: '12', materia: 'Electrotecnia y Máquinas Eléctricas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-20', enabled: true, esp: 'IE', aula: '14', materia: 'Sistemas de Potencia', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-21', enabled: true, esp: 'IE', aula: '14', materia: 'Tecnol. Y Ensayos de Materiales Electr.', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-22', enabled: true, esp: 'IE', aula: '14', materia: 'Teoría de los Campos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-23', enabled: true, esp: 'IE', aula: '16', materia: 'Transmisión de Datos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-24', enabled: true, esp: 'IE', aula: '16', materia: 'Instalaciones Eléctricas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-25', enabled: true, esp: 'IE', aula: '16', materia: 'Instrumentos y Mediciones Eléctricas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-26', enabled: true, esp: 'IQ', aula: '301', materia: 'Química Analítica Aplicada', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-27', enabled: true, esp: 'IQ', aula: '302', materia: 'Ciencia de los Materiales', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-28', enabled: true, esp: 'IC', aula: '401', materia: 'Ing. Sanitaria', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-29', enabled: true, esp: 'IC', aula: '401', materia: 'Instalaciones Termomecánicas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-30', enabled: true, esp: 'IC', aula: '401', materia: 'Uso del Recurso Hídrico', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-31', enabled: true, esp: 'IC', aula: '401', materia: 'Ing. Legal', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-32', enabled: true, esp: 'IC', aula: '402', materia: 'Geotopografía', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-33', enabled: true, esp: 'IC', aula: '402', materia: 'Obras Fluviales y Marítimas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-34', enabled: true, esp: 'IC', aula: '402', materia: 'Cálculo Avanzado', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-35', enabled: true, esp: 'IC', aula: '402', materia: 'Hidráulica Gral y Aplicada', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-36', enabled: true, esp: 'IM', aula: '217', materia: 'Elementos de Máquinas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-37', enabled: true, esp: 'IM', aula: '217', materia: 'Ingeniería Ambiental y Seguridad Industrial', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-38', enabled: true, esp: 'IM', aula: '217', materia: 'Ing. Mecánica II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-39', enabled: true, esp: 'IM', aula: '217', materia: 'Ing. Mecánica III', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-40', enabled: true, esp: 'IM', aula: '217', materia: 'Cálculo Avanzado', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-41', enabled: true, esp: 'IM', aula: '213', materia: 'Estabilidad II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-42', enabled: true, esp: 'IM', aula: '213', materia: 'Metalografía y Tratamientos Térmicos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-43', enabled: true, esp: 'IM', aula: '213', materia: 'Mediciones y Ensayos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-44', enabled: true, esp: 'IM', aula: '213', materia: 'Materiales Metálicos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c2-45', enabled: true, esp: 'IM', aula: '213', materia: 'Materiales No Metálicos', hora: '19:00', turno: '3-Noche' }
+];
+
+// ============================================================================
+// Safe Visual Canvas Bounds (1080 x 1920)
+// Guarantees that neither the header title nor the footer eagle are obstructed
+// ============================================================================
+const SAFE_BOUNDS = {
+  TOP: 430,       // Ends below header title box (Y = 430 in template)
+  BOTTOM: 1385,   // Eagle emblem starts at Y = 1474; guarantees clean breathing room
+  HEIGHT: 955     // 1385 - 430 = 955px available vertical height
+};
+
+// ============================================================================
 // State Management
 // ============================================================================
 const state = {
-  currentMode: 'info', // 'info' | 'paro' | 'mesa'
+  currentMode: 'mesa', // 'mesa' | 'info' | 'paro'
   currentMobileView: 'edit', // 'edit' | 'preview'
-  isComparing: false,
   fontLoaded: false,
+
+  pagination: {
+    info: { currentPage: 1, totalPages: 1 },
+    mesa: { currentPage: 1, totalPages: 1 },
+    paro: { currentPage: 1, totalPages: 1 }
+  },
 
   info: {
     template: 'importante', // 'importante' | 'recordatorio'
@@ -36,26 +131,19 @@ const state = {
   },
 
   mesa: {
-    template: 'mesa',
-    title: 'MESAS ESPECIALES\nDE OCTUBRE',
-    titleY: 0,
-    titleScale: 1.0,
-    hasBadge: true,
-    badges: [
-      {
-        id: 'mesa-b1',
-        val: '5 AL 9',
-        sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL',
-        yOffset: 0,
-        scale: 1.0
-      }
-    ],
-    body: 'REQUISITOS:\nTener cursada y regularizada toda la carrera, excepto Proyecto Final.\n\nUna vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito.',
-    bodyY: 0,
-    bodyScale: 1.0,
-    align: 'left',
+    hasLoadedData: false,
+    photoName: '',
+    photoUrl: '',
+    date: 'Martes 17/10',
+    filterEsp: 'TODAS', // 'TODAS' | 'ISI' | 'IC' | 'IQ' | 'IE' | 'IM' | 'UDB'
+    filterTurno: 'TODOS', // 'TODOS' | '1-Mañana' | '2-Tarde' | '3-Noche'
+    distribMode: 'auto', // 'auto' | 'pages' | 'all'
+    currentPage: 1,
+    itemsPerPage: 45,
+    columns: 'auto', // 'auto' | '1' | '2' | '3'
     yOffset: 0,
     scale: 1.0,
+    casillas: []
   },
 
   paro: {
@@ -305,22 +393,40 @@ const dom = {
   infoScaleVal: document.getElementById('info-scale-val'),
   btnResetInfoAdj: document.getElementById('btn-reset-info-adjustments'),
 
-  // Mesa Inputs
-  mesaTitle: document.getElementById('mesa-title'),
-  mesaTitleY: document.getElementById('mesa-title-y'),
-  mesaTitleYVal: document.getElementById('mesa-title-y-val'),
-  mesaTitleScale: document.getElementById('mesa-title-scale'),
-  mesaTitleScaleVal: document.getElementById('mesa-title-scale-val'),
-  mesaHasBadge: document.getElementById('mesa-has-badge'),
-  btnAddBadgeMesa: document.getElementById('btn-add-badge-mesa'),
-  mesaBadgesContainer: document.getElementById('mesa-badges-container'),
-  mesaBody: document.getElementById('mesa-body'),
-  mesaBodyY: document.getElementById('mesa-body-y'),
-  mesaBodyYVal: document.getElementById('mesa-body-y-val'),
-  mesaBodyScale: document.getElementById('mesa-body-scale'),
-  mesaBodyScaleVal: document.getElementById('mesa-body-scale-val'),
-  btnAlignLeftMesa: document.getElementById('btn-align-left-mesa'),
-  btnAlignCenterMesa: document.getElementById('btn-align-center-mesa'),
+  // Mesa Foto & Casillas Inputs
+  mesaDate: document.getElementById('mesa-date'),
+  mesaDropzone: document.getElementById('mesa-dropzone'),
+  mesaFileInput: document.getElementById('mesa-file-input'),
+  btnTriggerUploadMesa: document.getElementById('btn-trigger-upload-mesa'),
+  btnLoadSampleMesa: document.getElementById('btn-load-sample-mesa'),
+  btnLoadSampleMesa2: document.getElementById('btn-load-sample-mesa2'),
+  mesaUploadStatus: document.getElementById('mesa-upload-status'),
+  mesaPreviewThumb: document.getElementById('mesa-preview-thumb'),
+  mesaFileName: document.getElementById('mesa-file-name'),
+  mesaDetectionBadge: document.getElementById('mesa-detection-badge'),
+  mesaOcrProgressWrap: document.getElementById('mesa-ocr-progress-wrap'),
+  mesaOcrProgress: document.getElementById('mesa-ocr-progress'),
+  mesaOcrStatusText: document.getElementById('mesa-ocr-status-text'),
+  btnSelectAllCasillas: document.getElementById('btn-select-all-casillas'),
+  btnDeselectAllCasillas: document.getElementById('btn-deselect-all-casillas'),
+  mesaFilterChips: document.getElementById('mesa-filter-chips'),
+  mesaTurnoChips: document.getElementById('mesa-turno-chips'),
+  btnAddCasilla: document.getElementById('btn-add-casilla'),
+  mesaSelectedCount: document.getElementById('mesa-selected-count'),
+  mesaCasillasContainer: document.getElementById('mesa-casillas-container'),
+  btnDistribAuto: document.getElementById('btn-distrib-auto'),
+  btnDistribPages: document.getElementById('btn-distrib-pages'),
+  btnDistribAll: document.getElementById('btn-distrib-all'),
+  distribHelperText: document.getElementById('distrib-helper-text'),
+  mesaPaginationWrap: document.getElementById('mesa-pagination-wrap'),
+  btnPrevPage: document.getElementById('btn-prev-page'),
+  btnNextPage: document.getElementById('btn-next-page'),
+  mesaPageInfo: document.getElementById('mesa-page-info'),
+  mesaPagePills: document.getElementById('mesa-page-pills'),
+  btnColsAuto: document.getElementById('btn-cols-auto'),
+  btnCols1: document.getElementById('btn-cols-1'),
+  btnCols2: document.getElementById('btn-cols-2'),
+  btnCols3: document.getElementById('btn-cols-3'),
   mesaYOffset: document.getElementById('mesa-y-offset'),
   mesaYVal: document.getElementById('mesa-y-val'),
   mesaScale: document.getElementById('mesa-scale'),
@@ -345,13 +451,16 @@ const dom = {
 
   // Canvas & Preview
   canvas: document.getElementById('output-canvas'),
-  refOverlay: document.getElementById('ref-overlay'),
-  btnToggleRef: document.getElementById('btn-toggle-ref'),
   captionPreviewText: document.getElementById('caption-preview-text'),
   btnCopyCaption: document.getElementById('btn-copy-caption'),
+  storyPartsBar: document.getElementById('story-parts-bar'),
+  storyPartsLabel: document.getElementById('story-parts-label'),
+  storyPartsButtons: document.getElementById('story-parts-buttons'),
 
   // Bottom Actions
   btnDownload: document.getElementById('btn-download'),
+  btnDownloadText: document.getElementById('btn-download-text'),
+  btnDownloadAll: document.getElementById('btn-download-all'),
   btnShare: document.getElementById('btn-share'),
   toastContainer: document.getElementById('toast-container'),
   canvasLoading: document.getElementById('canvas-loading'),
@@ -383,7 +492,7 @@ async function init() {
   setupEventListeners();
   renderDaysInputs();
   renderBadgesUI('info');
-  renderBadgesUI('mesa');
+  renderMesaCasillasUI();
   syncFormToState();
 
   // Show loading while fonts and assets load
@@ -615,133 +724,12 @@ function addBadge(mode) {
 }
 
 // ============================================================================
-// Multi-Day UI Manager (PARO)
-// ============================================================================
-function renderDaysInputs() {
-  dom.paroDaysList.innerHTML = '';
 
-  state.paro.days.forEach((dayItem, index) => {
-    const card = document.createElement('div');
-    card.className = 'paro-day-card';
-    card.innerHTML = `
-      <div class="day-card-header">
-        <span class="day-card-badge">Día ${index + 1}</span>
-        ${state.paro.days.length > 1 ? `<button type="button" class="btn-remove-day" data-remove="${index}" title="Eliminar este día">✕</button>` : ''}
-      </div>
-      <div class="fields-2col">
-        <div class="field-item">
-          <label class="field-label-sm">Día de la semana</label>
-          <input type="text" class="input-text text-center font-bold input-day" data-index="${index}" value="${dayItem.day}" placeholder="MIÉRCOLES">
-        </div>
-        <div class="field-item">
-          <label class="field-label-sm">Fecha</label>
-          <input type="text" class="input-text text-center font-bold input-date" data-index="${index}" value="${dayItem.date}" placeholder="15/10">
-        </div>
-      </div>
-      <div class="quick-chips-wrap">
-        <div class="chips-grid">
-          <button type="button" class="chip-item ${dayItem.day.toUpperCase() === 'LUNES' ? 'active' : ''}" data-day-pick="LUNES" data-index="${index}">LUN</button>
-          <button type="button" class="chip-item ${dayItem.day.toUpperCase() === 'MARTES' ? 'active' : ''}" data-day-pick="MARTES" data-index="${index}">MAR</button>
-          <button type="button" class="chip-item ${dayItem.day.toUpperCase() === 'MIÉRCOLES' ? 'active' : ''}" data-day-pick="MIÉRCOLES" data-index="${index}">MIÉ</button>
-          <button type="button" class="chip-item ${dayItem.day.toUpperCase() === 'JUEVES' ? 'active' : ''}" data-day-pick="JUEVES" data-index="${index}">JUE</button>
-          <button type="button" class="chip-item ${dayItem.day.toUpperCase() === 'VIERNES' ? 'active' : ''}" data-day-pick="VIERNES" data-index="${index}">VIE</button>
-          <button type="button" class="chip-item ${dayItem.day.toUpperCase() === 'SÁBADO' ? 'active' : ''}" data-day-pick="SÁBADO" data-index="${index}">SÁB</button>
-        </div>
-      </div>
-    `;
-    dom.paroDaysList.appendChild(card);
-  });
-
-  if (state.paro.days.length > 1) {
-    dom.multiDayStyleWrap.classList.remove('hidden');
-    dom.btnFormatCombined.classList.toggle('active', state.paro.format === 'combined');
-    dom.btnFormatStacked.classList.toggle('active', state.paro.format === 'stacked');
-  } else {
-    dom.multiDayStyleWrap.classList.add('hidden');
-  }
-
-  attachDayInputListeners();
-}
-
-function attachDayInputListeners() {
-  dom.paroDaysList.querySelectorAll('.input-day').forEach(inp => {
-    inp.addEventListener('input', (e) => {
-      const idx = parseInt(e.target.dataset.index, 10);
-      state.paro.days[idx].day = e.target.value.toUpperCase();
-      const card = e.target.closest('.paro-day-card');
-      card.querySelectorAll('.chip-item').forEach(ch => {
-        ch.classList.toggle('active', ch.dataset.dayPick === state.paro.days[idx].day);
-      });
-      saveAndRender();
-    });
-  });
-
-  dom.paroDaysList.querySelectorAll('.input-date').forEach(inp => {
-    inp.addEventListener('input', (e) => {
-      const idx = parseInt(e.target.dataset.index, 10);
-      state.paro.days[idx].date = e.target.value.trim();
-      saveAndRender();
-    });
-  });
-
-  dom.paroDaysList.querySelectorAll('.chip-item').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(btn.dataset.index, 10);
-      const chosenDay = btn.dataset.dayPick;
-      state.paro.days[idx].day = chosenDay;
-      const card = btn.closest('.paro-day-card');
-      card.querySelector('.input-day').value = chosenDay;
-      card.querySelectorAll('.chip-item').forEach(ch => {
-        ch.classList.toggle('active', ch.dataset.dayPick === chosenDay);
-      });
-      saveAndRender();
-    });
-  });
-
-  dom.paroDaysList.querySelectorAll('.btn-remove-day').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(btn.dataset.remove, 10);
-      if (state.paro.days.length > 1) {
-        state.paro.days.splice(idx, 1);
-        renderDaysInputs();
-        saveAndRender();
-        showToast('Día eliminado');
-      }
-    });
-  });
-}
-
-function addDay() {
-  const lastItem = state.paro.days[state.paro.days.length - 1] || { day: 'MIÉRCOLES', date: '15/10' };
-  
-  let nextDay = 'JUEVES';
-  const lastDayIndex = DAYS_SEQUENCE.indexOf(lastItem.day.toUpperCase());
-  if (lastDayIndex >= 0 && lastDayIndex < DAYS_SEQUENCE.length - 1) {
-    nextDay = DAYS_SEQUENCE[lastDayIndex + 1];
-  }
-
-  let nextDate = '';
-  if (lastItem.date.includes('/')) {
-    const parts = lastItem.date.split('/');
-    const dNum = parseInt(parts[0], 10);
-    if (!isNaN(dNum)) {
-      nextDate = `${dNum + 1}/${parts[1]}`;
-    }
-  }
-
-  state.paro.days.push({
-    day: nextDay,
-    date: nextDate || lastItem.date
-  });
-
-  renderDaysInputs();
-  saveAndRender();
-  showToast('¡Día añadido a la historia! 📅');
-}
-
-// ============================================================================
-// Event Listeners
-// ============================================================================
+function renderMesaCasillasUI() {}
+function loadSampleMesaPhoto() {}
+function loadSampleMesaPhoto2() {}
+function performOcrOnImage() {}
+function getCarreraColor(esp) { return '#7c3aed'; }
 function setupEventListeners() {
   // Mode Switch Tabs (Info vs Paro vs Mesa)
   dom.tabInfo.addEventListener('click', () => setMode('info'));
@@ -754,9 +742,6 @@ function setupEventListeners() {
 
   // Reset Button
   dom.btnReset.addEventListener('click', resetCurrentForm);
-
-  // Reference comparison toggle
-  dom.btnToggleRef.addEventListener('click', toggleReferenceOverlay);
 
   // Quick Preset Chips click delegation
   document.querySelectorAll('.preset-chip').forEach(btn => {
@@ -863,86 +848,243 @@ function setupEventListeners() {
   });
 
   // ================= MESA DE EXAMEN LISTENERS =================
-  dom.mesaTitle.addEventListener('input', (e) => {
-    state.mesa.title = e.target.value.toUpperCase();
-    e.target.value = state.mesa.title;
-    saveAndRender();
+  // Mesa Exam Date Input
+  if (dom.mesaDate) {
+    dom.mesaDate.addEventListener('input', (e) => {
+      state.mesa.date = e.target.value;
+      const valUp = (e.target.value || '').toUpperCase();
+      document.querySelectorAll('#mesa-quick-days .chip-item').forEach(b => {
+        b.classList.toggle('active', valUp.includes(b.dataset.day));
+      });
+      saveAndRender();
+    });
+  }
+
+  // Quick Days Chips for Mesa
+  document.querySelectorAll('#mesa-quick-days .chip-item').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const dayName = chip.dataset.day; // e.g. "MARTES"
+      const formattedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase();
+      const currentVal = (state.mesa.date || '').trim();
+      const matchDate = currentVal.match(/\b\d{1,2}\/\d{1,2}\b|\b\d{1,2}\b/);
+      const datePart = matchDate ? matchDate[0] : '17/10';
+      state.mesa.date = `${formattedDay} ${datePart}`;
+      if (dom.mesaDate) dom.mesaDate.value = state.mesa.date;
+      document.querySelectorAll('#mesa-quick-days .chip-item').forEach(b => b.classList.remove('active'));
+      chip.classList.add('active');
+      saveAndRender();
+    });
   });
 
-  dom.mesaTitleY.addEventListener('input', (e) => {
-    state.mesa.titleY = parseInt(e.target.value, 10);
-    dom.mesaTitleYVal.textContent = `${state.mesa.titleY}px`;
-    saveAndRender();
+  // Dropzone and file input
+  if (dom.mesaDropzone) {
+    dom.mesaDropzone.addEventListener('click', () => {
+      if (dom.mesaFileInput) dom.mesaFileInput.click();
+    });
+
+    dom.mesaDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dom.mesaDropzone.classList.add('drag-over');
+    });
+
+    dom.mesaDropzone.addEventListener('dragleave', () => {
+      dom.mesaDropzone.classList.remove('drag-over');
+    });
+
+    dom.mesaDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dom.mesaDropzone.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleMesaFileUpload(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  if (dom.btnTriggerUploadMesa) {
+    dom.btnTriggerUploadMesa.addEventListener('click', () => {
+      if (dom.mesaFileInput) dom.mesaFileInput.click();
+    });
+  }
+
+  if (dom.mesaFileInput) {
+    dom.mesaFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleMesaFileUpload(e.target.files[0]);
+      }
+    });
+  }
+
+  if (dom.btnLoadSampleMesa) {
+    dom.btnLoadSampleMesa.addEventListener('click', loadSampleMesaPhoto);
+  }
+
+  if (dom.btnLoadSampleMesa2) {
+    dom.btnLoadSampleMesa2.addEventListener('click', loadSampleMesaPhoto2);
+  }
+
+  // Filter chips (TODAS, ISI, IC, IQ, IE, IM, UDB)
+  document.querySelectorAll('#mesa-filter-chips .chip-filter').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const esp = chip.dataset.esp;
+      state.mesa.filterEsp = esp;
+      state.mesa.currentPage = 1;
+      state.pagination.mesa.currentPage = 1;
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast(`Filtrado por carrera: ${esp}`);
+    });
   });
 
-  dom.mesaTitleScale.addEventListener('input', (e) => {
-    state.mesa.titleScale = parseInt(e.target.value, 10) / 100;
-    dom.mesaTitleScaleVal.textContent = `${e.target.value}%`;
-    saveAndRender();
+  // Turno chips (TODOS, 1-Mañana, 2-Tarde, 3-Noche)
+  document.querySelectorAll('#mesa-turno-chips .chip-turno').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const turno = chip.dataset.turno;
+      state.mesa.filterTurno = turno;
+      state.mesa.currentPage = 1;
+      state.pagination.mesa.currentPage = 1;
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast(`Filtrado por turno: ${turno}`);
+    });
   });
 
-  dom.mesaHasBadge.addEventListener('change', (e) => {
-    state.mesa.hasBadge = e.target.checked;
-    dom.mesaBadgesContainer.classList.toggle('hidden', !state.mesa.hasBadge);
+  // Distribution Mode (Auto, Dividir en Partes, Todo en 1 Historia)
+  function setDistribMode(mode) {
+    state.mesa.distribMode = mode;
+    state.mesa.currentPage = 1;
+    state.pagination.mesa.currentPage = 1;
+    if (dom.btnDistribAuto) dom.btnDistribAuto.classList.toggle('active', mode === 'auto');
+    if (dom.btnDistribPages) dom.btnDistribPages.classList.toggle('active', mode === 'pages');
+    if (dom.btnDistribAll) dom.btnDistribAll.classList.toggle('active', mode === 'all');
+    if (dom.distribHelperText) {
+      if (mode === 'pages') dom.distribHelperText.textContent = 'Forzado: se dividen en 2 historias HD con botón para descargar ambas.';
+      else if (mode === 'all') dom.distribHelperText.textContent = 'Forzado: todas las casillas entran en 1 historia sin cortar.';
+      else dom.distribHelperText.textContent = 'Si son más de 20 materias, se dividen automáticamente en 2 historias HD para no tapar el título ni el logo.';
+    }
     saveAndRender();
+  }
+
+  if (dom.btnDistribAuto) dom.btnDistribAuto.addEventListener('click', () => setDistribMode('auto'));
+  if (dom.btnDistribPages) dom.btnDistribPages.addEventListener('click', () => setDistribMode('pages'));
+  if (dom.btnDistribAll) dom.btnDistribAll.addEventListener('click', () => setDistribMode('all'));
+
+  // Editor Pagination controls
+  if (dom.btnPrevPage) {
+    dom.btnPrevPage.addEventListener('click', () => {
+      if (state.pagination.mesa.currentPage > 1) {
+        state.pagination.mesa.currentPage--;
+        state.mesa.currentPage = state.pagination.mesa.currentPage;
+        saveAndRender();
+      }
+    });
+  }
+  if (dom.btnNextPage) {
+    dom.btnNextPage.addEventListener('click', () => {
+      if (state.pagination.mesa.currentPage < state.pagination.mesa.totalPages) {
+        state.pagination.mesa.currentPage++;
+        state.mesa.currentPage = state.pagination.mesa.currentPage;
+        saveAndRender();
+      }
+    });
+  }
+
+  // Density buttons (12, 15, 20 materias por historia)
+  document.querySelectorAll('.btn-density').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const density = parseInt(btn.dataset.density, 10);
+      state.mesa.itemsPerPage = density;
+      document.querySelectorAll('.btn-density').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.density, 10) === density);
+      });
+      state.mesa.currentPage = 1;
+      state.pagination.mesa.currentPage = 1;
+      saveAndRender();
+      showToast(`Densidad ajustada: ${density} materias por historia`);
+    });
   });
 
-  dom.btnAddBadgeMesa.addEventListener('click', () => addBadge('mesa'));
+  // Select all / Deselect all casillas
+  if (dom.btnSelectAllCasillas) {
+    dom.btnSelectAllCasillas.addEventListener('click', () => {
+      const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
+      const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
+      (state.mesa.casillas || []).forEach(c => {
+        let matchEsp = (currentFilter === 'TODAS' || (c.esp || '').toUpperCase().trim() === currentFilter);
+        let matchTurno = (currentTurno === 'TODOS' || (c.turno || '').toUpperCase().includes(currentTurno.replace('1-', '').replace('2-', '').replace('3-', '')));
+        if (matchEsp && matchTurno) {
+          c.enabled = true;
+        }
+      });
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast('Todas las casillas visibles activadas');
+    });
+  }
 
-  dom.mesaBody.addEventListener('input', (e) => {
-    state.mesa.body = e.target.value;
-    saveAndRender();
-  });
+  if (dom.btnDeselectAllCasillas) {
+    dom.btnDeselectAllCasillas.addEventListener('click', () => {
+      const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
+      const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
+      (state.mesa.casillas || []).forEach(c => {
+        let matchEsp = (currentFilter === 'TODAS' || (c.esp || '').toUpperCase().trim() === currentFilter);
+        let matchTurno = (currentTurno === 'TODOS' || (c.turno || '').toUpperCase().includes(currentTurno.replace('1-', '').replace('2-', '').replace('3-', '')));
+        if (matchEsp && matchTurno) {
+          c.enabled = false;
+        }
+      });
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast('Todas las casillas visibles desactivadas');
+    });
+  }
 
-  dom.mesaBodyY.addEventListener('input', (e) => {
-    state.mesa.bodyY = parseInt(e.target.value, 10);
-    dom.mesaBodyYVal.textContent = `${state.mesa.bodyY}px`;
-    saveAndRender();
-  });
+  // Add Casilla Manual
+  if (dom.btnAddCasilla) {
+    dom.btnAddCasilla.addEventListener('click', addCasillaManual);
+  }
 
-  dom.mesaBodyScale.addEventListener('input', (e) => {
-    state.mesa.bodyScale = parseInt(e.target.value, 10) / 100;
-    dom.mesaBodyScaleVal.textContent = `${e.target.value}%`;
+  // Column layout buttons
+  function setMesaCols(cols) {
+    state.mesa.columns = cols;
+    if (dom.btnColsAuto) dom.btnColsAuto.classList.toggle('active', cols === 'auto');
+    if (dom.btnCols1) dom.btnCols1.classList.toggle('active', cols === '1');
+    if (dom.btnCols2) dom.btnCols2.classList.toggle('active', cols === '2');
+    if (dom.btnCols3) dom.btnCols3.classList.toggle('active', cols === '3');
     saveAndRender();
-  });
+  }
 
-  dom.btnAlignLeftMesa.addEventListener('click', () => {
-    state.mesa.align = 'left';
-    dom.btnAlignLeftMesa.classList.add('active');
-    dom.btnAlignCenterMesa.classList.remove('active');
-    saveAndRender();
-  });
+  if (dom.btnColsAuto) dom.btnColsAuto.addEventListener('click', () => setMesaCols('auto'));
+  if (dom.btnCols1) dom.btnCols1.addEventListener('click', () => setMesaCols('1'));
+  if (dom.btnCols2) dom.btnCols2.addEventListener('click', () => setMesaCols('2'));
+  if (dom.btnCols3) dom.btnCols3.addEventListener('click', () => setMesaCols('3'));
 
-  dom.btnAlignCenterMesa.addEventListener('click', () => {
-    state.mesa.align = 'center';
-    dom.btnAlignCenterMesa.classList.add('active');
-    dom.btnAlignLeftMesa.classList.remove('active');
-    saveAndRender();
-  });
+  // Sliders for Casillas on Canvas
+  if (dom.mesaYOffset) {
+    dom.mesaYOffset.addEventListener('input', (e) => {
+      state.mesa.yOffset = parseInt(e.target.value, 10);
+      if (dom.mesaYVal) dom.mesaYVal.textContent = `${state.mesa.yOffset}px`;
+      saveAndRender();
+    });
+  }
 
-  dom.mesaYOffset.addEventListener('input', (e) => {
-    state.mesa.yOffset = parseInt(e.target.value, 10);
-    dom.mesaYVal.textContent = `${state.mesa.yOffset}px`;
-    saveAndRender();
-  });
+  if (dom.mesaScale) {
+    dom.mesaScale.addEventListener('input', (e) => {
+      state.mesa.scale = parseInt(e.target.value, 10) / 100;
+      if (dom.mesaScaleVal) dom.mesaScaleVal.textContent = `${e.target.value}%`;
+      saveAndRender();
+    });
+  }
 
-  dom.mesaScale.addEventListener('input', (e) => {
-    state.mesa.scale = parseInt(e.target.value, 10) / 100;
-    dom.mesaScaleVal.textContent = `${e.target.value}%`;
-    saveAndRender();
-  });
-
-  dom.btnResetMesaAdj.addEventListener('click', () => {
-    state.mesa.yOffset = 0;
-    state.mesa.scale = 1.0;
-    state.mesa.titleY = 0;
-    state.mesa.titleScale = 1.0;
-    state.mesa.bodyY = 0;
-    state.mesa.bodyScale = 1.0;
-    syncFormToState();
-    saveAndRender();
-    showToast('Ajustes restablecidos');
-  });
+  if (dom.btnResetMesaAdj) {
+    dom.btnResetMesaAdj.addEventListener('click', () => {
+      state.mesa.yOffset = 0;
+      state.mesa.scale = 1.0;
+      state.mesa.columns = 'auto';
+      syncFormToState();
+      saveAndRender();
+      showToast('Ajustes de casillas restablecidos');
+    });
+  }
 
   // ================= PARO LISTENERS =================
   dom.btnAddDay.addEventListener('click', addDay);
@@ -1021,6 +1163,7 @@ function setupEventListeners() {
 
   // ================= EXPORT ACTIONS =================
   dom.btnDownload.addEventListener('click', downloadHighResStory);
+  if (dom.btnDownloadAll) dom.btnDownloadAll.addEventListener('click', downloadAllPages);
   dom.btnShare.addEventListener('click', shareStory);
   dom.btnCopyCaption.addEventListener('click', copyCaptionToClipboard);
 }
@@ -1099,10 +1242,6 @@ function setMode(mode) {
   dom.formParo.classList.toggle('active', mode === 'paro');
   dom.formMesa.classList.toggle('active', mode === 'mesa');
 
-  if (state.isComparing) {
-    updateReferenceOverlayImage();
-  }
-
   saveAndRender();
 }
 
@@ -1123,6 +1262,18 @@ function setMobileView(view) {
 }
 
 function syncFormToState() {
+  const mode = state.currentMode || 'mesa';
+  dom.tabMesa.classList.toggle('active', mode === 'mesa');
+  dom.tabMesa.setAttribute('aria-selected', mode === 'mesa' ? 'true' : 'false');
+  dom.tabInfo.classList.toggle('active', mode === 'info');
+  dom.tabInfo.setAttribute('aria-selected', mode === 'info' ? 'true' : 'false');
+  dom.tabParo.classList.toggle('active', mode === 'paro');
+  dom.tabParo.setAttribute('aria-selected', mode === 'paro' ? 'true' : 'false');
+
+  dom.formMesa.classList.toggle('active', mode === 'mesa');
+  dom.formInfo.classList.toggle('active', mode === 'info');
+  dom.formParo.classList.toggle('active', mode === 'paro');
+
   // INFO
   dom.infoTitle.value = state.info.title || '';
   dom.infoTitleY.value = state.info.titleY || 0;
@@ -1149,28 +1300,23 @@ function syncFormToState() {
   syncTemplateButtons('info');
 
   // MESA
-  dom.mesaTitle.value = state.mesa.title || '';
-  dom.mesaTitleY.value = state.mesa.titleY || 0;
-  dom.mesaTitleYVal.textContent = `${state.mesa.titleY || 0}px`;
-  dom.mesaTitleScale.value = Math.round((state.mesa.titleScale || 1.0) * 100);
-  dom.mesaTitleScaleVal.textContent = `${Math.round((state.mesa.titleScale || 1.0) * 100)}%`;
-
-  dom.mesaHasBadge.checked = state.mesa.hasBadge;
-  dom.mesaBadgesContainer.classList.toggle('hidden', !state.mesa.hasBadge);
-
-  dom.mesaBody.value = state.mesa.body || '';
-  dom.mesaBodyY.value = state.mesa.bodyY || 0;
-  dom.mesaBodyYVal.textContent = `${state.mesa.bodyY || 0}px`;
-  dom.mesaBodyScale.value = Math.round((state.mesa.bodyScale || 1.0) * 100);
-  dom.mesaBodyScaleVal.textContent = `${Math.round((state.mesa.bodyScale || 1.0) * 100)}%`;
-
-  dom.btnAlignLeftMesa.classList.toggle('active', state.mesa.align === 'left');
-  dom.btnAlignCenterMesa.classList.toggle('active', state.mesa.align === 'center');
-
-  dom.mesaYOffset.value = state.mesa.yOffset || 0;
-  dom.mesaYVal.textContent = `${state.mesa.yOffset || 0}px`;
-  dom.mesaScale.value = Math.round((state.mesa.scale || 1.0) * 100);
-  dom.mesaScaleVal.textContent = `${Math.round((state.mesa.scale || 1.0) * 100)}%`;
+  if (dom.mesaDate) {
+    dom.mesaDate.value = state.mesa.date !== undefined ? state.mesa.date : 'Martes 17/10';
+  }
+  if (dom.mesaYOffset) {
+    dom.mesaYOffset.value = state.mesa.yOffset || 0;
+    if (dom.mesaYVal) dom.mesaYVal.textContent = `${state.mesa.yOffset || 0}px`;
+  }
+  if (dom.mesaScale) {
+    dom.mesaScale.value = Math.round((state.mesa.scale || 1.0) * 100);
+    if (dom.mesaScaleVal) dom.mesaScaleVal.textContent = `${Math.round((state.mesa.scale || 1.0) * 100)}%`;
+  }
+  const cols = state.mesa.columns || 'auto';
+  if (dom.btnColsAuto) dom.btnColsAuto.classList.toggle('active', cols === 'auto');
+  if (dom.btnCols1) dom.btnCols1.classList.toggle('active', cols === '1');
+  if (dom.btnCols2) dom.btnCols2.classList.toggle('active', cols === '2');
+  if (dom.btnCols3) dom.btnCols3.classList.toggle('active', cols === '3');
+  renderMesaCasillasUI();
 
   // PARO
   dom.paroHasLine.checked = state.paro.hasLine;
@@ -1195,8 +1341,7 @@ function applyPreset(presetKey) {
     renderBadgesUI('info');
   } else if (presetKey.startsWith('mesa-')) {
     setMode('mesa');
-    state.mesa = JSON.parse(JSON.stringify(preset));
-    renderBadgesUI('mesa');
+    renderMesaCasillasUI();
   } else if (presetKey.startsWith('paro-')) {
     setMode('paro');
     state.paro.days = JSON.parse(JSON.stringify(preset.days));
@@ -1229,17 +1374,19 @@ function resetCurrentForm() {
     state.info.scale = 1.0;
     renderBadgesUI('info');
   } else if (state.currentMode === 'mesa') {
-    state.mesa.title = '';
-    state.mesa.titleY = 0;
-    state.mesa.titleScale = 1.0;
-    state.mesa.hasBadge = false;
-    state.mesa.badges = [{ id: 'mesa-b1', val: '', sub: '', yOffset: 0, scale: 1.0 }];
-    state.mesa.body = '';
-    state.mesa.bodyY = 0;
-    state.mesa.bodyScale = 1.0;
+    state.mesa.hasLoadedData = false;
+    state.mesa.casillas = [];
+    state.mesa.photoName = '';
+    state.mesa.photoUrl = '';
+    state.mesa.date = 'Martes 17/10';
+    state.mesa.filterEsp = 'TODAS';
+    state.mesa.filterTurno = 'TODOS';
+    state.mesa.searchQuery = '';
+    state.mesa.columns = 'auto';
     state.mesa.yOffset = 0;
     state.mesa.scale = 1.0;
-    renderBadgesUI('mesa');
+    if (dom.mesaUploadStatus) dom.mesaUploadStatus.classList.add('hidden');
+    renderMesaCasillasUI();
   } else {
     state.paro.days = [{ day: 'MIÉRCOLES', date: '15/10' }];
     state.paro.format = 'combined';
@@ -1290,6 +1437,9 @@ function loadSavedState() {
       if (parsed.mesa) {
         Object.assign(state.mesa, parsed.mesa);
       }
+      if (!state.mesa.date) {
+        state.mesa.date = 'Martes 17/10';
+      }
       if (parsed.paro) {
         if (parsed.paro.day && (!parsed.paro.days || parsed.paro.days.length === 0)) {
           parsed.paro.days = [{ day: parsed.paro.day, date: parsed.paro.date || '' }];
@@ -1297,6 +1447,9 @@ function loadSavedState() {
         Object.assign(state.paro, parsed.paro);
       }
       if (parsed.currentMode) state.currentMode = parsed.currentMode;
+      else state.currentMode = 'mesa';
+    } else {
+      state.currentMode = 'mesa';
     }
   } catch (e) {
     // Ignore corrupt storage
@@ -1309,9 +1462,10 @@ function loadSavedState() {
   if (!state.info.badges || !Array.isArray(state.info.badges) || state.info.badges.length === 0) {
     state.info.badges = [{ id: 'info-b1', val: '5 AL 9', sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL', yOffset: 0, scale: 1.0 }];
   }
-  if (!state.mesa.badges || !Array.isArray(state.mesa.badges) || state.mesa.badges.length === 0) {
-    state.mesa.badges = [{ id: 'mesa-b1', val: '5 AL 9', sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL', yOffset: 0, scale: 1.0 }];
+  if (!state.mesa.casillas || !Array.isArray(state.mesa.casillas)) {
+    state.mesa.casillas = [];
   }
+  state.mesa.hasLoadedData = state.mesa.casillas.length > 0;
 }
 
 // ============================================================================
@@ -1324,6 +1478,133 @@ function renderCanvas() {
   renderAnimationId = requestAnimationFrame(() => {
     drawCanvasContent();
   });
+}
+
+function drawPageBadge(context, currentPage, totalPages, extraLabel = '') {
+  if (totalPages <= 1) return;
+  context.save();
+  const text = `PARTE ${currentPage} DE ${totalPages}${extraLabel ? ' • ' + extraLabel.toUpperCase() : ''}`;
+  context.font = '800 20px "Montserrat", sans-serif';
+  const textW = context.measureText(text).width;
+  const badgeW = Math.max(340, textW + 48);
+  const badgeH = 38;
+  const badgeX = (1080 - badgeW) / 2;
+  const badgeY = 478;
+
+  // Dark glass capsule background so it is ultra visible over any background
+  context.fillStyle = 'rgba(17, 6, 32, 0.75)';
+  roundRect(context, badgeX, badgeY, badgeW, badgeH, 19);
+  context.fill();
+
+  context.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+  context.lineWidth = 1.5;
+  roundRect(context, badgeX, badgeY, badgeW, badgeH, 19);
+  context.stroke();
+
+  // Amber indicator dot
+  const dotX = badgeX + 20;
+  const dotY = badgeY + badgeH / 2;
+  context.fillStyle = '#f59e0b';
+  context.beginPath();
+  context.arc(dotX, dotY, 4.5, 0, Math.PI * 2);
+  context.fill();
+
+  // Text inside badge
+  context.fillStyle = '#ffffff';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(text, 540 + 6, badgeY + badgeH / 2);
+  context.restore();
+}
+
+function updateStoryPartsUI() {
+  const currentMode = state.currentMode;
+  const pag = state.pagination[currentMode] || { currentPage: 1, totalPages: 1 };
+  const totalPages = pag.totalPages || 1;
+  const currentPage = Math.min(Math.max(1, pag.currentPage || 1), totalPages);
+  pag.currentPage = currentPage;
+
+  if (totalPages > 1) {
+    if (dom.storyPartsBar) {
+      dom.storyPartsBar.classList.remove('hidden');
+      if (dom.storyPartsLabel) {
+        dom.storyPartsLabel.textContent = `Contenido repartido en ${totalPages} historias HD`;
+      }
+    }
+
+    if (dom.storyPartsButtons) {
+      dom.storyPartsButtons.innerHTML = '';
+      for (let p = 1; p <= totalPages; p++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `btn-part-switch ${p === currentPage ? 'active' : ''}`;
+        btn.dataset.page = p;
+        btn.textContent = `Historia ${p} (Parte ${p}/${totalPages})`;
+        btn.addEventListener('click', () => {
+          state.pagination[state.currentMode].currentPage = p;
+          if (state.currentMode === 'mesa') {
+            state.mesa.currentPage = p;
+          }
+          saveAndRender();
+        });
+        dom.storyPartsButtons.appendChild(btn);
+      }
+    }
+
+    if (dom.btnDownloadText) {
+      dom.btnDownloadText.textContent = `Descargar Historia ${currentPage} HD`;
+    }
+    if (dom.btnDownloadAll) {
+      dom.btnDownloadAll.classList.remove('hidden');
+      const allSpan = dom.btnDownloadAll.querySelector('span');
+      if (allSpan) {
+        allSpan.textContent = totalPages === 2 
+          ? 'Descargar Ambas Historias (2 PNGs HD)' 
+          : `Descargar Todas las Historias (${totalPages} PNGs HD)`;
+      }
+    }
+  } else {
+    if (dom.storyPartsBar) {
+      dom.storyPartsBar.classList.add('hidden');
+    }
+    if (dom.btnDownloadText) {
+      dom.btnDownloadText.textContent = 'Descargar Historia HD';
+    }
+    if (dom.btnDownloadAll) {
+      dom.btnDownloadAll.classList.add('hidden');
+    }
+  }
+
+  // Update mesa editor pagination bar if in mesa mode
+  if (dom.mesaPaginationWrap) {
+    if (state.currentMode === 'mesa' && totalPages > 1) {
+      dom.mesaPaginationWrap.classList.remove('hidden');
+      if (dom.mesaPageInfo) dom.mesaPageInfo.textContent = `Historia ${currentPage} de ${totalPages}`;
+      if (dom.btnPrevPage) dom.btnPrevPage.disabled = (currentPage <= 1);
+      if (dom.btnNextPage) dom.btnNextPage.disabled = (currentPage >= totalPages);
+      if (dom.mesaPagePills) {
+        dom.mesaPagePills.innerHTML = '';
+        for (let p = 1; p <= totalPages; p++) {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.className = `page-pill ${p === currentPage ? 'active' : ''}`;
+          pill.textContent = `H${p}`;
+          pill.addEventListener('click', () => {
+            state.pagination.mesa.currentPage = p;
+            state.mesa.currentPage = p;
+            saveAndRender();
+          });
+          dom.mesaPagePills.appendChild(pill);
+        }
+      }
+      const curDensity = state.mesa.itemsPerPage || 45;
+      document.querySelectorAll('.btn-density').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.density, 10) === curDensity);
+      });
+    } else {
+      dom.mesaPaginationWrap.classList.add('hidden');
+    }
+  }
 }
 
 function drawCanvasContent() {
@@ -1362,170 +1643,772 @@ function drawCanvasContent() {
     ctx.fillRect(0, 0, width, height);
   }
 
+  // Strict visual safety bounds: prevent ANY text or card from covering the header title or footer eagle
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, SAFE_BOUNDS.TOP - 5, width, (SAFE_BOUNDS.BOTTOM - SAFE_BOUNDS.TOP) + 10);
+  ctx.clip();
+
   // 2. Render Text Content based on currentMode
   if (state.currentMode === 'info') {
     renderBlockBasedContent(ctx, width, height, state.info);
   } else if (state.currentMode === 'mesa') {
-    renderBlockBasedContent(ctx, width, height, state.mesa);
+    renderMesaCasillasContent(ctx, width, height);
   } else {
     renderParoContent(ctx, width, height);
+  }
+
+  ctx.restore();
+
+  // Update story navigation bar and download buttons for multi-story
+  updateStoryPartsUI();
+}
+
+/**
+ * Render Casillas Blancas for MESA DE EXAMEN
+ * Places clean, modern white cards with subject, classroom, time and career badges
+ */
+function renderMesaCasillasContent(context, width, height) {
+  const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
+  const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
+  const allCasillas = state.mesa.casillas || [];
+
+  const activeCasillas = allCasillas.filter(c => {
+    if (c.enabled === false) return false;
+    if (currentFilter !== 'TODAS' && (c.esp || '').toUpperCase().trim() !== currentFilter) {
+      return false;
+    }
+    if (currentTurno !== 'TODOS') {
+      const cTurno = (c.turno || '').toUpperCase().trim();
+      const searchTurno = currentTurno.replace('1-', '').replace('2-', '').replace('3-', '');
+      if (!cTurno.includes(searchTurno)) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // Determine pagination: fit all 45 subjects in 1 story by default!
+  let totalPages = 1;
+  const itemsPerPage = state.mesa.itemsPerPage || 45;
+
+  if (state.mesa.distribMode === 'all') {
+    totalPages = 1;
+  } else if (state.mesa.distribMode === 'pages') {
+    totalPages = 2;
+  } else if (state.mesa.distribMode === '3pages') {
+    totalPages = 3;
+  } else {
+    // Auto mode: default to 1 single story for up to 48 subjects
+    if (activeCasillas.length <= 48) {
+      totalPages = 1;
+    } else {
+      totalPages = Math.ceil(activeCasillas.length / itemsPerPage);
+    }
+  }
+
+  state.pagination.mesa.totalPages = totalPages;
+  const currentPage = Math.min(Math.max(1, state.pagination.mesa.currentPage || 1), totalPages);
+  state.pagination.mesa.currentPage = currentPage;
+  state.mesa.currentPage = currentPage;
+
+  let pageCasillas = activeCasillas;
+  if (totalPages > 1) {
+    const countPerPage = Math.ceil(activeCasillas.length / totalPages);
+    const startIdx = (currentPage - 1) * countPerPage;
+    pageCasillas = activeCasillas.slice(startIdx, startIdx + countPerPage);
+  }
+
+  const scale = state.mesa.scale || 1.0;
+  let startY = 485 + (state.mesa.yOffset || 0);
+
+  // If the user has not loaded or entered exam data yet, do not render the story cards
+  if (!state.mesa.hasLoadedData || activeCasillas.length === 0) {
+    context.save();
+    const boxX = 120;
+    const boxY = 600;
+    const boxW = 840;
+    const boxH = 440;
+
+    context.fillStyle = 'rgba(255, 255, 255, 0.10)';
+    roundRect(context, boxX, boxY, boxW, boxH, 24);
+    context.fill();
+
+    context.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    context.lineWidth = 2.5;
+    context.setLineDash([12, 10]);
+    roundRect(context, boxX, boxY, boxW, boxH, 24);
+    context.stroke();
+    context.setLineDash([]);
+
+    // Icon
+    context.font = '68px "Montserrat", sans-serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('📸', 540, boxY + 110);
+
+    // Title
+    context.fillStyle = '#ffffff';
+    context.font = '800 32px "Montserrat", sans-serif';
+    context.fillText('PLANILLA DE EXÁMENES', 540, boxY + 195);
+
+    // Instructions
+    context.fillStyle = 'rgba(255, 255, 255, 0.82)';
+    context.font = '600 22px "Montserrat", sans-serif';
+    context.fillText('Sube una foto o planilla en el editor para', 540, boxY + 260);
+    context.fillText('generar las materias en casillas blancas', 540, boxY + 298);
+
+    // Quick action hint
+    context.fillStyle = '#fde047';
+    context.font = '700 20px "Montserrat", sans-serif';
+    context.fillText('⚡ O prueba con los botones de Ejemplo 1 y 2', 540, boxY + 368);
+
+    context.restore();
+    return;
+  }
+
+  // Plain text title for Exam Date (Between Header and Subject Cards)
+  if (state.mesa.date && state.mesa.date.trim()) {
+    const dateText = state.mesa.date.trim().toUpperCase();
+    const dateFontSize = Math.round(34 * scale);
+    const dateY = 464 + (state.mesa.yOffset || 0);
+
+    context.save();
+    context.fillStyle = '#ffffff';
+    context.font = `800 ${dateFontSize}px "Montserrat", sans-serif`;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.shadowColor = 'rgba(0, 0, 0, 0.6)';
+    context.shadowBlur = 8;
+    context.shadowOffsetY = 2;
+    drawTextWithSpacing(context, dateText, width / 2, dateY, 2.0, 'center');
+    context.restore();
+
+    startY = dateY + Math.round(30 * scale);
+  }
+
+  // Available vertical height strictly bounded well before the eagle (Eagle starts at Y = 1474)
+  const maxBottom = SAFE_BOUNDS.BOTTOM - 10; // 1370px, leaving 104px of breathing room!
+  const availH = Math.max(200, maxBottom - startY);
+
+  // Determine Columns: 'auto' | '1' | '2' | '3'
+  let numCols = 2;
+  if (state.mesa.columns === '1') {
+    numCols = 1;
+  } else if (state.mesa.columns === '2') {
+    numCols = 2;
+  } else if (state.mesa.columns === '3') {
+    numCols = 3;
+  } else {
+    // Auto mode: choose optimal columns so cards fit and fill vertical space
+    // <= 8 subjects: 1 column
+    // <= 22 subjects: 2 columns
+    // > 22 subjects: 3 columns (e.g. 45 subjects in 15 rows fit in 1 story)
+    numCols = pageCasillas.length <= 8 ? 1 : (pageCasillas.length <= 22 ? 2 : 3);
+  }
+
+  if (numCols === 1) {
+    // Single Column Layout (Clean full-width cards with adaptive height & typography)
+    const count = pageCasillas.length;
+    const cardW = Math.round(940 * scale);
+    const cardX = Math.round((width - cardW) / 2);
+
+    let targetGap = count <= 5 ? 18 : (count <= 8 ? 14 : 10);
+    const gapY = targetGap * scale;
+    const maxCardH = 125 * scale;
+    const rawH = Math.floor((availH - (count - 1) * gapY) / count);
+    const cardH = Math.max(76 * scale, Math.min(maxCardH, rawH));
+
+    const totalBlockH = (count - 1) * gapY + count * cardH;
+    const extraH = availH - totalBlockH;
+    if (extraH > 30 && extraH < 500) {
+      startY += Math.round(Math.min(180, extraH * 0.25));
+    }
+
+    pageCasillas.forEach((c, i) => {
+      const cardY = startY + i * (cardH + gapY);
+      const espColor = getCarreraColor(c.esp);
+
+      // Card Shadow & White Background
+      context.save();
+      context.shadowColor = 'rgba(0, 0, 0, 0.22)';
+      context.shadowBlur = 10 * scale;
+      context.shadowOffsetY = 4 * scale;
+      context.fillStyle = '#ffffff';
+      roundRect(context, cardX, cardY, cardW, cardH, 16 * scale);
+      context.fill();
+      context.restore();
+
+      // Left Color Accent Strip
+      context.save();
+      context.fillStyle = espColor;
+      roundRect(context, cardX, cardY, 8 * scale, cardH, 4 * scale);
+      context.fill();
+      context.restore();
+
+      // Badge Especialidad (ISI, IC, etc.)
+      const pillH = Math.min(38 * scale, Math.max(26 * scale, Math.round(cardH * 0.36)));
+      const pillY = cardY + Math.round((cardH - pillH) / 2);
+      const pillX = cardX + Math.round(22 * scale);
+
+      context.save();
+      const espFontSize = Math.min(20 * scale, Math.max(14 * scale, Math.round(pillH * 0.55)));
+      context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
+      const espText = (c.esp || 'ISI').toUpperCase();
+      const espTextW = context.measureText(espText).width;
+      const pillW = Math.max(Math.round(65 * scale), espTextW + Math.round(20 * scale));
+
+      context.fillStyle = espColor;
+      roundRect(context, pillX, pillY, pillW, pillH, 8 * scale);
+      context.fill();
+
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(espText, pillX + pillW / 2, pillY + pillH / 2);
+      context.restore();
+
+      // Badge Aula
+      const aulaX = pillX + pillW + Math.round(14 * scale);
+      context.save();
+      const aulaFontSize = Math.min(18 * scale, Math.max(13 * scale, Math.round(pillH * 0.52)));
+      context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
+      const aulaText = `AULA ${c.aula || 'TBA'}`.toUpperCase();
+      const aulaTextW = context.measureText(aulaText).width;
+      const aulaPillW = aulaTextW + Math.round(22 * scale);
+
+      context.fillStyle = '#f3e8ff';
+      roundRect(context, aulaX, pillY, aulaPillW, pillH, 8 * scale);
+      context.fill();
+
+      context.fillStyle = '#4c1575';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(aulaText, aulaX + aulaPillW / 2, pillY + pillH / 2);
+      context.restore();
+
+      // Horario (Right aligned - BIG & BOLD)
+      const horaPillW = Math.round(155 * scale);
+      const horaX = cardX + cardW - horaPillW - Math.round(20 * scale);
+
+      context.save();
+      context.fillStyle = '#faf5ff';
+      context.strokeStyle = '#d8b4fe';
+      context.lineWidth = 1.5 * scale;
+      roundRect(context, horaX, pillY, horaPillW, pillH, 8 * scale);
+      context.fill();
+      context.stroke();
+
+      context.fillStyle = '#4a044e';
+      const horaFontSize = Math.min(22 * scale, Math.max(16 * scale, Math.round(cardH * 0.25)));
+      context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(`⏰ ${c.hora || '18:00'} hs`, horaX + horaPillW / 2, pillY + pillH / 2);
+      context.restore();
+
+      // Materia Name (Middle text)
+      const textLeft = aulaX + aulaPillW + Math.round(18 * scale);
+      const textMaxW = horaX - textLeft - Math.round(16 * scale);
+
+      context.save();
+      context.fillStyle = '#0f0322';
+      const materiaFontSize = Math.min(26 * scale, Math.max(18 * scale, Math.round(cardH * 0.28)));
+      context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+
+      let materiaStr = c.materia || 'Materia';
+      while (context.measureText(materiaStr).width > textMaxW && materiaStr.length > 3) {
+        materiaStr = materiaStr.slice(0, -2).trim();
+      }
+      if (materiaStr !== c.materia) materiaStr += '...';
+
+      context.fillText(materiaStr, textLeft, cardY + cardH / 2);
+      context.restore();
+    });
+  } else if (numCols === 3) {
+    // 3-Column Grid Layout (Optimized for 45 subjects in 1 story, and adapts for fewer)
+    const rows = Math.ceil(pageCasillas.length / 3);
+    
+    // Adaptive gaps & card height
+    let targetGap;
+    if (rows <= 5) targetGap = 16;
+    else if (rows <= 8) targetGap = 12;
+    else if (rows <= 11) targetGap = 8;
+    else if (rows <= 13) targetGap = 6;
+    else targetGap = 4;
+    const gapY = targetGap * scale;
+
+    const gapX = Math.round(12 * scale);
+    const cardW = Math.round(314 * scale);
+    const totalColsW = 3 * cardW + 2 * gapX;
+    const col0X = Math.round((width - totalColsW) / 2);
+    const col1X = col0X + cardW + gapX;
+    const col2X = col1X + cardW + gapX;
+
+    const maxCardH = 100 * scale;
+    const rawH = Math.floor((availH - (rows - 1) * gapY) / rows);
+    const cardH = Math.max(52 * scale, Math.min(maxCardH, rawH));
+
+    const totalBlockH = (rows - 1) * gapY + rows * cardH;
+    const extraH = availH - totalBlockH;
+    if (extraH > 30 && extraH < 500) {
+      startY += Math.round(Math.min(180, extraH * 0.25));
+    }
+
+    pageCasillas.forEach((c, i) => {
+      const col = i % 3;
+      const row = Math.floor(i / 3);
+      const cardX = col === 0 ? col0X : (col === 1 ? col1X : col2X);
+      const cardY = startY + row * (cardH + gapY);
+      const espColor = getCarreraColor(c.esp);
+
+      // Card Background & Drop Shadow
+      context.save();
+      context.shadowColor = 'rgba(0, 0, 0, 0.20)';
+      context.shadowBlur = Math.max(4, Math.round(6 * scale));
+      context.shadowOffsetY = Math.max(1, Math.round(2 * scale));
+      context.fillStyle = '#ffffff';
+      roundRect(context, cardX, cardY, cardW, cardH, Math.max(6, Math.round(10 * scale)));
+      context.fill();
+      context.restore();
+
+      // Left Accent Strip
+      context.save();
+      context.fillStyle = espColor;
+      roundRect(context, cardX, cardY, Math.max(4, Math.round(5 * scale)), cardH, 3 * scale);
+      context.fill();
+      context.restore();
+
+      // --- ROW 1: Materia Name (HERO TEXT - Prominent & Bold) ---
+      const materiaX = cardX + Math.max(8, Math.round(10 * scale));
+      const materiaY = cardY + Math.round(cardH * 0.32);
+      const materiaMaxW = cardW - Math.max(14, Math.round(18 * scale));
+      const materiaFontSize = Math.min(21 * scale, Math.max(13 * scale, Math.round(cardH * 0.255)));
+
+      context.save();
+      context.fillStyle = '#0f0322';
+      context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+
+      let materiaStr = c.materia || 'Materia';
+      while (context.measureText(materiaStr).width > materiaMaxW && materiaStr.length > 3) {
+        materiaStr = materiaStr.slice(0, -2).trim();
+      }
+      if (materiaStr !== c.materia) materiaStr += '...';
+
+      context.fillText(materiaStr, materiaX, materiaY);
+      context.restore();
+
+      // --- ROW 2: Especialidad + Aula + Horario ---
+      const bottomCenterY = cardY + cardH - Math.round(cardH * 0.30);
+      const pillH = Math.min(24 * scale, Math.max(18 * scale, Math.round(cardH * 0.34)));
+      const pillY = bottomCenterY - Math.round(pillH / 2);
+
+      // Esp Pill
+      const espX = materiaX;
+      context.save();
+      const espFontSize = Math.min(13.5 * scale, Math.max(10.5 * scale, Math.round(pillH * 0.58)));
+      context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
+      const espText = (c.esp || 'ISI').toUpperCase();
+      const espW = context.measureText(espText).width + Math.max(7, Math.round(9 * scale));
+      context.fillStyle = espColor;
+      roundRect(context, espX, pillY, espW, pillH, Math.max(4, Math.round(5 * scale)));
+      context.fill();
+
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(espText, espX + espW / 2, bottomCenterY);
+      context.restore();
+
+      // Aula Pill
+      const aulaX = espX + espW + Math.max(4, Math.round(5 * scale));
+      context.save();
+      const aulaFontSize = Math.min(13 * scale, Math.max(10 * scale, Math.round(pillH * 0.55)));
+      context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
+      const aulaText = `${c.aula || 'TBA'}`;
+      const aulaW = context.measureText(aulaText).width + Math.max(8, Math.round(10 * scale));
+      context.fillStyle = '#f3e8ff';
+      roundRect(context, aulaX, pillY, aulaW, pillH, Math.max(4, Math.round(5 * scale)));
+      context.fill();
+
+      context.fillStyle = '#4c1575';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(aulaText, aulaX + aulaW / 2, bottomCenterY);
+      context.restore();
+
+      // Horario (Right aligned)
+      const horaRightX = cardX + cardW - Math.max(6, Math.round(8 * scale));
+      const horaFontSize = Math.min(17 * scale, Math.max(13 * scale, Math.round(cardH * 0.255)));
+      context.save();
+      context.fillStyle = '#4a044e';
+      context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'right';
+      context.textBaseline = 'middle';
+      context.fillText(`⏰ ${c.hora || '18:00'}`, horaRightX, bottomCenterY);
+      context.restore();
+    });
+  } else {
+    // 2-Column Grid Layout (Optimized for maximum readability and visual breathing space)
+    const rows = Math.ceil(pageCasillas.length / 2);
+    
+    // Adaptive gaps & card height
+    let targetGap;
+    if (rows <= 5) targetGap = 18;
+    else if (rows <= 8) targetGap = 14;
+    else if (rows <= 11) targetGap = 10;
+    else if (rows <= 14) targetGap = 6;
+    else targetGap = 4;
+    const gapY = targetGap * scale;
+
+    const gapX = Math.round(20 * scale);
+    const cardW = Math.round(472 * scale);
+    const col0X = Math.round(54 * scale);
+    const col1X = col0X + cardW + gapX;
+
+    const maxCardH = 120 * scale;
+    const rawH = Math.floor((availH - (rows - 1) * gapY) / rows);
+    const cardH = Math.max(50 * scale, Math.min(maxCardH, rawH));
+
+    const totalBlockH = (rows - 1) * gapY + rows * cardH;
+    const extraH = availH - totalBlockH;
+    if (extraH > 30 && extraH < 500) {
+      startY += Math.round(Math.min(180, extraH * 0.25));
+    }
+
+    pageCasillas.forEach((c, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const cardX = col === 0 ? col0X : col1X;
+      const cardY = startY + row * (cardH + gapY);
+      const espColor = getCarreraColor(c.esp);
+
+      // Card Background & Drop Shadow
+      context.save();
+      context.shadowColor = 'rgba(0, 0, 0, 0.20)';
+      context.shadowBlur = Math.max(4, Math.round(8 * scale));
+      context.shadowOffsetY = Math.max(2, Math.round(3 * scale));
+      context.fillStyle = '#ffffff';
+      roundRect(context, cardX, cardY, cardW, cardH, Math.max(8, Math.round(14 * scale)));
+      context.fill();
+      context.restore();
+
+      // Left Accent Strip
+      context.save();
+      context.fillStyle = espColor;
+      roundRect(context, cardX, cardY, Math.max(4, Math.round(6 * scale)), cardH, 3 * scale);
+      context.fill();
+      context.restore();
+
+      // --- ROW 1: Materia Name (HERO TEXT - Prominent & Bold) ---
+      const materiaX = cardX + Math.max(12, Math.round(15 * scale));
+      const materiaY = cardY + Math.round(cardH * 0.32);
+      const materiaMaxW = cardW - Math.max(20, Math.round(26 * scale));
+      const materiaFontSize = Math.min(24 * scale, Math.max(15 * scale, Math.round(cardH * 0.26)));
+
+      context.save();
+      context.fillStyle = '#0f0322';
+      context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'left';
+      context.textBaseline = 'middle';
+
+      let materiaStr = c.materia || 'Materia';
+      while (context.measureText(materiaStr).width > materiaMaxW && materiaStr.length > 3) {
+        materiaStr = materiaStr.slice(0, -2).trim();
+      }
+      if (materiaStr !== c.materia) materiaStr += '...';
+
+      context.fillText(materiaStr, materiaX, materiaY);
+      context.restore();
+
+      // --- ROW 2: Especialidad + Aula + BIG Horario ---
+      const bottomCenterY = cardY + cardH - Math.round(cardH * 0.29);
+      const pillH = Math.min(28 * scale, Math.max(20 * scale, Math.round(cardH * 0.32)));
+      const pillY = bottomCenterY - Math.round(pillH / 2);
+
+      // Esp Pill
+      const espX = materiaX;
+      context.save();
+      const espFontSize = Math.min(15 * scale, Math.max(11 * scale, Math.round(pillH * 0.58)));
+      context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
+      const espText = (c.esp || 'ISI').toUpperCase();
+      const espW = context.measureText(espText).width + Math.max(12, Math.round(15 * scale));
+      context.fillStyle = espColor;
+      roundRect(context, espX, pillY, espW, pillH, Math.max(5, Math.round(6 * scale)));
+      context.fill();
+
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(espText, espX + espW / 2, bottomCenterY);
+      context.restore();
+
+      // Aula Pill
+      const aulaX = espX + espW + Math.max(6, Math.round(8 * scale));
+      context.save();
+      const aulaFontSize = Math.min(14.5 * scale, Math.max(10.5 * scale, Math.round(pillH * 0.55)));
+      context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
+      const aulaText = `Aula ${c.aula || 'TBA'}`;
+      const aulaW = context.measureText(aulaText).width + Math.max(12, Math.round(15 * scale));
+      context.fillStyle = '#f3e8ff';
+      roundRect(context, aulaX, pillY, aulaW, pillH, Math.max(5, Math.round(6 * scale)));
+      context.fill();
+
+      context.fillStyle = '#4c1575';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(aulaText, aulaX + aulaW / 2, bottomCenterY);
+      context.restore();
+
+      // Horario (Right aligned - BIG & BOLD)
+      const horaRightX = cardX + cardW - Math.max(10, Math.round(14 * scale));
+      const horaFontSize = Math.min(21 * scale, Math.max(15 * scale, Math.round(cardH * 0.25)));
+      context.save();
+      context.fillStyle = '#4a044e';
+      context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
+      context.textAlign = 'right';
+      context.textBaseline = 'middle';
+      context.fillText(`⏰ ${c.hora || '18:00'} hs`, horaRightX, bottomCenterY);
+      context.restore();
+    });
   }
 }
 
 /**
- * Universal Block-Based Renderer (used for INFO and MESA DE EXAMEN)
+ * Universal Block-Based Renderer (used for INFO)
  * Supports title, multi-badge list, and body with independent position & scale per block
  */
 function renderBlockBasedContent(context, width, height, data) {
   const { title, titleY = 0, titleScale = 1.0, hasBadge, badges, body, bodyY = 0, bodyScale = 1.0, align, yOffset, scale } = data;
 
-  let currentY = 530 + yOffset;
+  const titleLines = (title || '').split('\n').filter(l => l.trim().length > 0);
+  const effectiveTitleScale = scale * titleScale;
+  const titleFontSize = Math.round(68 * effectiveTitleScale);
+  const titleLineHeight = Math.round(titleFontSize * 1.22);
+  const titleH = titleLines.length > 0 ? (titleLines.length * titleLineHeight + Math.round(40 * scale)) : 0;
 
-  // --- 1. Title Rendering ---
-  if (title && title.trim()) {
-    const titleLines = title.split('\n');
-    const effectiveTitleScale = scale * titleScale;
-    const titleFontSize = Math.round(68 * effectiveTitleScale);
-    const titleLineHeight = Math.round(titleFontSize * 1.22);
-    let titleCursorY = currentY + titleY;
+  const validBadges = (hasBadge && badges && badges.length > 0)
+    ? badges.filter(b => (b.val && b.val.trim()) || (b.sub && b.sub.trim()))
+    : [];
+  const badgesH = validBadges.length > 0 ? (validBadges.length * Math.round(118 * scale) + Math.round(20 * scale)) : 0;
 
-    context.save();
-    context.fillStyle = '#ffffff';
-    context.textBaseline = 'alphabetic';
-    context.font = `800 ${titleFontSize}px "Montserrat", sans-serif`;
+  const paragraphs = (body || '').split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
+  const bodyMarginX = Math.round(158 * scale);
+  const bodyMaxWidth = width - (bodyMarginX * 2);
+  const effectiveBodyScale = scale * bodyScale;
+  const headerFontSize = Math.round(38 * effectiveBodyScale);
+  const bodyFontSize = Math.round(34 * effectiveBodyScale);
+  const bodyLineHeight = Math.round(bodyFontSize * 1.38);
 
-    for (let i = 0; i < titleLines.length; i++) {
-      const line = titleLines[i].trim();
-      if (!line) continue;
-      drawTextWithSpacing(context, line, 540, titleCursorY, 1.2, 'center');
-      titleCursorY += titleLineHeight;
-    }
-    context.restore();
+  const paraHeights = paragraphs.map(p => {
+    const colonIndex = p.indexOf(':');
+    let hasHdr = (colonIndex > 0 && colonIndex < 35 && !p.slice(0, colonIndex).includes('\n'));
+    let remText = hasHdr ? p.slice(colonIndex + 1).trim() : p;
+    let lines = wrapTextLines(context, remText, bodyMaxWidth);
+    let h = (hasHdr ? Math.round(headerFontSize * 1.4) : 0) + (lines.length * bodyLineHeight) + Math.round(35 * effectiveBodyScale);
+    return { p, hasHdr, headerText: hasHdr ? p.slice(0, colonIndex + 1).trim() : '', remText, lines, h };
+  });
 
-    currentY = Math.max(currentY + titleLines.length * titleLineHeight, titleCursorY) + Math.round(45 * scale);
+  const totalBodyH = paraHeights.reduce((acc, ph) => acc + ph.h, 0);
+  const totalContentH = titleH + badgesH + totalBodyH;
+
+  // Multi-story split check: available safe height is ~980px
+  let totalPages = 1;
+  if (totalContentH > 960 || (paragraphs.length >= 3 && totalContentH > 880)) {
+    totalPages = 2;
   }
 
-  // --- 2. Multiple Badges (Bloques Destacados) ---
-  if (hasBadge && badges && badges.length > 0) {
-    const validBadges = badges.filter(b => (b.val && b.val.trim()) || (b.sub && b.sub.trim()));
+  state.pagination.info.totalPages = totalPages;
+  const currentPage = Math.min(Math.max(1, state.pagination.info.currentPage || 1), totalPages);
+  state.pagination.info.currentPage = currentPage;
 
-    for (let i = 0; i < validBadges.length; i++) {
-      const badge = validBadges[i];
-      const effectiveBadgeScale = scale * (badge.scale || 1.0);
-      const badgeHeight = Math.round(86 * effectiveBadgeScale);
-      const badgeY = currentY + (badge.yOffset || 0);
+  let currentY = (totalPages > 1 ? 528 : 530) + yOffset;
 
-      // Measure badge text to auto-fit pill width
+  // Draw Page Badge if multi-story
+  if (totalPages > 1) {
+    drawPageBadge(context, currentPage, totalPages, 'COMUNICADO');
+  }
+
+  // --- Story 1 ---
+  if (totalPages === 1 || currentPage === 1) {
+    // 1. Title Rendering
+    if (titleLines.length > 0) {
+      let titleCursorY = currentY + titleY;
       context.save();
-      const badgeFontSize = Math.round(46 * effectiveBadgeScale);
-      context.font = `800 ${badgeFontSize}px "Montserrat", sans-serif`;
-      const valText = (badge.val || '').trim();
-      const measuredBadgeTextWidth = context.measureText(valText).width;
-
-      const badgeWidth = Math.max(Math.round(210 * effectiveBadgeScale), measuredBadgeTextWidth + Math.round(48 * effectiveBadgeScale));
-      const badgeX = Math.round(135 * effectiveBadgeScale);
-      const badgeRadius = Math.round(20 * effectiveBadgeScale);
-      const borderWidth = Math.round(5.5 * effectiveBadgeScale);
-
-      // Draw rounded outline capsule
-      context.strokeStyle = '#ffffff';
-      context.lineWidth = borderWidth;
-      roundRect(context, badgeX, badgeY, badgeWidth, badgeHeight, badgeRadius);
-      context.stroke();
-
-      // Draw text inside capsule
       context.fillStyle = '#ffffff';
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.fillText(valText, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + (2 * effectiveBadgeScale));
+      context.textBaseline = 'alphabetic';
+      context.font = `800 ${titleFontSize}px "Montserrat", sans-serif`;
+
+      for (let i = 0; i < titleLines.length; i++) {
+        const line = titleLines[i].trim();
+        if (!line) continue;
+        drawTextWithSpacing(context, line, 540, titleCursorY, 1.2, 'center');
+        titleCursorY += titleLineHeight;
+      }
       context.restore();
 
-      // Draw Subtitle beside capsule
-      if (badge.sub && badge.sub.trim()) {
+      currentY = Math.max(currentY + titleLines.length * titleLineHeight, titleCursorY) + Math.round(45 * scale);
+    }
+
+    // 2. Badges
+    if (validBadges.length > 0) {
+      for (let i = 0; i < validBadges.length; i++) {
+        const badge = validBadges[i];
+        const effectiveBadgeScale = scale * (badge.scale || 1.0);
+        const badgeHeight = Math.round(86 * effectiveBadgeScale);
+        const badgeY = currentY + (badge.yOffset || 0);
+
         context.save();
-        const subFontSize = Math.round(36 * effectiveBadgeScale);
-        const subLineHeight = Math.round(subFontSize * 1.25);
-        context.font = `700 ${subFontSize}px "Montserrat", sans-serif`;
+        const badgeFontSize = Math.round(46 * effectiveBadgeScale);
+        context.font = `800 ${badgeFontSize}px "Montserrat", sans-serif`;
+        const valText = (badge.val || '').trim();
+        const measuredBadgeTextWidth = context.measureText(valText).width;
+
+        const badgeWidth = Math.max(Math.round(210 * effectiveBadgeScale), measuredBadgeTextWidth + Math.round(48 * effectiveBadgeScale));
+        const badgeX = Math.round(135 * effectiveBadgeScale);
+        const badgeRadius = Math.round(20 * effectiveBadgeScale);
+        const borderWidth = Math.round(5.5 * effectiveBadgeScale);
+
+        context.strokeStyle = '#ffffff';
+        context.lineWidth = borderWidth;
+        roundRect(context, badgeX, badgeY, badgeWidth, badgeHeight, badgeRadius);
+        context.stroke();
+
         context.fillStyle = '#ffffff';
-        context.textBaseline = 'top';
-
-        const subLines = badge.sub.split('\n');
-        const totalSubHeight = subLines.length * subLineHeight;
-        let subY = badgeY + (badgeHeight - totalSubHeight) / 2 + (2 * effectiveBadgeScale);
-        const subX = badgeX + badgeWidth + Math.round(36 * effectiveBadgeScale);
-
-        for (const line of subLines) {
-          drawTextWithSpacing(context, line.trim(), subX, subY, 0.5, 'left');
-          subY += subLineHeight;
-        }
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(valText, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + (2 * effectiveBadgeScale));
         context.restore();
-      }
 
-      // Increment Y coordinate for next element
-      currentY = badgeY + badgeHeight + Math.round(32 * scale);
-    }
+        if (badge.sub && badge.sub.trim()) {
+          context.save();
+          const subFontSize = Math.round(36 * effectiveBadgeScale);
+          const subLineHeight = Math.round(subFontSize * 1.25);
+          context.font = `700 ${subFontSize}px "Montserrat", sans-serif`;
+          context.fillStyle = '#ffffff';
+          context.textBaseline = 'top';
 
-    currentY += Math.round(20 * scale);
-  }
+          const subLines = badge.sub.split('\n');
+          const totalSubHeight = subLines.length * subLineHeight;
+          let subY = badgeY + (badgeHeight - totalSubHeight) / 2 + (2 * effectiveBadgeScale);
+          const subX = badgeX + badgeWidth + Math.round(36 * effectiveBadgeScale);
 
-  // --- 3. Body Text & Paragraphs ---
-  if (body && body.trim()) {
-    context.save();
-    const effectiveBodyScale = scale * bodyScale;
-    let bodyCursorY = currentY + bodyY;
-
-    const bodyMarginX = Math.round(158 * scale);
-    const bodyMaxWidth = width - (bodyMarginX * 2);
-    const bodyCenterX = 540;
-
-    const paragraphs = body.split(/\n\s*\n/);
-
-    for (let p = 0; p < paragraphs.length; p++) {
-      const paragraph = paragraphs[p].trim();
-      if (!paragraph) continue;
-
-      const colonIndex = paragraph.indexOf(':');
-      let headerText = '';
-      let remainingText = paragraph;
-
-      if (colonIndex > 0 && colonIndex < 35 && !paragraph.slice(0, colonIndex).includes('\n')) {
-        headerText = paragraph.slice(0, colonIndex + 1).trim();
-        remainingText = paragraph.slice(colonIndex + 1).trim();
-      }
-
-      // Draw Section Header (Bold)
-      if (headerText) {
-        const headerFontSize = Math.round(38 * effectiveBodyScale);
-        context.font = `800 ${headerFontSize}px "Montserrat", sans-serif`;
-        context.fillStyle = '#ffffff';
-        context.textBaseline = 'alphabetic';
-
-        const hX = align === 'center' ? bodyCenterX : bodyMarginX;
-        drawTextWithSpacing(context, headerText, hX, bodyCursorY + headerFontSize, 0.8, align);
-        bodyCursorY += Math.round(headerFontSize * 1.4);
-      }
-
-      // Draw Paragraph Body
-      if (remainingText) {
-        const bodyFontSize = Math.round(34 * effectiveBodyScale);
-        const bodyLineHeight = Math.round(bodyFontSize * 1.38);
-        context.font = `500 ${bodyFontSize}px "Montserrat", sans-serif`;
-        context.fillStyle = '#ffffff';
-        context.textAlign = align === 'center' ? 'center' : 'left';
-        context.textBaseline = 'alphabetic';
-
-        const lines = wrapTextLines(context, remainingText, bodyMaxWidth);
-        for (const line of lines) {
-          const lineX = align === 'center' ? bodyCenterX : bodyMarginX;
-          context.fillText(line, lineX, bodyCursorY + bodyFontSize);
-          bodyCursorY += bodyLineHeight;
+          for (const line of subLines) {
+            drawTextWithSpacing(context, line.trim(), subX, subY, 0.5, 'left');
+            subY += subLineHeight;
+          }
+          context.restore();
         }
-      }
 
-      bodyCursorY += Math.round(35 * effectiveBodyScale);
+        currentY = badgeY + badgeHeight + Math.round(32 * scale);
+      }
+      currentY += Math.round(20 * scale);
     }
 
-    context.restore();
+    // 3. Body: if totalPages == 1, render all. If totalPages == 2, render first paragraph
+    const parasToRender = totalPages === 1 ? paraHeights : paraHeights.slice(0, 1);
+    if (parasToRender.length > 0) {
+      let bodyCursorY = currentY + bodyY;
+      const bodyCenterX = 540;
+
+      for (let p = 0; p < parasToRender.length; p++) {
+        const item = parasToRender[p];
+        if (bodyCursorY + item.h > SAFE_BOUNDS.BOTTOM - 20) break;
+
+        if (item.headerText) {
+          context.save();
+          context.font = `800 ${headerFontSize}px "Montserrat", sans-serif`;
+          context.fillStyle = '#ffffff';
+          context.textBaseline = 'alphabetic';
+          const hX = align === 'center' ? bodyCenterX : bodyMarginX;
+          drawTextWithSpacing(context, item.headerText, hX, bodyCursorY + headerFontSize, 0.8, align);
+          bodyCursorY += Math.round(headerFontSize * 1.4);
+          context.restore();
+        }
+
+        if (item.lines && item.lines.length > 0) {
+          context.save();
+          context.font = `500 ${bodyFontSize}px "Montserrat", sans-serif`;
+          context.fillStyle = '#ffffff';
+          context.textAlign = align === 'center' ? 'center' : 'left';
+          context.textBaseline = 'alphabetic';
+
+          for (const line of item.lines) {
+            const lineX = align === 'center' ? bodyCenterX : bodyMarginX;
+            context.fillText(line, lineX, bodyCursorY + bodyFontSize);
+            bodyCursorY += bodyLineHeight;
+          }
+          context.restore();
+        }
+
+        bodyCursorY += Math.round(35 * effectiveBodyScale);
+      }
+    }
+  } else {
+    // --- Story 2 (Continuation) ---
+    // Title continuation header
+    if (titleLines.length > 0) {
+      let titleCursorY = currentY + titleY;
+      context.save();
+      const contFontSize = Math.round(titleFontSize * 0.85);
+      const contLineH = Math.round(contFontSize * 1.22);
+      context.fillStyle = '#ffffff';
+      context.textBaseline = 'alphabetic';
+      context.font = `800 ${contFontSize}px "Montserrat", sans-serif`;
+
+      for (let i = 0; i < Math.min(2, titleLines.length); i++) {
+        const line = titleLines[i].trim();
+        drawTextWithSpacing(context, line, 540, titleCursorY, 1.2, 'center');
+        titleCursorY += contLineH;
+      }
+      context.restore();
+
+      currentY = titleCursorY + Math.round(40 * scale);
+    }
+
+    // Remaining paragraphs (from index 1 onward)
+    const parasToRender = paraHeights.slice(1);
+    if (parasToRender.length > 0) {
+      let bodyCursorY = currentY + bodyY;
+      const bodyCenterX = 540;
+
+      for (let p = 0; p < parasToRender.length; p++) {
+        const item = parasToRender[p];
+        if (bodyCursorY + item.h > SAFE_BOUNDS.BOTTOM - 20) break;
+
+        if (item.headerText) {
+          context.save();
+          context.font = `800 ${headerFontSize}px "Montserrat", sans-serif`;
+          context.fillStyle = '#ffffff';
+          context.textBaseline = 'alphabetic';
+          const hX = align === 'center' ? bodyCenterX : bodyMarginX;
+          drawTextWithSpacing(context, item.headerText, hX, bodyCursorY + headerFontSize, 0.8, align);
+          bodyCursorY += Math.round(headerFontSize * 1.4);
+          context.restore();
+        }
+
+        if (item.lines && item.lines.length > 0) {
+          context.save();
+          context.font = `500 ${bodyFontSize}px "Montserrat", sans-serif`;
+          context.fillStyle = '#ffffff';
+          context.textAlign = align === 'center' ? 'center' : 'left';
+          context.textBaseline = 'alphabetic';
+
+          for (const line of item.lines) {
+            const lineX = align === 'center' ? bodyCenterX : bodyMarginX;
+            context.fillText(line, lineX, bodyCursorY + bodyFontSize);
+            bodyCursorY += bodyLineHeight;
+          }
+          context.restore();
+        }
+
+        bodyCursorY += Math.round(35 * effectiveBodyScale);
+      }
+    }
   }
 }
 
@@ -1535,11 +2418,26 @@ function renderBlockBasedContent(context, width, height, data) {
 function renderParoContent(context, width, height) {
   const { days, format, hasLine, gremium, status, extra, yOffset, scale } = state.paro;
 
-  let currentY = 570 + yOffset;
-
   const validDays = (days && days.length > 0) 
     ? days.filter(d => (d.day && d.day.trim()) || (d.date && d.date.trim())) 
     : [];
+
+  // Multi-story check for PARO
+  let totalPages = 1;
+  if (validDays.length > 4 || (validDays.length >= 2 && ((status || '').length + (extra || '').length > 200))) {
+    totalPages = 2;
+  }
+
+  state.pagination.paro.totalPages = totalPages;
+  const currentPage = Math.min(Math.max(1, state.pagination.paro.currentPage || 1), totalPages);
+  state.pagination.paro.currentPage = currentPage;
+
+  let currentY = (totalPages > 1 ? 528 : 570) + yOffset;
+
+  // Draw Page Badge if multi-story
+  if (totalPages > 1) {
+    drawPageBadge(context, currentPage, totalPages, 'PARO ANUNCIADO');
+  }
 
   if (validDays.length === 0) {
     currentY += 100;
@@ -1555,7 +2453,6 @@ function renderParoContent(context, width, height) {
       const d1 = validDays[0].date.trim();
       const d2 = validDays[1].date.trim();
       if (d1.includes('/') && d2.includes('/') && d1.split('/')[1] === d2.split('/')[1]) {
-        // e.g. "14  Y  16/10" with clean readable spacing
         dateText = `${d1.split('/')[0]}  Y  ${d2}`;
       } else {
         dateText = `${d1}  Y  ${d2}`;
@@ -1564,7 +2461,6 @@ function renderParoContent(context, width, height) {
       const dayNames = validDays.map(d => d.day.trim().toUpperCase());
       const lastDay = dayNames.pop();
       dayText = `${dayNames.join(', ')} Y ${lastDay}`;
-      // Separate multiple dates with spaces
       dateText = validDays.map(d => d.date.trim()).join('   ');
     }
 
@@ -1663,6 +2559,7 @@ function renderParoContent(context, width, height) {
 
     const statusLines = wrapTextLines(context, status.trim(), 840);
     for (const sLine of statusLines) {
+      if (currentY + statusFontSize > SAFE_BOUNDS.BOTTOM - 10) break;
       context.fillText(sLine, 540, currentY + statusFontSize);
       currentY += statusLineHeight;
     }
@@ -1682,6 +2579,7 @@ function renderParoContent(context, width, height) {
 
     const extraLines = wrapTextLines(context, extra.trim(), 840);
     for (const eLine of extraLines) {
+      if (currentY + extraFontSize > SAFE_BOUNDS.BOTTOM - 10) break;
       context.fillText(eLine, 540, currentY + extraFontSize);
       currentY += extraLineHeight;
     }
@@ -1797,19 +2695,25 @@ function updateCaption() {
       caption += `${state.info.body.trim()}\n\n`;
     }
   } else if (state.currentMode === 'mesa') {
-    const title = (state.mesa.title || '').replace(/\n/g, ' ').trim() || 'MESAS DE EXAMEN';
-    caption = `📅 MESA DE EXAMEN | ${title}\n\n`;
+    if (!state.mesa.hasLoadedData || !state.mesa.casillas || state.mesa.casillas.length === 0) {
+      dom.captionPreviewText.textContent = 'Esperando planilla de exámenes para generar el texto...';
+      return;
+    }
+    const filterTxt = state.mesa.filterEsp === 'TODAS' ? 'TODAS LAS ESPECIALIDADES' : `ESPECIALIDAD ${state.mesa.filterEsp}`;
+    const dateLine = state.mesa.date && state.mesa.date.trim() ? `🗓️ FECHA: ${state.mesa.date.trim()}\n` : '';
+    caption = `📋 MESA DE EXAMEN | UTN FRRO\n${dateLine}📍 DISTRIBUCIÓN DE AULAS Y HORARIOS (${filterTxt})\n\n`;
 
-    if (state.mesa.hasBadge && state.mesa.badges && state.mesa.badges.length > 0) {
-      state.mesa.badges.forEach(b => {
-        if (b.val || b.sub) {
-          caption += `🗓️ ${b.val.trim()} - ${(b.sub || '').replace(/\n/g, ' ').trim()}\n`;
-        }
+    const activeCasillas = (state.mesa.casillas || []).filter(c => {
+      if (c.enabled === false) return false;
+      if (state.mesa.filterEsp === 'TODAS') return true;
+      return (c.esp || '').toUpperCase().trim() === state.mesa.filterEsp.toUpperCase();
+    });
+
+    if (activeCasillas.length > 0) {
+      activeCasillas.forEach(c => {
+        caption += `• [${c.esp}] ${c.materia} ➔ Aula ${c.aula} (${c.hora} hs)\n`;
       });
       caption += '\n';
-    }
-    if (state.mesa.body) {
-      caption += `${state.mesa.body.trim()}\n\n`;
     }
   } else {
     const validDays = state.paro.days.filter(d => d.day.trim() || d.date.trim());
@@ -1866,15 +2770,23 @@ function fallbackCopy(text) {
 // Export & Share (Instagram Stories)
 // ============================================================================
 function downloadHighResStory() {
+  const currentMode = state.currentMode;
+  if (currentMode === 'mesa' && (!state.mesa.hasLoadedData || !state.mesa.casillas || state.mesa.casillas.length === 0)) {
+    showToast('Primero debes cargar una planilla de examen', true);
+    return;
+  }
+  const pag = state.pagination[currentMode] || { currentPage: 1, totalPages: 1 };
+  const pageStr = pag.totalPages > 1 ? `-parte${pag.currentPage}-de-${pag.totalPages}` : '';
+
   let filename = '';
-  if (state.currentMode === 'info') {
-    filename = `story-info-upl-${Date.now().toString().slice(-4)}.png`;
-  } else if (state.currentMode === 'mesa') {
-    filename = `story-mesa-examen-upl-${Date.now().toString().slice(-4)}.png`;
+  if (currentMode === 'info') {
+    filename = `story-info-upl${pageStr}-${Date.now().toString().slice(-4)}.png`;
+  } else if (currentMode === 'mesa') {
+    filename = `story-mesa-examen-upl${pageStr}-${Date.now().toString().slice(-4)}.png`;
   } else {
     const firstDay = state.paro.days[0] || { date: 'paro' };
     const dateStr = firstDay.date ? firstDay.date.replace('/', '-') : Date.now().toString().slice(-4);
-    filename = `story-paro-upl-${dateStr}.png`;
+    filename = `story-paro-upl${pageStr}-${dateStr}.png`;
   }
 
   dom.canvas.toBlob((blob) => {
@@ -1890,8 +2802,63 @@ function downloadHighResStory() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showToast('¡Historia HD descargada! Lista para subir a Instagram 🚀');
+    showToast(`¡Historia HD ${pag.totalPages > 1 ? `(Parte ${pag.currentPage}/${pag.totalPages}) ` : ''}descargada! 🚀`);
   }, 'image/png');
+}
+
+async function downloadAllPages() {
+  const currentMode = state.currentMode;
+  if (currentMode === 'mesa' && (!state.mesa.hasLoadedData || !state.mesa.casillas || state.mesa.casillas.length === 0)) {
+    showToast('Primero debes cargar una planilla de examen', true);
+    return;
+  }
+  const pag = state.pagination[currentMode] || { currentPage: 1, totalPages: 1 };
+  const totalPages = pag.totalPages || 1;
+  const originalPage = pag.currentPage || 1;
+
+  if (totalPages <= 1) {
+    downloadHighResStory();
+    return;
+  }
+
+  showToast(`Descargando las ${totalPages} historias HD en resolución completa... ⏳`);
+
+  for (let p = 1; p <= totalPages; p++) {
+    state.pagination[currentMode].currentPage = p;
+    if (currentMode === 'mesa') state.mesa.currentPage = p;
+    drawCanvasContent();
+    await new Promise(r => setTimeout(r, 150));
+    await downloadSinglePagePromise(p, totalPages, currentMode);
+    await new Promise(r => setTimeout(r, 450));
+  }
+
+  // Restore previous active page state
+  state.pagination[currentMode].currentPage = originalPage;
+  if (currentMode === 'mesa') state.mesa.currentPage = originalPage;
+  drawCanvasContent();
+  updateStoryPartsUI();
+  showToast(`¡Las ${totalPages} historias HD fueron descargadas con éxito! 🚀`);
+}
+
+function downloadSinglePagePromise(pageNum, totalPages, mode) {
+  return new Promise((resolve) => {
+    let modeLabel = mode === 'mesa' ? 'mesa-examen' : (mode === 'info' ? 'info' : 'paro');
+    const filename = `story-${modeLabel}-parte${pageNum}-de-${totalPages}-upl-${Date.now().toString().slice(-4)}.png`;
+    dom.canvas.toBlob((blob) => {
+      if (!blob) { resolve(); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        resolve();
+      }, 120);
+    }, 'image/png');
+  });
 }
 
 async function shareStory() {
@@ -1926,26 +2893,6 @@ async function shareStory() {
       showToast('Descargando imagen y copiando texto para Instagram 📲');
     }
   }, 'image/png');
-}
-
-// ============================================================================
-// Reference Comparison Tool
-// ============================================================================
-function toggleReferenceOverlay() {
-  state.isComparing = !state.isComparing;
-  dom.btnToggleRef.classList.toggle('active', state.isComparing);
-
-  if (state.isComparing) {
-    updateReferenceOverlayImage();
-    dom.refOverlay.classList.remove('hidden');
-    showToast('Modo comparación activo (superposición)');
-  } else {
-    dom.refOverlay.classList.add('hidden');
-  }
-}
-
-function updateReferenceOverlayImage() {
-  dom.refOverlay.src = state.currentMode === 'paro' ? './paro-output-ref.png' : './info-output-ref.png';
 }
 
 // ============================================================================
