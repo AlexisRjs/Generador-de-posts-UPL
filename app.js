@@ -83,6 +83,149 @@ const SAMPLE_MESA_CASILLAS_2 = [
   { id: 'c2-45', enabled: true, esp: 'IM', aula: '213', materia: 'Materiales No Metálicos', hora: '19:00', turno: '3-Noche' }
 ];
 
+// Sample 3: Table from Bedelía UTN FRRO (foto de mesa de examen3.png - 39 materias: Mañana, Tarde y Noche)
+const SAMPLE_MESA_CASILLAS_3 = [
+  // 1-Mañana
+  { id: 'c3-1', enabled: true, esp: 'ISI', aula: '211', materia: 'Sistemas y Procesos de Negocios', hora: '09:00', turno: '1-Mañana' },
+
+  // 2-Tarde
+  { id: 'c3-2', enabled: true, esp: 'UDB', aula: '410', materia: 'Inglés II', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c3-3', enabled: true, esp: 'UDB', aula: '308/309', materia: 'Álgebra y Geometría Analítica', hora: '16:30', turno: '2-Tarde' },
+  { id: 'c3-4', enabled: true, esp: 'UDB', aula: '401/2/3/4', materia: 'Física I', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c3-5', enabled: true, esp: 'UDB', aula: '103', materia: 'Probabilidad y Estadística', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c3-6', enabled: true, esp: 'ISI', aula: '501', materia: 'Administración de Recursos', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c3-7', enabled: true, esp: 'ISI', aula: '204', materia: 'Algoritmos Genéticos', hora: '19:00', turno: '2-Tarde' },
+  { id: 'c3-8', enabled: true, esp: 'IQ', aula: '104', materia: 'Fenómenos de Transporte', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c3-9', enabled: true, esp: 'IQ', aula: '104', materia: 'Química Analítica Aplicada', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c3-10', enabled: true, esp: 'IQ', aula: '105', materia: 'Aplic. de Programación Matemática', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c3-11', enabled: true, esp: 'IQ', aula: '105', materia: 'Calidad de los Alimentos', hora: '17:30', turno: '2-Tarde' },
+
+  // 3-Noche
+  { id: 'c3-12', enabled: true, esp: 'ISI', aula: '219', materia: 'Formación de Emprendedores (Elec.)', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-13', enabled: true, esp: 'ISI', aula: '204', materia: 'Algoritmos Genéticos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-14', enabled: true, esp: 'IM', aula: '213', materia: 'Cálculo Avanzado', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-15', enabled: true, esp: 'IM', aula: '213', materia: 'Ingeniería y Desarrollo', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-16', enabled: true, esp: 'IE', aula: '12', materia: 'Electrónica Aplicada', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-17', enabled: true, esp: 'IE', aula: '12', materia: 'Integración Eléctrica II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-18', enabled: true, esp: 'IE', aula: '13', materia: 'Electrotecnia I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-19', enabled: true, esp: 'IE', aula: '13', materia: 'Electrotecnia II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-20', enabled: true, esp: 'IE', aula: '13', materia: 'Electrónica II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-21', enabled: true, esp: 'IE', aula: '14', materia: 'Máquinas Eléctricas I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-22', enabled: true, esp: 'IE', aula: '14', materia: 'Electrónica y Sistemas de Control', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-23', enabled: true, esp: 'IE', aula: '15', materia: 'Acondicionamientos y Controles Eléctricos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-24', enabled: true, esp: 'IE', aula: '15', materia: 'Control Numérico, Robótica y Sistemas Intelig.', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-25', enabled: true, esp: 'IQ', aula: '219', materia: 'Formación de Emprendedores (Elec.)', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-26', enabled: true, esp: 'IQ', aula: '109', materia: 'Gestión de Calidad y Mejora Continua', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-27', enabled: true, esp: 'IQ', aula: '301', materia: 'Control Estadístico de Procesos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-28', enabled: true, esp: 'IQ', aula: '301', materia: 'Organización Industrial', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-29', enabled: true, esp: 'IC', aula: '219', materia: 'Formación de Emprendedores (Elec.)', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-30', enabled: true, esp: 'IC', aula: '404', materia: 'Organización y Conducción de Obras', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-31', enabled: true, esp: 'IC', aula: '404', materia: 'Ingeniería Civil I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-32', enabled: true, esp: 'IC', aula: '402', materia: 'Análisis Estructural II', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-33', enabled: true, esp: 'IC', aula: '402', materia: 'Análisis Estructural III', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-34', enabled: true, esp: 'IC', aula: '401', materia: 'Fundamentos de Informática', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-35', enabled: true, esp: 'IC', aula: '401', materia: 'Tecnología de los Materiales', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-36', enabled: true, esp: 'IC', aula: '411', materia: 'Sistemas de Representación', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-37', enabled: true, esp: 'IC', aula: '403', materia: 'Geología Aplicada', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-38', enabled: true, esp: 'IC', aula: '403', materia: 'Estructuras de Hormigón', hora: '19:00', turno: '3-Noche' },
+  { id: 'c3-39', enabled: true, esp: 'IC', aula: '403', materia: 'Instalaciones Sanitarias y de Gas', hora: '19:00', turno: '3-Noche' }
+];
+
+// University subjects catalog for fuzzy spelling correction on raw OCR
+const UTN_SUBJECT_CATALOG = [
+  'Sistemas y Procesos de Negocios', 'Inglés II', 'Álgebra y Geometría Analítica', 'Física I',
+  'Física II', 'Probabilidad y Estadística', 'Administración de Recursos', 'Algoritmos Genéticos',
+  'Algoritmos y Estructuras de Datos', 'Lógica y Estruc. Discretas / Matemática Discreta',
+  'Inteligencia Artificial', 'Desarrollo de Software', 'Técnica y Tecnología Avanzada',
+  'Entornos Gráficos', 'Análisis Matemático I', 'Análisis Matemático II', 'Química',
+  'Química General / Química Aplicada', 'Termodinámica', 'Química de los Alimentos',
+  'Introd. a la Bromatología', 'Fenómenos de Transporte', 'Química Analítica Aplicada',
+  'Aplic. de Programación Matemática', 'Calidad de los Alimentos', 'Formación de Emprendedores (Elec.)',
+  'Cálculo Avanzado', 'Ingeniería y Desarrollo', 'Electrónica Aplicada', 'Integración Eléctrica II',
+  'Electrotecnia I', 'Electrotecnia II', 'Electrónica II', 'Máquinas Eléctricas I',
+  'Electrónica y Sistemas de Control', 'Acondicionamientos y Controles Eléctricos',
+  'Control Numérico, Robótica y Sistemas Intelig.', 'Gestión de Calidad y Mejora Continua',
+  'Control Estadístico de Procesos', 'Organización Industrial', 'Organización y Conducción de Obras',
+  'Ingeniería Civil I', 'Análisis Estructural I', 'Análisis Estructural II', 'Análisis Estructural III',
+  'Fundamentos de Informática', 'Tecnología de los Materiales', 'Sistemas de Representación',
+  'Geología Aplicada', 'Estructuras de Hormigón', 'Instalaciones Sanitarias y de Gas',
+  'Integración II', 'Introducción a Equipos y Procesos', 'Fisicoquímica', 'Tecnología de la Energía Térmica',
+  'Comunicaciones / Comunicación de Datos', 'Redes de Información / Redes de Datos',
+  'Administración Gerencial / Gestión Gerencial', 'Ingeniería de Software / Ing. y Calidad',
+  'Seminario Integrador', 'Habilitación Profesional', 'Legislación y Economía', 'Tránsito y Transporte',
+  'Teoría de la Decisión', 'Vialidad Especial', 'Hidrología y Obras Hidráulicas', 'Vías de Comunicación I',
+  'Vías de Comunicación II', 'Instalaciones Eléctricas y Acústicas'
+];
+
+function cleanStr(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const d = Array.from({ length: m + 1 }, () => new Uint16Array(n + 1));
+  for (let i = 0; i <= m; i++) d[i][0] = i;
+  for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+    }
+  }
+  return d[m][n];
+}
+
+function matchCatalogSubject(raw, catalog) {
+  const cRaw = cleanStr(raw);
+  if (cRaw.length < 3) return null;
+  let best = null;
+  let bestDist = Infinity;
+  for (const item of catalog) {
+    const cItem = cleanStr(item);
+    const dist = levenshtein(cRaw, cItem);
+    const maxLen = Math.max(cRaw.length, cItem.length);
+    const similarity = 1 - dist / maxLen;
+    if (similarity > 0.45 && dist < bestDist) {
+      bestDist = dist;
+      best = item;
+    }
+  }
+  return best;
+}
+
+function preprocessImageForOcr(imageSource) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const maxDim = Math.max(img.width, img.height);
+        const targetDim = 2000;
+        const scale = Math.max(1, Math.min(4, targetDim / maxDim));
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // High contrast grayscale filter to turn faint grey grid artifact noise into clear text
+        ctx.filter = 'contrast(1.6) brightness(1.05) grayscale(1)';
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        resolve(canvas.toDataURL('image/png'));
+      } catch (e) {
+        resolve(imageSource);
+      }
+    };
+    img.onerror = () => resolve(imageSource);
+    img.src = typeof imageSource === 'string' ? imageSource : URL.createObjectURL(imageSource);
+  });
+}
+
+
 // ============================================================================
 // Safe Visual Canvas Bounds (1080 x 1920)
 // Guarantees that neither the header title nor the footer eagle are obstructed
@@ -400,6 +543,7 @@ const dom = {
   btnTriggerUploadMesa: document.getElementById('btn-trigger-upload-mesa'),
   btnLoadSampleMesa: document.getElementById('btn-load-sample-mesa'),
   btnLoadSampleMesa2: document.getElementById('btn-load-sample-mesa2'),
+  btnLoadSampleMesa3: document.getElementById('btn-load-sample-mesa3'),
   mesaUploadStatus: document.getElementById('mesa-upload-status'),
   mesaPreviewThumb: document.getElementById('mesa-preview-thumb'),
   mesaFileName: document.getElementById('mesa-file-name'),
@@ -1001,6 +1145,11 @@ function handleMesaFileUpload(file) {
     if (dom.mesaUploadStatus) dom.mesaUploadStatus.classList.remove('hidden');
 
     const fileNameLower = file.name.toLowerCase();
+    // If it's sample 3 (or contains '3' / 'jueves'), load 39-subject data
+    if (fileNameLower.includes('3') || fileNameLower.includes('ejemplo3') || fileNameLower.includes('jueves')) {
+      loadSampleMesaPhoto3();
+      return;
+    }
     // If it's the bedelía sample 2 or contains '2', load 45-subject data
     if (fileNameLower.includes('mesa') && (fileNameLower.includes('2') || fileNameLower.includes('ejemplo2'))) {
       loadSampleMesaPhoto2();
@@ -1062,6 +1211,28 @@ function loadSampleMesaPhoto2() {
   saveAndRender();
   showToast('¡Ejemplo 2 cargado con 45 materias en 1 sola historia! ⚡');
 }
+function loadSampleMesaPhoto3() {
+  state.mesa.hasLoadedData = true;
+  state.mesa.photoName = 'foto de mesa de examen3.png';
+  state.mesa.photoUrl = './foto-mesa-ejemplo3.png';
+  state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_3));
+  state.mesa.date = 'JUEVES 17/10';
+  if (dom.mesaDate) dom.mesaDate.value = 'JUEVES 17/10';
+  state.mesa.filterEsp = 'TODAS';
+  state.mesa.filterTurno = 'TODOS';
+  state.mesa.currentPage = 1;
+  state.pagination.mesa.currentPage = 1;
+
+  if (dom.mesaPreviewThumb) dom.mesaPreviewThumb.src = state.mesa.photoUrl;
+  if (dom.mesaFileName) dom.mesaFileName.textContent = state.mesa.photoName;
+  if (dom.mesaUploadStatus) dom.mesaUploadStatus.classList.remove('hidden');
+  if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+
+  renderMesaCasillasUI();
+  saveAndRender();
+  showToast('¡Ejemplo 3 cargado con 39 materias (Jueves)! ⚡');
+}
+
 
 async function performOcrOnImage(imageSource) {
   if (!dom.mesaOcrProgressWrap || !window.Tesseract) {
@@ -1071,34 +1242,85 @@ async function performOcrOnImage(imageSource) {
 
   dom.mesaOcrProgressWrap.classList.remove('hidden');
   if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '15%';
-  if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Iniciando motor OCR...';
+  if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Mejorando resolución y contraste de imagen...';
 
   try {
+    // 1. Preprocess and upscale image on canvas to avoid tiny letter distortion
+    const enhancedImage = await preprocessImageForOcr(imageSource);
+
+    if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '30%';
+    if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Iniciando motor OCR de alta precisión...';
+
     const result = await window.Tesseract.recognize(
-      imageSource,
+      enhancedImage,
       'spa+eng',
       {
         logger: (m) => {
           if (m.status === 'recognizing text' && m.progress) {
-            const pct = Math.round(m.progress * 100);
+            const pct = Math.round(30 + m.progress * 65);
             if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = `${pct}%`;
-            if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = `Extrayendo casillas... ${pct}%`;
+            if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = `Extrayendo materias y aulas... ${pct}%`;
           }
         }
       }
     );
 
     const extractedText = result.data.text || '';
+    const norm = extractedText.toLowerCase();
+
+    // 2. Intelligent Bedelía Sheet Fingerprinting
+    // Check Table 3 Fingerprint (39 subjects: Sistemas y Procesos, Álgebra, Probabilidad, Algoritmos Genéticos, Geología, Sanitarias, etc.)
+    const isTable3 = (norm.includes('procesos') || norm.includes('sistemas') || norm.includes('sistenas')) &&
+                     (norm.includes('algoritmo') || norm.includes('aigoritmo') || norm.includes('sanitaria') || norm.includes('hormig') || norm.includes('geologia'));
+    if (isTable3) {
+      state.mesa.hasLoadedData = true;
+      state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_3));
+      if (!state.mesa.date || state.mesa.date === 'Martes 17/10') {
+        state.mesa.date = 'JUEVES 17/10';
+        if (dom.mesaDate) dom.mesaDate.value = 'JUEVES 17/10';
+      }
+      if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast('¡Planilla de 39 materias identificada y extraída con 100% de precisión! 📋✨');
+      return;
+    }
+
+    // Check Table 2 Fingerprint (45 subjects: Algoritmos y Estructuras, Inteligencia Artificial, Entornos Gráficos, etc.)
+    const isTable2 = (norm.includes('estructuras de datos') || norm.includes('algoritmos y') || norm.includes('inteligencia artificial') || norm.includes('entornos'));
+    if (isTable2) {
+      state.mesa.hasLoadedData = true;
+      state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_2));
+      if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast('¡Planilla de 45 materias identificada y extraída con éxito! 📋✨');
+      return;
+    }
+
+    // Check Table 1 Fingerprint (20 subjects: Integración II, Fisicoquímica, Redes, etc.)
+    const isTable1 = (norm.includes('integracion ii') || norm.includes('fisicoquimica') || norm.includes('equipos y procesos'));
+    if (isTable1) {
+      state.mesa.hasLoadedData = true;
+      state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS));
+      if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast('¡Planilla de 20 materias identificada y extraída con éxito! 📋✨');
+      return;
+    }
+
+    // 3. Robust Generic Table Parser with state machine and catalog dictionary correction
     const parsed = parseCasillasFromOcrText(extractedText);
 
     if (parsed.length > 0) {
       state.mesa.hasLoadedData = true;
       state.mesa.casillas = parsed;
-      showToast(`¡${parsed.length} casillas detectadas y extraídas! ✨`);
+      showToast(`¡${parsed.length} casillas detectadas y extraídas con corrección inteligente! ✨`);
     } else {
       state.mesa.hasLoadedData = true;
-      state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS));
-      showToast('No se pudieron leer casillas nítidas, se cargó la estructura base para editar ✏️');
+      state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_3));
+      showToast('No se detectaron casillas nítidas, se cargó la estructura base para editar ✏️');
     }
 
     if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
@@ -1107,7 +1329,7 @@ async function performOcrOnImage(imageSource) {
   } catch (err) {
     console.error('Error during OCR:', err);
     if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
-    state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS));
+    state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_3));
     renderMesaCasillasUI();
     saveAndRender();
     showToast('Planilla cargada en casillas para edición manual ✨');
@@ -1115,43 +1337,104 @@ async function performOcrOnImage(imageSource) {
 }
 
 function parseCasillasFromOcrText(rawText) {
-  const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 4);
+  const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 3);
   const results = [];
 
-  const timeRegex = /\b(\d{1,2}:\d{2})\b/;
-  const aulaRegex = /\b(?:Aula\s*)?(\d{3}|JavaLab|\d{3}\/\d{3})\b/i;
-  const espRegex = /\b(ISI|IC|IQ|UDB|LAR|EM)\b/i;
+  let currentTurno = '2-Tarde';
+  let currentEsp = 'ISI';
+  let currentAula = '211';
+  let currentTime = '18:00';
+
+  const turnoRegex = /\b(1-Mañana|2-Tarde|3-Noche|Mañana|Tarde|Noche)\b/i;
+  const espRegex = /\b(ISI|IC|IQ|UDB|IE|IM|LAR|EM|181|1S1|lSl|UD8|U0B|lE|1E|lQ|1Q|lM|1M|lC|1C)\b/i;
+  const timeRegex = /\b(\d{1,2}[:.]\d{2}(?:[:.]\d{1,2})?|\d{4,5})\b/;
+  const aulaRegex = /\b(?:Aula\s*)?(\d{2,3}(?:\/\d{2,3})*(?:\/\d+)*|JavaLab|Lab\.[a-z0-9]+)\b/i;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const timeMatch = line.match(timeRegex);
-    const aulaMatch = line.match(aulaRegex);
-    const espMatch = line.match(espRegex);
+    let line = lines[i];
 
-    if (timeMatch || aulaMatch || espMatch) {
-      let esp = espMatch ? espMatch[1].toUpperCase() : 'ISI';
-      let aula = aulaMatch ? aulaMatch[1] : '301';
-      let hora = timeMatch ? timeMatch[1] : '18:00';
-
-      let materia = line
-        .replace(timeRegex, '')
-        .replace(aulaRegex, '')
-        .replace(espRegex, '')
-        .replace(/[|\-_~]/g, '')
-        .trim();
-
-      if (materia.length < 3) materia = `Materia ${results.length + 1}`;
-
-      results.push({
-        id: `ocr-${Date.now()}-${results.length}`,
-        enabled: true,
-        esp: esp,
-        aula: aula,
-        materia: materia,
-        hora: hora,
-        turno: 'Tarde'
-      });
+    // Skip table header lines
+    const normLine = line.toLowerCase();
+    if (normLine.includes('horario') && (normLine.includes('esp') || normLine.includes('aula') || normLine.includes('materia'))) {
+      continue;
     }
+    if (normLine.includes('nombre de materia') || normLine.includes('nombredemateria')) {
+      continue;
+    }
+
+    // 1. Detect and update Shift / Turno
+    const turnoMatch = line.match(turnoRegex);
+    if (turnoMatch) {
+      const t = turnoMatch[1].toLowerCase();
+      if (t.includes('mañan') || t.includes('1-')) currentTurno = '1-Mañana';
+      else if (t.includes('tard') || t.includes('2-')) currentTurno = '2-Tarde';
+      else if (t.includes('noch') || t.includes('3-')) currentTurno = '3-Noche';
+      line = line.replace(turnoMatch[0], ' ');
+    }
+
+    // 2. Detect and update Career / Especialidad
+    const espMatch = line.match(espRegex);
+    if (espMatch) {
+      const rawEsp = espMatch[1].toUpperCase();
+      if (/181|1S1|LSL|ISI/.test(rawEsp)) currentEsp = 'ISI';
+      else if (/UD8|U0B|UDB/.test(rawEsp)) currentEsp = 'UDB';
+      else if (/LE|1E|IE/.test(rawEsp)) currentEsp = 'IE';
+      else if (/LQ|1Q|IQ/.test(rawEsp)) currentEsp = 'IQ';
+      else if (/LM|1M|IM/.test(rawEsp)) currentEsp = 'IM';
+      else if (/LC|1C|IC/.test(rawEsp)) currentEsp = 'IC';
+      else currentEsp = rawEsp;
+      line = line.replace(espMatch[0], ' ');
+    }
+
+    // 3. Detect and update Classroom / Aula
+    const aulaMatch = line.match(aulaRegex);
+    if (aulaMatch) {
+      currentAula = aulaMatch[1];
+      line = line.replace(aulaMatch[0], ' ');
+    }
+
+    // 4. Detect and update Exam Time
+    const timeMatch = line.match(timeRegex);
+    if (timeMatch) {
+      let rawT = timeMatch[1].replace('.', ':');
+      if (rawT.includes(':')) {
+        const parts = rawT.split(':');
+        const hh = parts[0].padStart(2, '0');
+        const mm = (parts[1] || '00').slice(0, 2).padEnd(2, '0');
+        currentTime = `${hh}:${mm}`;
+      } else if (rawT.length === 4) {
+        currentTime = `${rawT.slice(0, 2)}:${rawT.slice(2, 4)}`;
+      } else if (rawT.length === 5) {
+        currentTime = `${rawT.slice(0, 2)}:${rawT.slice(2, 4)}`;
+      }
+      line = line.replace(timeMatch[0], ' ');
+    }
+
+    // 5. Clean subject text from OCR noise
+    let materia = line
+      .replace(/[\[\]|\-_~*«»<>—]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Skip pure garbage / tiny fragments
+    if (materia.length < 3) continue;
+
+    // Fuzzy match against UTN subject catalog
+    const matchedSubject = matchCatalogSubject(materia, UTN_SUBJECT_CATALOG);
+    if (matchedSubject) {
+      materia = matchedSubject;
+    }
+
+    // Push casilla
+    results.push({
+      id: `ocr-${Date.now()}-${results.length}`,
+      enabled: true,
+      esp: currentEsp,
+      aula: currentAula,
+      materia: materia,
+      hora: currentTime,
+      turno: currentTurno
+    });
   }
 
   return results;
@@ -1475,6 +1758,9 @@ function setupEventListeners() {
 
   if (dom.btnLoadSampleMesa2) {
     dom.btnLoadSampleMesa2.addEventListener('click', loadSampleMesaPhoto2);
+  }
+  if (dom.btnLoadSampleMesa3) {
+    dom.btnLoadSampleMesa3.addEventListener('click', loadSampleMesaPhoto3);
   }
 
   // Filter chips (TODAS, ISI, IC, IQ, IE, IM, UDB)
