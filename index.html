@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>UPL Stories | Generador de Historias Instagram - UTN FRRO</title>
-  <meta name="description" content="Generador rápido de placas e historias oficiales para Instagram de Universitarios por la Libertad UTN FRRO. Plantillas automáticas de Aviso/Info y Paro Anunciado.">
+  <meta name="description"
+    content="Generador rápido de placas e historias oficiales para Instagram de Universitarios por la Libertad UTN FRRO. Plantillas automáticas de Aviso/Info y Paro Anunciado.">
   <meta name="theme-color" content="#1a0b2e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,17 +17,21 @@
   <!-- Google Fonts: Montserrat (Official UPL typography) & Plus Jakarta Sans (App UI) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
   <div id="app" class="app-layout">
     <!-- Top Header Bar -->
     <header class="app-header">
       <div class="header-brand">
         <div class="brand-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
           </svg>
         </div>
@@ -54,16 +61,20 @@
       </div>
     </header>
 
-    <!-- Template Selector Tabs (INFO vs PARO) -->
+    <!-- Template Selector Tabs (INFO vs PARO vs MESA) -->
     <div class="mode-selector-container">
       <div class="segmented-control" role="tablist">
         <button id="tab-info" class="segment-btn active" role="tab" aria-selected="true" data-mode="info">
           <span class="segment-emoji">🔔</span>
-          <span class="segment-label">Aviso / Info</span>
+          <span class="segment-label">Aviso / Importante</span>
         </button>
         <button id="tab-paro" class="segment-btn" role="tab" aria-selected="false" data-mode="paro">
           <span class="segment-emoji">🛑</span>
           <span class="segment-label">Paro Anunciado</span>
+        </button>
+        <button id="tab-mesa" class="segment-btn" role="tab" aria-selected="false" data-mode="mesa">
+          <span class="segment-emoji">📅</span>
+          <span class="segment-label">Mesa de Examen</span>
         </button>
       </div>
     </div>
@@ -91,8 +102,8 @@
     <main class="main-container">
       <!-- FORM COLUMN (Editor) -->
       <section id="editor-section" class="editor-pane active">
-        
-        <!-- ==================== FORMULARIO: INFO ==================== -->
+
+        <!-- ==================== FORMULARIO: INFO / AVISO ==================== -->
         <div id="form-info" class="form-mode-content active">
           <!-- Quick Presets Carousel -->
           <div class="section-card presets-card">
@@ -107,6 +118,30 @@
             </div>
           </div>
 
+          <!-- Selector de Plantilla: IMPORTANTE vs RECORDATORIO -->
+          <div class="section-card template-switch-card">
+            <div class="field-label-split" style="margin-bottom: 8px;">
+              <span class="field-label">Plantilla de Encabezado</span>
+              <span class="card-badge-chip">Diseño Oficial</span>
+            </div>
+            <div class="template-toggle-grid">
+              <button type="button" class="btn-template-pick active" data-mode="info" data-template="importante">
+                <div class="template-pick-indicator"></div>
+                <div class="template-pick-info">
+                  <span class="template-pick-badge">🔔 IMPORTANTE</span>
+                  <span class="template-pick-desc">Encabezado de aviso y comunicado</span>
+                </div>
+              </button>
+              <button type="button" class="btn-template-pick" data-mode="info" data-template="recordatorio">
+                <div class="template-pick-indicator"></div>
+                <div class="template-pick-info">
+                  <span class="template-pick-badge">⏰ RECORDATORIO</span>
+                  <span class="template-pick-desc">Encabezado con campana recordatorio</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
           <!-- Título Principal -->
           <div class="section-card">
             <div class="field-group">
@@ -114,34 +149,49 @@
                 <span>Título Principal</span>
                 <span class="label-hint">Mayúsculas automáticas</span>
               </label>
-              <textarea id="info-title" class="input-text title-input" rows="2" placeholder="MESAS ESPECIALES&#10;DE OCTUBRE"></textarea>
+              <textarea id="info-title" class="input-text title-input" rows="2"
+                placeholder="MESAS ESPECIALES&#10;DE OCTUBRE"></textarea>
+              
+              <!-- Ajustes individuales de posición y tamaño del título -->
+              <div class="block-fine-adjustments">
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Posición Y:</span>
+                  <input type="range" id="info-title-y" class="range-slider range-slider-sm" min="-120" max="120" value="0" step="2">
+                  <span id="info-title-y-val" class="slider-num-sm">0px</span>
+                </div>
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Tamaño:</span>
+                  <input type="range" id="info-title-scale" class="range-slider range-slider-sm" min="70" max="140" value="100" step="2">
+                  <span id="info-title-scale-val" class="slider-num-sm">100%</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Bloque Destacado (Badge + Subtítulo) -->
+          <!-- Bloques Destacados (Multi-bloque dinámico con ajustadores individuales) -->
           <div class="section-card">
-            <div class="card-switch-header">
-              <label class="switch-container">
-                <input type="checkbox" id="info-has-badge" checked>
-                <span class="switch-slider"></span>
-              </label>
-              <div class="switch-label-wrap">
-                <span class="field-label-inline">Bloque Destacado</span>
-                <span class="label-hint">Fecha en cápsula + subtítulo lateral</span>
+            <div class="field-label-split" style="margin-bottom: 8px;">
+              <div class="card-switch-header">
+                <label class="switch-container">
+                  <input type="checkbox" id="info-has-badge" checked>
+                  <span class="switch-slider"></span>
+                </label>
+                <div class="switch-label-wrap">
+                  <span class="field-label-inline">Bloques Destacados</span>
+                  <span class="label-hint">Cápsula de fecha + subtítulo lateral</span>
+                </div>
               </div>
+              <button type="button" id="btn-add-badge-info" class="btn-add-badge" title="Añadir otro bloque destacado">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Añadir Bloque</span>
+              </button>
             </div>
 
-            <div id="info-badge-fields" class="subfields-group">
-              <div class="badge-row">
-                <div class="field-item field-badge-text">
-                  <label for="info-badge-val" class="field-label-sm">Texto Cápsula</label>
-                  <input type="text" id="info-badge-val" class="input-text text-center font-bold" placeholder="5 AL 9">
-                </div>
-                <div class="field-item field-badge-sub">
-                  <label for="info-badge-subtitle" class="field-label-sm">Subtítulo Lateral</label>
-                  <textarea id="info-badge-subtitle" class="input-text font-bold" rows="2" placeholder="INSCRIPCIÓN AL PEDIDO&#10;DE MESA ESPECIAL"></textarea>
-                </div>
-              </div>
+            <div id="info-badges-container" class="badges-list-container">
+              <!-- Renderizado dinámicamente desde app.js -->
             </div>
           </div>
 
@@ -167,36 +217,54 @@
                   </button>
                 </div>
               </div>
-              <textarea id="info-body" class="input-text body-textarea" rows="6" placeholder="REQUISITOS:&#10;Tener cursada y regularizada toda la carrera, excepto Proyecto Final.&#10;&#10;Una vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito."></textarea>
+              <textarea id="info-body" class="input-text body-textarea" rows="6"
+                placeholder="REQUISITOS:&#10;Tener cursada y regularizada toda la carrera, excepto Proyecto Final.&#10;&#10;Una vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito."></textarea>
               <div class="helper-text">
-                💡 Los títulos que terminen con <code>:</code> (como <strong>REQUISITOS:</strong>) se destacan automáticamente en negrita.
+                💡 Los títulos que terminen con <code>:</code> (como <strong>REQUISITOS:</strong>) se destacan
+                automáticamente en negrita.
+              </div>
+
+              <!-- Ajustes individuales de posición y tamaño del cuerpo -->
+              <div class="block-fine-adjustments">
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Posición Y:</span>
+                  <input type="range" id="info-body-y" class="range-slider range-slider-sm" min="-120" max="120" value="0" step="2">
+                  <span id="info-body-y-val" class="slider-num-sm">0px</span>
+                </div>
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Tamaño:</span>
+                  <input type="range" id="info-body-scale" class="range-slider range-slider-sm" min="70" max="140" value="100" step="2">
+                  <span id="info-body-scale-val" class="slider-num-sm">100%</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Ajustes de Diseño / Fine-tuning -->
+          <!-- Ajustes Globales de Diseño / Fine-tuning -->
           <details class="section-card accordion-card">
             <summary class="accordion-summary">
               <span class="summary-title">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="3"></circle>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
                 </svg>
-                Ajustes Finos de Posición y Tamaño
+                Ajuste Global de Historia
               </span>
               <span class="chevron-icon">›</span>
             </summary>
             <div class="accordion-content">
               <div class="slider-group">
                 <div class="slider-header">
-                  <span>Posición Vertical</span>
+                  <span>Desplazamiento Global Y</span>
                   <span id="info-y-val" class="slider-num">0px</span>
                 </div>
                 <input type="range" id="info-y-offset" min="-180" max="180" value="0" step="5" class="range-slider">
               </div>
               <div class="slider-group">
                 <div class="slider-header">
-                  <span>Tamaño del Texto</span>
+                  <span>Escala Global</span>
                   <span id="info-scale-val" class="slider-num">100%</span>
                 </div>
                 <input type="range" id="info-scale" min="80" max="125" value="100" step="2" class="range-slider">
@@ -280,8 +348,10 @@
                   <span class="chip-check">✓</span> APUTN (No docente)
                 </button>
               </div>
-              <input type="text" id="paro-gremium" class="input-text font-bold" style="margin-top: 8px;" placeholder="APUTN (NO DOCENTE)">
-              <span class="helper-text">Puedes tocar uno o varios gremios para combinarlos, o escribir texto personalizado.</span>
+              <input type="text" id="paro-gremium" class="input-text font-bold" style="margin-top: 8px;"
+                placeholder="APUTN (NO DOCENTE)">
+              <span class="helper-text">Puedes tocar uno o varios gremios para combinarlos, o escribir texto
+                personalizado.</span>
             </div>
           </div>
 
@@ -303,7 +373,8 @@
                   ✖️ (Nada / Sin estado)
                 </button>
               </div>
-              <input type="text" id="paro-status" class="input-text" style="margin-top: 8px;" placeholder="Texto del estado...">
+              <input type="text" id="paro-status" class="input-text" style="margin-top: 8px;"
+                placeholder="Texto del estado...">
             </div>
           </div>
 
@@ -314,7 +385,8 @@
                 <span>Aclaración Adicional</span>
                 <span class="label-hint">Opcional</span>
               </label>
-              <input type="text" id="paro-extra" class="input-text" placeholder="Ej: Mesas de examen reprogramadas para el día...">
+              <input type="text" id="paro-extra" class="input-text"
+                placeholder="Ej: Mesas de examen reprogramadas para el día...">
             </div>
           </div>
 
@@ -324,7 +396,9 @@
               <span class="summary-title">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="3"></circle>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
                 </svg>
                 Ajustes Finos de Posición y Tamaño
               </span>
@@ -346,6 +420,154 @@
                 <input type="range" id="paro-scale" min="80" max="125" value="100" step="2" class="range-slider">
               </div>
               <button type="button" id="btn-reset-paro-adjustments" class="btn-text-action">Restablecer ajustes</button>
+            </div>
+          </details>
+        </div>
+
+        <!-- ==================== FORMULARIO: MESA DE EXAMEN ==================== -->
+        <div id="form-mesa" class="form-mode-content">
+          <!-- Quick Presets Carousel -->
+          <div class="section-card presets-card">
+            <div class="card-header-compact">
+              <span class="card-badge-chip">Cargar plantilla rápida de mesas</span>
+            </div>
+            <div class="chips-scroll">
+              <button type="button" class="preset-chip" data-preset="mesa-especial">📅 Mesas Especiales</button>
+              <button type="button" class="preset-chip" data-preset="mesa-inscripcion">📝 Inscripción Mesa</button>
+              <button type="button" class="preset-chip" data-preset="mesa-enganche">🔗 Fecha de Enganche</button>
+              <button type="button" class="preset-chip" data-preset="mesa-ordinario">🎓 Turno Ordinario</button>
+            </div>
+          </div>
+
+
+          <!-- Título Principal -->
+          <div class="section-card">
+            <div class="field-group">
+              <label for="mesa-title" class="field-label">
+                <span>Título Principal</span>
+                <span class="label-hint">Mayúsculas automáticas</span>
+              </label>
+              <textarea id="mesa-title" class="input-text title-input" rows="2"
+                placeholder="MESAS ESPECIALES&#10;DE OCTUBRE"></textarea>
+              
+              <!-- Ajuste de posición y tamaño individual del título -->
+              <div class="block-fine-adjustments">
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Posición Y:</span>
+                  <input type="range" id="mesa-title-y" class="range-slider range-slider-sm" min="-120" max="120" value="0" step="2">
+                  <span id="mesa-title-y-val" class="slider-num-sm">0px</span>
+                </div>
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Tamaño:</span>
+                  <input type="range" id="mesa-title-scale" class="range-slider range-slider-sm" min="70" max="140" value="100" step="2">
+                  <span id="mesa-title-scale-val" class="slider-num-sm">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloques Destacados (Multi-bloque dinámico con ajustadores individuales) -->
+          <div class="section-card">
+            <div class="field-label-split" style="margin-bottom: 8px;">
+              <div class="card-switch-header">
+                <label class="switch-container">
+                  <input type="checkbox" id="mesa-has-badge" checked>
+                  <span class="switch-slider"></span>
+                </label>
+                <div class="switch-label-wrap">
+                  <span class="field-label-inline">Bloques Destacados</span>
+                  <span class="label-hint">Cápsula de fecha + subtítulo lateral</span>
+                </div>
+              </div>
+              <button type="button" id="btn-add-badge-mesa" class="btn-add-badge" title="Añadir otro bloque destacado">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Añadir Bloque</span>
+              </button>
+            </div>
+
+            <div id="mesa-badges-container" class="badges-list-container">
+              <!-- Renderizado dinámicamente desde app.js -->
+            </div>
+          </div>
+
+          <!-- Cuerpo del Mensaje -->
+          <div class="section-card">
+            <div class="field-group">
+              <div class="field-label-split">
+                <label for="mesa-body" class="field-label">Cuerpo del Comunicado</label>
+                <div class="align-toggles" role="group" aria-label="Alineación">
+                  <button type="button" id="btn-align-left-mesa" class="align-btn active" title="Alinear a la izquierda">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="21" y1="6" x2="3" y2="6"></line>
+                      <line x1="15" y1="12" x2="3" y2="12"></line>
+                      <line x1="17" y1="18" x2="3" y2="18"></line>
+                    </svg>
+                  </button>
+                  <button type="button" id="btn-align-center-mesa" class="align-btn" title="Centrar texto">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="6"></line>
+                      <line x1="21" y1="12" x2="3" y2="12"></line>
+                      <line x1="18" y1="18" x2="6" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <textarea id="mesa-body" class="input-text body-textarea" rows="6"
+                placeholder="REQUISITOS:&#10;Tener cursada y regularizada toda la carrera, excepto Proyecto Final.&#10;&#10;Una vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito."></textarea>
+              <div class="helper-text">
+                💡 Los títulos que terminen con <code>:</code> (como <strong>REQUISITOS:</strong>) se destacan
+                automáticamente en negrita.
+              </div>
+
+              <!-- Ajuste de posición y tamaño individual del cuerpo -->
+              <div class="block-fine-adjustments">
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Posición Y:</span>
+                  <input type="range" id="mesa-body-y" class="range-slider range-slider-sm" min="-120" max="120" value="0" step="2">
+                  <span id="mesa-body-y-val" class="slider-num-sm">0px</span>
+                </div>
+                <div class="block-adjust-row">
+                  <span class="block-adjust-label">Tamaño:</span>
+                  <input type="range" id="mesa-body-scale" class="range-slider range-slider-sm" min="70" max="140" value="100" step="2">
+                  <span id="mesa-body-scale-val" class="slider-num-sm">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ajustes Generales de Diseño / Fine-tuning -->
+          <details class="section-card accordion-card">
+            <summary class="accordion-summary">
+              <span class="summary-title">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
+                </svg>
+                Ajuste Global de Historia
+              </span>
+              <span class="chevron-icon">›</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Desplazamiento Global Y</span>
+                  <span id="mesa-y-val" class="slider-num">0px</span>
+                </div>
+                <input type="range" id="mesa-y-offset" min="-180" max="180" value="0" step="5" class="range-slider">
+              </div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Escala Global</span>
+                  <span id="mesa-scale-val" class="slider-num">100%</span>
+                </div>
+                <input type="range" id="mesa-scale" min="80" max="125" value="100" step="2" class="range-slider">
+              </div>
+              <button type="button" id="btn-reset-mesa-adjustments" class="btn-text-action">Restablecer ajustes</button>
             </div>
           </details>
         </div>
@@ -378,7 +600,7 @@
             <div class="canvas-container">
               <!-- Live Canvas (Logical 1080x1920) -->
               <canvas id="output-canvas" width="1080" height="1920"></canvas>
-              
+
               <!-- Reference Overlay for Pixel Verification -->
               <img id="ref-overlay" class="reference-overlay hidden" alt="Referencia original">
 
@@ -411,7 +633,8 @@
     <!-- Floating / Sticky Bottom Action Bar -->
     <footer class="app-bottom-bar">
       <button id="btn-download" class="action-btn btn-primary" title="Descargar imagen en alta resolución">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3"
+          stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -420,7 +643,8 @@
       </button>
 
       <button id="btn-share" class="action-btn btn-secondary" title="Compartir directo a Instagram o WhatsApp">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3"
+          stroke-linecap="round" stroke-linejoin="round">
           <circle cx="18" cy="5" r="3"></circle>
           <circle cx="6" cy="12" r="3"></circle>
           <circle cx="18" cy="19" r="3"></circle>
@@ -440,4 +664,5 @@
 
   <script type="module" src="./app.js"></script>
 </body>
+
 </html>

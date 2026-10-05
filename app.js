@@ -7,31 +7,65 @@
 // State Management
 // ============================================================================
 const state = {
-  currentMode: 'paro', // Default to 'paro' as requested
+  currentMode: 'info', // 'info' | 'paro' | 'mesa'
   currentMobileView: 'edit', // 'edit' | 'preview'
   isComparing: false,
   fontLoaded: false,
 
   info: {
+    template: 'importante', // 'importante' | 'recordatorio'
     title: 'MESAS ESPECIALES\nDE OCTUBRE',
+    titleY: 0,
+    titleScale: 1.0,
     hasBadge: true,
-    badgeVal: '5 AL 9',
-    badgeSub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL',
+    badges: [
+      {
+        id: 'info-b1',
+        val: '5 AL 9',
+        sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL',
+        yOffset: 0,
+        scale: 1.0
+      }
+    ],
     body: 'REQUISITOS:\nTener cursada y regularizada toda la carrera, excepto Proyecto Final.\n\nUna vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito.',
+    bodyY: 0,
+    bodyScale: 1.0,
     align: 'left', // 'left' | 'center'
     yOffset: 0,
     scale: 1.0,
   },
 
+  mesa: {
+    template: 'mesa',
+    title: 'MESAS ESPECIALES\nDE OCTUBRE',
+    titleY: 0,
+    titleScale: 1.0,
+    hasBadge: true,
+    badges: [
+      {
+        id: 'mesa-b1',
+        val: '5 AL 9',
+        sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL',
+        yOffset: 0,
+        scale: 1.0
+      }
+    ],
+    body: 'REQUISITOS:\nTener cursada y regularizada toda la carrera, excepto Proyecto Final.\n\nUna vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito.',
+    bodyY: 0,
+    bodyScale: 1.0,
+    align: 'left',
+    yOffset: 0,
+    scale: 1.0,
+  },
+
   paro: {
-    // Array of days for multi-day support with "+" button
     days: [
       { day: 'MIÉRCOLES', date: '15/10' }
     ],
     format: 'combined', // 'combined' | 'stacked'
     hasLine: true,
-    gremium: 'FAGDUT', // Default gremium from requested options: FAGDUT, SIDUT, APUTN (No docente)
-    status: 'La facultad estará cerrada.', // Options: 'La facultad estará cerrada.', 'Consulta a tu docente.', 'Actividad normal.', ''
+    gremium: 'FAGDUT',
+    status: 'La facultad estará cerrada.',
     extra: '',
     yOffset: 0,
     scale: 1.0,
@@ -42,46 +76,140 @@ const state = {
 // Presets Data
 // ============================================================================
 const PRESETS = {
+  // INFO Presets
   'info-mesas': {
+    template: 'importante',
     title: 'MESAS ESPECIALES\nDE OCTUBRE',
+    titleY: 0,
+    titleScale: 1.0,
     hasBadge: true,
-    badgeVal: '5 AL 9',
-    badgeSub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL',
+    badges: [
+      { id: 'b-1', val: '5 AL 9', sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL', yOffset: 0, scale: 1.0 }
+    ],
     body: 'REQUISITOS:\nTener cursada y regularizada toda la carrera, excepto Proyecto Final.\n\nUna vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito.',
+    bodyY: 0,
+    bodyScale: 1.0,
     align: 'left',
     yOffset: 0,
     scale: 1.0
   },
   'info-inscripcion': {
+    template: 'importante',
     title: 'INSCRIPCIÓN\nA CURSADAS',
+    titleY: 0,
+    titleScale: 1.0,
     hasBadge: true,
-    badgeVal: 'SYSACAD',
-    badgeSub: 'APERTURA DE TURNOS\nDE MATRICULACIÓN',
+    badges: [
+      { id: 'b-1', val: 'SYSACAD', sub: 'APERTURA DE TURNOS\nDE MATRICULACIÓN', yOffset: 0, scale: 1.0 }
+    ],
     body: 'HORARIOS DE INSCRIPCIÓN:\nRevisá tu turno de prioridad académica ingresando a la plataforma institucional.\n\nPor inconvenientes con correlativas comunicarse con secretaría estudiantil.',
+    bodyY: 0,
+    bodyScale: 1.0,
     align: 'left',
     yOffset: 0,
     scale: 1.0
   },
   'info-reprogramacion': {
+    template: 'recordatorio',
     title: 'REPROGRAMACIÓN\nDE EXÁMENES',
+    titleY: 0,
+    titleScale: 1.0,
     hasBadge: true,
-    badgeVal: 'ATENCIÓN',
-    badgeSub: 'MODIFICACIÓN DE\nFECHAS OFICIALES',
+    badges: [
+      { id: 'b-1', val: 'ATENCIÓN', sub: 'MODIFICACIÓN DE\nFECHAS OFICIALES', yOffset: 0, scale: 1.0 }
+    ],
     body: 'Las mesas afectadas por medidas de fuerza se reprograman de acuerdo al nuevo cronograma establecido por decanato.\n\nConsultá el listado por carrera y cátedra en el enlace de la bio.',
+    bodyY: 0,
+    bodyScale: 1.0,
     align: 'left',
     yOffset: 0,
     scale: 1.0
   },
   'info-becas': {
+    template: 'importante',
     title: 'BECAS UTN\nCONVOCATORIA',
+    titleY: 0,
+    titleScale: 1.0,
     hasBadge: true,
-    badgeVal: 'POSTULATE',
-    badgeSub: 'AYUDA ECONÓMICA E\nINVESTIGACIÓN',
+    badges: [
+      { id: 'b-1', val: 'POSTULATE', sub: 'AYUDA ECONÓMICA E\nINVESTIGACIÓN', yOffset: 0, scale: 1.0 }
+    ],
     body: 'REQUISITOS:\nSer estudiante regular y presentar la documentación solicitada a través de secretaría de asuntos estudiantiles.\n\nFecha límite de presentación: 30 de octubre.',
+    bodyY: 0,
+    bodyScale: 1.0,
     align: 'left',
     yOffset: 0,
     scale: 1.0
   },
+
+  // MESA DE EXAMEN Presets
+  'mesa-especial': {
+    template: 'mesa',
+    title: 'MESAS ESPECIALES\nDE OCTUBRE',
+    titleY: 0,
+    titleScale: 1.0,
+    hasBadge: true,
+    badges: [
+      { id: 'm-1', val: '5 AL 9', sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL', yOffset: 0, scale: 1.0 }
+    ],
+    body: 'REQUISITOS:\nTener cursada y regularizada toda la carrera, excepto Proyecto Final.\n\nUna vez confirmadas las mesas, habrá una fecha de enganche, donde podrán anotarse quienes no cumplían el requisito.',
+    bodyY: 0,
+    bodyScale: 1.0,
+    align: 'left',
+    yOffset: 0,
+    scale: 1.0
+  },
+  'mesa-inscripcion': {
+    template: 'mesa',
+    title: 'INSCRIPCIÓN A\nMESAS DE EXAMEN',
+    titleY: 0,
+    titleScale: 1.0,
+    hasBadge: true,
+    badges: [
+      { id: 'm-1', val: 'SYSACAD', sub: 'REGISTRO HABILITADO\nEN EL PORTAL', yOffset: 0, scale: 1.0 }
+    ],
+    body: 'Recordá anotarte con al menos 48 horas hábiles de anticipación a la fecha del examen.\n\nVerificá en tu estado académico que figure el comprobante de inscripción emitido.',
+    bodyY: 0,
+    bodyScale: 1.0,
+    align: 'left',
+    yOffset: 0,
+    scale: 1.0
+  },
+  'mesa-enganche': {
+    template: 'mesa',
+    title: 'FECHAS DE ENGANCHE\nMESAS DE EXAMEN',
+    titleY: 0,
+    titleScale: 1.0,
+    hasBadge: true,
+    badges: [
+      { id: 'm-1', val: 'ATENCIÓN', sub: 'PERÍODO EXCEPCIONAL\nDE INSCRIPCIÓN', yOffset: 0, scale: 1.0 }
+    ],
+    body: 'Habilitado exclusivamente para estudiantes que regularizaron materias en el último llamado y necesitan rendir la correlativa inmediata.\n\nConsultá plazos y condiciones con secretaría estudiantil.',
+    bodyY: 0,
+    bodyScale: 1.0,
+    align: 'left',
+    yOffset: 0,
+    scale: 1.0
+  },
+  'mesa-ordinario': {
+    template: 'mesa',
+    title: 'TURNO ORDINARIO\nNOV / DIC',
+    titleY: 0,
+    titleScale: 1.0,
+    hasBadge: true,
+    badges: [
+      { id: 'm-1', val: 'LLAMADO 1', sub: 'DEL 25 AL 29 DE NOVIEMBRE', yOffset: 0, scale: 1.0 },
+      { id: 'm-2', val: 'LLAMADO 2', sub: 'DEL 9 AL 13 DE DICIEMBRE', yOffset: 0, scale: 1.0 }
+    ],
+    body: 'Cronograma oficial de exámenes finales para todas las especialidades de ingeniería.\n\nHorarios y aulas disponibles en la web de la facultad.',
+    bodyY: 0,
+    bodyScale: 1.0,
+    align: 'left',
+    yOffset: 0,
+    scale: 1.0
+  },
+
+  // PARO Presets
   'paro-aputn': {
     days: [{ day: 'MIÉRCOLES', date: '15/10' }],
     format: 'combined',
@@ -133,13 +261,6 @@ const BASE_GREMIOS = [
   'APUTN (NO DOCENTE)'
 ];
 
-const BASE_STATUSES = [
-  'La facultad estará cerrada.',
-  'Consulta a tu docente.',
-  'Actividad normal.',
-  ''
-];
-
 const DAYS_SEQUENCE = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
 
 // ============================================================================
@@ -149,8 +270,10 @@ const dom = {
   // Tabs & Views
   tabInfo: document.getElementById('tab-info'),
   tabParo: document.getElementById('tab-paro'),
+  tabMesa: document.getElementById('tab-mesa'),
   formInfo: document.getElementById('form-info'),
   formParo: document.getElementById('form-paro'),
+  formMesa: document.getElementById('form-mesa'),
   btnViewEdit: document.getElementById('btn-view-edit'),
   btnViewPreview: document.getElementById('btn-view-preview'),
   editorSection: document.getElementById('editor-section'),
@@ -162,11 +285,18 @@ const dom = {
 
   // Info Inputs
   infoTitle: document.getElementById('info-title'),
+  infoTitleY: document.getElementById('info-title-y'),
+  infoTitleYVal: document.getElementById('info-title-y-val'),
+  infoTitleScale: document.getElementById('info-title-scale'),
+  infoTitleScaleVal: document.getElementById('info-title-scale-val'),
   infoHasBadge: document.getElementById('info-has-badge'),
-  infoBadgeFields: document.getElementById('info-badge-fields'),
-  infoBadgeVal: document.getElementById('info-badge-val'),
-  infoBadgeSubtitle: document.getElementById('info-badge-subtitle'),
+  btnAddBadgeInfo: document.getElementById('btn-add-badge-info'),
+  infoBadgesContainer: document.getElementById('info-badges-container'),
   infoBody: document.getElementById('info-body'),
+  infoBodyY: document.getElementById('info-body-y'),
+  infoBodyYVal: document.getElementById('info-body-y-val'),
+  infoBodyScale: document.getElementById('info-body-scale'),
+  infoBodyScaleVal: document.getElementById('info-body-scale-val'),
   btnAlignLeft: document.getElementById('btn-align-left'),
   btnAlignCenter: document.getElementById('btn-align-center'),
   infoYOffset: document.getElementById('info-y-offset'),
@@ -174,6 +304,28 @@ const dom = {
   infoScale: document.getElementById('info-scale'),
   infoScaleVal: document.getElementById('info-scale-val'),
   btnResetInfoAdj: document.getElementById('btn-reset-info-adjustments'),
+
+  // Mesa Inputs
+  mesaTitle: document.getElementById('mesa-title'),
+  mesaTitleY: document.getElementById('mesa-title-y'),
+  mesaTitleYVal: document.getElementById('mesa-title-y-val'),
+  mesaTitleScale: document.getElementById('mesa-title-scale'),
+  mesaTitleScaleVal: document.getElementById('mesa-title-scale-val'),
+  mesaHasBadge: document.getElementById('mesa-has-badge'),
+  btnAddBadgeMesa: document.getElementById('btn-add-badge-mesa'),
+  mesaBadgesContainer: document.getElementById('mesa-badges-container'),
+  mesaBody: document.getElementById('mesa-body'),
+  mesaBodyY: document.getElementById('mesa-body-y'),
+  mesaBodyYVal: document.getElementById('mesa-body-y-val'),
+  mesaBodyScale: document.getElementById('mesa-body-scale'),
+  mesaBodyScaleVal: document.getElementById('mesa-body-scale-val'),
+  btnAlignLeftMesa: document.getElementById('btn-align-left-mesa'),
+  btnAlignCenterMesa: document.getElementById('btn-align-center-mesa'),
+  mesaYOffset: document.getElementById('mesa-y-offset'),
+  mesaYVal: document.getElementById('mesa-y-val'),
+  mesaScale: document.getElementById('mesa-scale'),
+  mesaScaleVal: document.getElementById('mesa-scale-val'),
+  btnResetMesaAdj: document.getElementById('btn-reset-mesa-adjustments'),
 
   // Paro Inputs
   btnAddDay: document.getElementById('btn-add-day'),
@@ -210,11 +362,15 @@ const ctx = dom.canvas.getContext('2d');
 // Image assets cache
 const assets = {
   infoTemplate: new Image(),
+  recordatorioTemplate: new Image(),
+  mesaTemplate: new Image(),
   paroTemplate: new Image(),
   infoRef: new Image(),
   paroRef: new Image(),
   loaded: {
     infoTemplate: false,
+    recordatorioTemplate: false,
+    mesaTemplate: false,
     paroTemplate: false
   }
 };
@@ -226,8 +382,10 @@ async function init() {
   loadSavedState();
   setupEventListeners();
   renderDaysInputs();
+  renderBadgesUI('info');
+  renderBadgesUI('mesa');
   syncFormToState();
-  
+
   // Show loading while fonts and assets load
   dom.canvasLoading.classList.remove('hidden');
 
@@ -240,7 +398,6 @@ async function init() {
   renderCanvas();
   updateCaption();
 
-  // Re-render when document fonts finish loading
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
       renderCanvas();
@@ -275,31 +432,46 @@ async function preloadFonts() {
  */
 function loadImages() {
   return new Promise((resolve) => {
-    let toLoad = 2;
+    let toLoad = 4;
     const checkDone = () => {
       toLoad--;
       if (toLoad <= 0) resolve();
     };
 
-    // Base template paths (with fallback to workspace files)
+    // 1. Info / Importante Template
     assets.infoTemplate.crossOrigin = 'anonymous';
     assets.infoTemplate.src = './info-template.png';
-    assets.infoTemplate.onload = () => {
-      assets.loaded.infoTemplate = true;
-      checkDone();
-    };
+    assets.infoTemplate.onload = () => { assets.loaded.infoTemplate = true; checkDone(); };
     assets.infoTemplate.onerror = () => {
       assets.infoTemplate.src = './INFO%20UPL.png';
       assets.infoTemplate.onload = () => { assets.loaded.infoTemplate = true; checkDone(); };
       assets.infoTemplate.onerror = () => checkDone();
     };
 
+    // 2. Recordatorio Template
+    assets.recordatorioTemplate.crossOrigin = 'anonymous';
+    assets.recordatorioTemplate.src = './recordatorio-template.png';
+    assets.recordatorioTemplate.onload = () => { assets.loaded.recordatorioTemplate = true; checkDone(); };
+    assets.recordatorioTemplate.onerror = () => {
+      assets.recordatorioTemplate.src = './RECORDATORIO%20UPL.png';
+      assets.recordatorioTemplate.onload = () => { assets.loaded.recordatorioTemplate = true; checkDone(); };
+      assets.recordatorioTemplate.onerror = () => checkDone();
+    };
+
+    // 3. Mesa de Examen Template
+    assets.mesaTemplate.crossOrigin = 'anonymous';
+    assets.mesaTemplate.src = './mesa-template.png';
+    assets.mesaTemplate.onload = () => { assets.loaded.mesaTemplate = true; checkDone(); };
+    assets.mesaTemplate.onerror = () => {
+      assets.mesaTemplate.src = './MESA%20DE%20EXAMEN%20UPL.png';
+      assets.mesaTemplate.onload = () => { assets.loaded.mesaTemplate = true; checkDone(); };
+      assets.mesaTemplate.onerror = () => checkDone();
+    };
+
+    // 4. Paro Template
     assets.paroTemplate.crossOrigin = 'anonymous';
     assets.paroTemplate.src = './paro-template.png';
-    assets.paroTemplate.onload = () => {
-      assets.loaded.paroTemplate = true;
-      checkDone();
-    };
+    assets.paroTemplate.onload = () => { assets.loaded.paroTemplate = true; checkDone(); };
     assets.paroTemplate.onerror = () => {
       assets.paroTemplate.src = './PARO%20UPL.png';
       assets.paroTemplate.onload = () => { assets.loaded.paroTemplate = true; checkDone(); };
@@ -312,7 +484,138 @@ function loadImages() {
 }
 
 // ============================================================================
-// Multi-Day UI Manager
+// Multi-Badge UI Manager (Dynamic Badges with individual Position & Scale)
+// ============================================================================
+function renderBadgesUI(mode) {
+  const container = mode === 'info' ? dom.infoBadgesContainer : dom.mesaBadgesContainer;
+  if (!container) return;
+
+  const data = state[mode];
+  container.innerHTML = '';
+
+  if (!data.badges || data.badges.length === 0) {
+    data.badges = [{ id: `${mode}-b1`, val: '', sub: '', yOffset: 0, scale: 1.0 }];
+  }
+
+  data.badges.forEach((badge, index) => {
+    const card = document.createElement('div');
+    card.className = 'badge-item-card';
+    card.dataset.badgeId = badge.id;
+
+    const yVal = badge.yOffset || 0;
+    const scalePercent = Math.round((badge.scale || 1.0) * 100);
+
+    card.innerHTML = `
+      <div class="badge-card-top">
+        <span class="badge-card-tag">Bloque ${index + 1}</span>
+        ${data.badges.length > 1 ? `<button type="button" class="btn-remove-badge" data-mode="${mode}" data-index="${index}" title="Eliminar este bloque">✕</button>` : ''}
+      </div>
+      <div class="badge-row">
+        <div class="field-item field-badge-text">
+          <label class="field-label-sm">Texto Cápsula</label>
+          <input type="text" class="input-text text-center font-bold input-badge-val" data-mode="${mode}" data-index="${index}" value="${badge.val || ''}" placeholder="5 AL 9">
+        </div>
+        <div class="field-item field-badge-sub">
+          <label class="field-label-sm">Subtítulo Lateral</label>
+          <textarea class="input-text font-bold input-badge-sub" data-mode="${mode}" data-index="${index}" rows="2" placeholder="INSCRIPCIÓN AL PEDIDO&#10;DE MESA ESPECIAL">${badge.sub || ''}</textarea>
+        </div>
+      </div>
+      <div class="block-fine-adjustments">
+        <div class="block-adjust-row">
+          <span class="block-adjust-label">Posición Y:</span>
+          <input type="range" class="range-slider range-slider-sm input-badge-y" data-mode="${mode}" data-index="${index}" min="-100" max="100" value="${yVal}" step="2">
+          <span class="slider-num-sm badge-y-indicator">${yVal}px</span>
+        </div>
+        <div class="block-adjust-row">
+          <span class="block-adjust-label">Tamaño:</span>
+          <input type="range" class="range-slider range-slider-sm input-badge-scale" data-mode="${mode}" data-index="${index}" min="70" max="140" value="${scalePercent}" step="2">
+          <span class="slider-num-sm badge-scale-indicator">${scalePercent}%</span>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  // Attach dynamic event listeners
+  attachBadgeEventListeners(mode, container);
+}
+
+function attachBadgeEventListeners(mode, container) {
+  // Capsule text input
+  container.querySelectorAll('.input-badge-val').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.index, 10);
+      state[mode].badges[idx].val = e.target.value.toUpperCase();
+      e.target.value = state[mode].badges[idx].val;
+      saveAndRender();
+    });
+  });
+
+  // Subtitle textarea
+  container.querySelectorAll('.input-badge-sub').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.index, 10);
+      state[mode].badges[idx].sub = e.target.value.toUpperCase();
+      saveAndRender();
+    });
+  });
+
+  // Badge Position Y slider
+  container.querySelectorAll('.input-badge-y').forEach(slider => {
+    slider.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.index, 10);
+      const val = parseInt(e.target.value, 10);
+      state[mode].badges[idx].yOffset = val;
+      const indicator = e.target.closest('.block-adjust-row').querySelector('.badge-y-indicator');
+      if (indicator) indicator.textContent = `${val}px`;
+      saveAndRender();
+    });
+  });
+
+  // Badge Scale slider
+  container.querySelectorAll('.input-badge-scale').forEach(slider => {
+    slider.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.index, 10);
+      const val = parseInt(e.target.value, 10);
+      state[mode].badges[idx].scale = val / 100;
+      const indicator = e.target.closest('.block-adjust-row').querySelector('.badge-scale-indicator');
+      if (indicator) indicator.textContent = `${val}%`;
+      saveAndRender();
+    });
+  });
+
+  // Remove badge button
+  container.querySelectorAll('.btn-remove-badge').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(btn.dataset.index, 10);
+      if (state[mode].badges.length > 1) {
+        state[mode].badges.splice(idx, 1);
+        renderBadgesUI(mode);
+        saveAndRender();
+        showToast('Bloque destacado eliminado');
+      }
+    });
+  });
+}
+
+function addBadge(mode) {
+  const newBadge = {
+    id: `${mode}-b-${Date.now()}`,
+    val: '',
+    sub: '',
+    yOffset: 0,
+    scale: 1.0
+  };
+
+  state[mode].badges.push(newBadge);
+  renderBadgesUI(mode);
+  saveAndRender();
+  showToast('¡Bloque destacado añadido! ✨');
+}
+
+// ============================================================================
+// Multi-Day UI Manager (PARO)
 // ============================================================================
 function renderDaysInputs() {
   dom.paroDaysList.innerHTML = '';
@@ -349,7 +652,6 @@ function renderDaysInputs() {
     dom.paroDaysList.appendChild(card);
   });
 
-  // Show/Hide multi-day visual format toggle
   if (state.paro.days.length > 1) {
     dom.multiDayStyleWrap.classList.remove('hidden');
     dom.btnFormatCombined.classList.toggle('active', state.paro.format === 'combined');
@@ -358,17 +660,14 @@ function renderDaysInputs() {
     dom.multiDayStyleWrap.classList.add('hidden');
   }
 
-  // Attach dynamic event listeners to newly generated day inputs
   attachDayInputListeners();
 }
 
 function attachDayInputListeners() {
-  // Day text change
   dom.paroDaysList.querySelectorAll('.input-day').forEach(inp => {
     inp.addEventListener('input', (e) => {
       const idx = parseInt(e.target.dataset.index, 10);
       state.paro.days[idx].day = e.target.value.toUpperCase();
-      // Update chip highlights for this card
       const card = e.target.closest('.paro-day-card');
       card.querySelectorAll('.chip-item').forEach(ch => {
         ch.classList.toggle('active', ch.dataset.dayPick === state.paro.days[idx].day);
@@ -377,7 +676,6 @@ function attachDayInputListeners() {
     });
   });
 
-  // Date text change
   dom.paroDaysList.querySelectorAll('.input-date').forEach(inp => {
     inp.addEventListener('input', (e) => {
       const idx = parseInt(e.target.dataset.index, 10);
@@ -386,7 +684,6 @@ function attachDayInputListeners() {
     });
   });
 
-  // Quick day pick chips
   dom.paroDaysList.querySelectorAll('.chip-item').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const idx = parseInt(btn.dataset.index, 10);
@@ -401,7 +698,6 @@ function attachDayInputListeners() {
     });
   });
 
-  // Remove day button
   dom.paroDaysList.querySelectorAll('.btn-remove-day').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const idx = parseInt(btn.dataset.remove, 10);
@@ -418,14 +714,12 @@ function attachDayInputListeners() {
 function addDay() {
   const lastItem = state.paro.days[state.paro.days.length - 1] || { day: 'MIÉRCOLES', date: '15/10' };
   
-  // Suggest next day of week
   let nextDay = 'JUEVES';
   const lastDayIndex = DAYS_SEQUENCE.indexOf(lastItem.day.toUpperCase());
   if (lastDayIndex >= 0 && lastDayIndex < DAYS_SEQUENCE.length - 1) {
     nextDay = DAYS_SEQUENCE[lastDayIndex + 1];
   }
 
-  // Suggest next date if numeric
   let nextDate = '';
   if (lastItem.date.includes('/')) {
     const parts = lastItem.date.split('/');
@@ -449,9 +743,10 @@ function addDay() {
 // Event Listeners
 // ============================================================================
 function setupEventListeners() {
-  // Mode Switch Tabs
+  // Mode Switch Tabs (Info vs Paro vs Mesa)
   dom.tabInfo.addEventListener('click', () => setMode('info'));
   dom.tabParo.addEventListener('click', () => setMode('paro'));
+  dom.tabMesa.addEventListener('click', () => setMode('mesa'));
 
   // Mobile View Switcher (Edit vs Preview)
   dom.btnViewEdit.addEventListener('click', () => setMobileView('edit'));
@@ -471,6 +766,20 @@ function setupEventListeners() {
     });
   });
 
+  // Template Picker Buttons (for Info and Mesa)
+  document.querySelectorAll('.btn-template-pick').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode;
+      const tpl = btn.dataset.template;
+      if (mode && tpl && state[mode]) {
+        state[mode].template = tpl;
+        syncTemplateButtons(mode);
+        saveAndRender();
+        showToast(`Plantilla ${tpl.toUpperCase()} activada ✨`);
+      }
+    });
+  });
+
   // ================= INFO LISTENERS =================
   dom.infoTitle.addEventListener('input', (e) => {
     state.info.title = e.target.value.toUpperCase();
@@ -478,24 +787,40 @@ function setupEventListeners() {
     saveAndRender();
   });
 
+  dom.infoTitleY.addEventListener('input', (e) => {
+    state.info.titleY = parseInt(e.target.value, 10);
+    dom.infoTitleYVal.textContent = `${state.info.titleY}px`;
+    saveAndRender();
+  });
+
+  dom.infoTitleScale.addEventListener('input', (e) => {
+    state.info.titleScale = parseInt(e.target.value, 10) / 100;
+    dom.infoTitleScaleVal.textContent = `${e.target.value}%`;
+    saveAndRender();
+  });
+
   dom.infoHasBadge.addEventListener('change', (e) => {
     state.info.hasBadge = e.target.checked;
-    dom.infoBadgeFields.classList.toggle('hidden', !state.info.hasBadge);
+    dom.infoBadgesContainer.classList.toggle('hidden', !state.info.hasBadge);
     saveAndRender();
   });
 
-  dom.infoBadgeVal.addEventListener('input', (e) => {
-    state.info.badgeVal = e.target.value.toUpperCase();
-    saveAndRender();
-  });
-
-  dom.infoBadgeSubtitle.addEventListener('input', (e) => {
-    state.info.badgeSub = e.target.value.toUpperCase();
-    saveAndRender();
-  });
+  dom.btnAddBadgeInfo.addEventListener('click', () => addBadge('info'));
 
   dom.infoBody.addEventListener('input', (e) => {
     state.info.body = e.target.value;
+    saveAndRender();
+  });
+
+  dom.infoBodyY.addEventListener('input', (e) => {
+    state.info.bodyY = parseInt(e.target.value, 10);
+    dom.infoBodyYVal.textContent = `${state.info.bodyY}px`;
+    saveAndRender();
+  });
+
+  dom.infoBodyScale.addEventListener('input', (e) => {
+    state.info.bodyScale = parseInt(e.target.value, 10) / 100;
+    dom.infoBodyScaleVal.textContent = `${e.target.value}%`;
     saveAndRender();
   });
 
@@ -528,18 +853,100 @@ function setupEventListeners() {
   dom.btnResetInfoAdj.addEventListener('click', () => {
     state.info.yOffset = 0;
     state.info.scale = 1.0;
-    dom.infoYOffset.value = 0;
-    dom.infoYVal.textContent = '0px';
-    dom.infoScale.value = 100;
-    dom.infoScaleVal.textContent = '100%';
+    state.info.titleY = 0;
+    state.info.titleScale = 1.0;
+    state.info.bodyY = 0;
+    state.info.bodyScale = 1.0;
+    syncFormToState();
+    saveAndRender();
+    showToast('Ajustes restablecidos');
+  });
+
+  // ================= MESA DE EXAMEN LISTENERS =================
+  dom.mesaTitle.addEventListener('input', (e) => {
+    state.mesa.title = e.target.value.toUpperCase();
+    e.target.value = state.mesa.title;
     saveAndRender();
   });
 
+  dom.mesaTitleY.addEventListener('input', (e) => {
+    state.mesa.titleY = parseInt(e.target.value, 10);
+    dom.mesaTitleYVal.textContent = `${state.mesa.titleY}px`;
+    saveAndRender();
+  });
+
+  dom.mesaTitleScale.addEventListener('input', (e) => {
+    state.mesa.titleScale = parseInt(e.target.value, 10) / 100;
+    dom.mesaTitleScaleVal.textContent = `${e.target.value}%`;
+    saveAndRender();
+  });
+
+  dom.mesaHasBadge.addEventListener('change', (e) => {
+    state.mesa.hasBadge = e.target.checked;
+    dom.mesaBadgesContainer.classList.toggle('hidden', !state.mesa.hasBadge);
+    saveAndRender();
+  });
+
+  dom.btnAddBadgeMesa.addEventListener('click', () => addBadge('mesa'));
+
+  dom.mesaBody.addEventListener('input', (e) => {
+    state.mesa.body = e.target.value;
+    saveAndRender();
+  });
+
+  dom.mesaBodyY.addEventListener('input', (e) => {
+    state.mesa.bodyY = parseInt(e.target.value, 10);
+    dom.mesaBodyYVal.textContent = `${state.mesa.bodyY}px`;
+    saveAndRender();
+  });
+
+  dom.mesaBodyScale.addEventListener('input', (e) => {
+    state.mesa.bodyScale = parseInt(e.target.value, 10) / 100;
+    dom.mesaBodyScaleVal.textContent = `${e.target.value}%`;
+    saveAndRender();
+  });
+
+  dom.btnAlignLeftMesa.addEventListener('click', () => {
+    state.mesa.align = 'left';
+    dom.btnAlignLeftMesa.classList.add('active');
+    dom.btnAlignCenterMesa.classList.remove('active');
+    saveAndRender();
+  });
+
+  dom.btnAlignCenterMesa.addEventListener('click', () => {
+    state.mesa.align = 'center';
+    dom.btnAlignCenterMesa.classList.add('active');
+    dom.btnAlignLeftMesa.classList.remove('active');
+    saveAndRender();
+  });
+
+  dom.mesaYOffset.addEventListener('input', (e) => {
+    state.mesa.yOffset = parseInt(e.target.value, 10);
+    dom.mesaYVal.textContent = `${state.mesa.yOffset}px`;
+    saveAndRender();
+  });
+
+  dom.mesaScale.addEventListener('input', (e) => {
+    state.mesa.scale = parseInt(e.target.value, 10) / 100;
+    dom.mesaScaleVal.textContent = `${e.target.value}%`;
+    saveAndRender();
+  });
+
+  dom.btnResetMesaAdj.addEventListener('click', () => {
+    state.mesa.yOffset = 0;
+    state.mesa.scale = 1.0;
+    state.mesa.titleY = 0;
+    state.mesa.titleScale = 1.0;
+    state.mesa.bodyY = 0;
+    state.mesa.bodyScale = 1.0;
+    syncFormToState();
+    saveAndRender();
+    showToast('Ajustes restablecidos');
+  });
+
   // ================= PARO LISTENERS =================
-  // Add Day Button
   dom.btnAddDay.addEventListener('click', addDay);
 
-  // Multi-day format buttons
   dom.btnFormatCombined.addEventListener('click', () => {
     state.paro.format = 'combined';
     dom.btnFormatCombined.classList.add('active');
@@ -559,7 +966,6 @@ function setupEventListeners() {
     saveAndRender();
   });
 
-  // Gremios Selector Buttons (FAGDUT, SIDUT, APUTN)
   document.querySelectorAll('.chip-gremio').forEach(chip => {
     chip.addEventListener('click', () => {
       const gremioName = chip.dataset.gremium;
@@ -567,14 +973,12 @@ function setupEventListeners() {
     });
   });
 
-  // Paro Gremium Text input (keeps chips in sync)
   dom.paroGremium.addEventListener('input', (e) => {
     state.paro.gremium = e.target.value.toUpperCase();
     syncGremioChipsHighlight();
     saveAndRender();
   });
 
-  // Status Selector Buttons (La facultad estará cerrada, Consulta a tu docente, Actividad normal, nada)
   document.querySelectorAll('.chip-status').forEach(chip => {
     chip.addEventListener('click', () => {
       const chosenStatus = chip.dataset.status;
@@ -637,10 +1041,7 @@ function toggleGremioSelection(targetGremio) {
     newSelected = [...selected, targetGremio];
   }
 
-  // Preserve standard order: FAGDUT, SIDUT, APUTN (NO DOCENTE)
   newSelected.sort((a, b) => BASE_GREMIOS.indexOf(a) - BASE_GREMIOS.indexOf(b));
-
-  // Separate multiple gremios with " - " as requested by the user
   const resultText = newSelected.join(' - ');
 
   state.paro.gremium = resultText;
@@ -673,29 +1074,30 @@ function syncStatusChipsHighlight() {
   });
 }
 
+function syncTemplateButtons(mode) {
+  document.querySelectorAll(`.btn-template-pick[data-mode="${mode}"]`).forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.template === state[mode].template);
+  });
+}
+
 // ============================================================================
 // State Sync & Storage
 // ============================================================================
 function setMode(mode) {
   state.currentMode = mode;
-  
-  if (mode === 'info') {
-    dom.tabInfo.classList.add('active');
-    dom.tabInfo.setAttribute('aria-selected', 'true');
-    dom.tabParo.classList.remove('active');
-    dom.tabParo.setAttribute('aria-selected', 'false');
 
-    dom.formInfo.classList.add('active');
-    dom.formParo.classList.remove('active');
-  } else {
-    dom.tabParo.classList.add('active');
-    dom.tabParo.setAttribute('aria-selected', 'true');
-    dom.tabInfo.classList.remove('active');
-    dom.tabInfo.setAttribute('aria-selected', 'false');
+  // Tabs
+  dom.tabInfo.classList.toggle('active', mode === 'info');
+  dom.tabInfo.setAttribute('aria-selected', mode === 'info' ? 'true' : 'false');
+  dom.tabParo.classList.toggle('active', mode === 'paro');
+  dom.tabParo.setAttribute('aria-selected', mode === 'paro' ? 'true' : 'false');
+  dom.tabMesa.classList.toggle('active', mode === 'mesa');
+  dom.tabMesa.setAttribute('aria-selected', mode === 'mesa' ? 'true' : 'false');
 
-    dom.formParo.classList.add('active');
-    dom.formInfo.classList.remove('active');
-  }
+  // Forms
+  dom.formInfo.classList.toggle('active', mode === 'info');
+  dom.formParo.classList.toggle('active', mode === 'paro');
+  dom.formMesa.classList.toggle('active', mode === 'mesa');
 
   if (state.isComparing) {
     updateReferenceOverlayImage();
@@ -721,26 +1123,56 @@ function setMobileView(view) {
 }
 
 function syncFormToState() {
-  // Info
-  dom.infoTitle.value = state.info.title;
-  dom.infoHasBadge.checked = state.info.hasBadge;
-  dom.infoBadgeFields.classList.toggle('hidden', !state.info.hasBadge);
-  dom.infoBadgeVal.value = state.info.badgeVal;
-  dom.infoBadgeSubtitle.value = state.info.badgeSub;
-  dom.infoBody.value = state.info.body;
-  if (state.info.align === 'center') {
-    dom.btnAlignCenter.classList.add('active');
-    dom.btnAlignLeft.classList.remove('active');
-  } else {
-    dom.btnAlignLeft.classList.add('active');
-    dom.btnAlignCenter.classList.remove('active');
-  }
-  dom.infoYOffset.value = state.info.yOffset;
-  dom.infoYVal.textContent = `${state.info.yOffset}px`;
-  dom.infoScale.value = Math.round(state.info.scale * 100);
-  dom.infoScaleVal.textContent = `${Math.round(state.info.scale * 100)}%`;
+  // INFO
+  dom.infoTitle.value = state.info.title || '';
+  dom.infoTitleY.value = state.info.titleY || 0;
+  dom.infoTitleYVal.textContent = `${state.info.titleY || 0}px`;
+  dom.infoTitleScale.value = Math.round((state.info.titleScale || 1.0) * 100);
+  dom.infoTitleScaleVal.textContent = `${Math.round((state.info.titleScale || 1.0) * 100)}%`;
 
-  // Paro
+  dom.infoHasBadge.checked = state.info.hasBadge;
+  dom.infoBadgesContainer.classList.toggle('hidden', !state.info.hasBadge);
+
+  dom.infoBody.value = state.info.body || '';
+  dom.infoBodyY.value = state.info.bodyY || 0;
+  dom.infoBodyYVal.textContent = `${state.info.bodyY || 0}px`;
+  dom.infoBodyScale.value = Math.round((state.info.bodyScale || 1.0) * 100);
+  dom.infoBodyScaleVal.textContent = `${Math.round((state.info.bodyScale || 1.0) * 100)}%`;
+
+  dom.btnAlignLeft.classList.toggle('active', state.info.align === 'left');
+  dom.btnAlignCenter.classList.toggle('active', state.info.align === 'center');
+
+  dom.infoYOffset.value = state.info.yOffset || 0;
+  dom.infoYVal.textContent = `${state.info.yOffset || 0}px`;
+  dom.infoScale.value = Math.round((state.info.scale || 1.0) * 100);
+  dom.infoScaleVal.textContent = `${Math.round((state.info.scale || 1.0) * 100)}%`;
+  syncTemplateButtons('info');
+
+  // MESA
+  dom.mesaTitle.value = state.mesa.title || '';
+  dom.mesaTitleY.value = state.mesa.titleY || 0;
+  dom.mesaTitleYVal.textContent = `${state.mesa.titleY || 0}px`;
+  dom.mesaTitleScale.value = Math.round((state.mesa.titleScale || 1.0) * 100);
+  dom.mesaTitleScaleVal.textContent = `${Math.round((state.mesa.titleScale || 1.0) * 100)}%`;
+
+  dom.mesaHasBadge.checked = state.mesa.hasBadge;
+  dom.mesaBadgesContainer.classList.toggle('hidden', !state.mesa.hasBadge);
+
+  dom.mesaBody.value = state.mesa.body || '';
+  dom.mesaBodyY.value = state.mesa.bodyY || 0;
+  dom.mesaBodyYVal.textContent = `${state.mesa.bodyY || 0}px`;
+  dom.mesaBodyScale.value = Math.round((state.mesa.bodyScale || 1.0) * 100);
+  dom.mesaBodyScaleVal.textContent = `${Math.round((state.mesa.bodyScale || 1.0) * 100)}%`;
+
+  dom.btnAlignLeftMesa.classList.toggle('active', state.mesa.align === 'left');
+  dom.btnAlignCenterMesa.classList.toggle('active', state.mesa.align === 'center');
+
+  dom.mesaYOffset.value = state.mesa.yOffset || 0;
+  dom.mesaYVal.textContent = `${state.mesa.yOffset || 0}px`;
+  dom.mesaScale.value = Math.round((state.mesa.scale || 1.0) * 100);
+  dom.mesaScaleVal.textContent = `${Math.round((state.mesa.scale || 1.0) * 100)}%`;
+
+  // PARO
   dom.paroHasLine.checked = state.paro.hasLine;
   dom.paroGremium.value = state.paro.gremium;
   syncGremioChipsHighlight();
@@ -759,7 +1191,12 @@ function applyPreset(presetKey) {
 
   if (presetKey.startsWith('info-')) {
     setMode('info');
-    Object.assign(state.info, preset);
+    state.info = JSON.parse(JSON.stringify(preset));
+    renderBadgesUI('info');
+  } else if (presetKey.startsWith('mesa-')) {
+    setMode('mesa');
+    state.mesa = JSON.parse(JSON.stringify(preset));
+    renderBadgesUI('mesa');
   } else if (presetKey.startsWith('paro-')) {
     setMode('paro');
     state.paro.days = JSON.parse(JSON.stringify(preset.days));
@@ -781,12 +1218,28 @@ function applyPreset(presetKey) {
 function resetCurrentForm() {
   if (state.currentMode === 'info') {
     state.info.title = '';
+    state.info.titleY = 0;
+    state.info.titleScale = 1.0;
     state.info.hasBadge = false;
-    state.info.badgeVal = '';
-    state.info.badgeSub = '';
+    state.info.badges = [{ id: 'info-b1', val: '', sub: '', yOffset: 0, scale: 1.0 }];
     state.info.body = '';
+    state.info.bodyY = 0;
+    state.info.bodyScale = 1.0;
     state.info.yOffset = 0;
     state.info.scale = 1.0;
+    renderBadgesUI('info');
+  } else if (state.currentMode === 'mesa') {
+    state.mesa.title = '';
+    state.mesa.titleY = 0;
+    state.mesa.titleScale = 1.0;
+    state.mesa.hasBadge = false;
+    state.mesa.badges = [{ id: 'mesa-b1', val: '', sub: '', yOffset: 0, scale: 1.0 }];
+    state.mesa.body = '';
+    state.mesa.bodyY = 0;
+    state.mesa.bodyScale = 1.0;
+    state.mesa.yOffset = 0;
+    state.mesa.scale = 1.0;
+    renderBadgesUI('mesa');
   } else {
     state.paro.days = [{ day: 'MIÉRCOLES', date: '15/10' }];
     state.paro.format = 'combined';
@@ -798,6 +1251,7 @@ function resetCurrentForm() {
     state.paro.scale = 1.0;
     renderDaysInputs();
   }
+
   syncFormToState();
   saveAndRender();
   showToast('Formulario limpiado');
@@ -807,7 +1261,7 @@ function saveAndRender() {
   try {
     localStorage.setItem('upl_stories_state', JSON.stringify(state));
   } catch (e) {
-    // LocalStorage quota or privacy mode
+    // Quota exceeded or private browsing
   }
   renderCanvas();
   updateCaption();
@@ -818,9 +1272,25 @@ function loadSavedState() {
     const saved = localStorage.getItem('upl_stories_state');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed.info) Object.assign(state.info, parsed.info);
+      if (parsed.info) {
+        // Backward compatibility migration for older single-badge format
+        if (parsed.info.badgeVal !== undefined && !parsed.info.badges) {
+          parsed.info.badges = [
+            {
+              id: 'info-b1',
+              val: parsed.info.badgeVal || '',
+              sub: parsed.info.badgeSub || '',
+              yOffset: 0,
+              scale: 1.0
+            }
+          ];
+        }
+        Object.assign(state.info, parsed.info);
+      }
+      if (parsed.mesa) {
+        Object.assign(state.mesa, parsed.mesa);
+      }
       if (parsed.paro) {
-        // Backward compatibility for single day to multi-day array
         if (parsed.paro.day && (!parsed.paro.days || parsed.paro.days.length === 0)) {
           parsed.paro.days = [{ day: parsed.paro.day, date: parsed.paro.date || '' }];
         }
@@ -832,9 +1302,15 @@ function loadSavedState() {
     // Ignore corrupt storage
   }
 
-  // Ensure at least 1 day in array
+  // Ensure valid arrays
   if (!state.paro.days || !Array.isArray(state.paro.days) || state.paro.days.length === 0) {
     state.paro.days = [{ day: 'MIÉRCOLES', date: '15/10' }];
+  }
+  if (!state.info.badges || !Array.isArray(state.info.badges) || state.info.badges.length === 0) {
+    state.info.badges = [{ id: 'info-b1', val: '5 AL 9', sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL', yOffset: 0, scale: 1.0 }];
+  }
+  if (!state.mesa.badges || !Array.isArray(state.mesa.badges) || state.mesa.badges.length === 0) {
+    state.mesa.badges = [{ id: 'mesa-b1', val: '5 AL 9', sub: 'INSCRIPCIÓN AL PEDIDO\nDE MESA ESPECIAL', yOffset: 0, scale: 1.0 }];
   }
 }
 
@@ -854,14 +1330,30 @@ function drawCanvasContent() {
   const width = dom.canvas.width;   // 1080
   const height = dom.canvas.height; // 1920
 
-  // 1. Draw Background Template
-  const templateImg = state.currentMode === 'info' ? assets.infoTemplate : assets.paroTemplate;
-  const isLoaded = state.currentMode === 'info' ? assets.loaded.infoTemplate : assets.loaded.paroTemplate;
+  // 1. Determine Background Template
+  let templateImg = assets.infoTemplate;
+  let isLoaded = assets.loaded.infoTemplate;
 
+  if (state.currentMode === 'info') {
+    if (state.info.template === 'recordatorio') {
+      templateImg = assets.recordatorioTemplate;
+      isLoaded = assets.loaded.recordatorioTemplate;
+    } else {
+      templateImg = assets.infoTemplate;
+      isLoaded = assets.loaded.infoTemplate;
+    }
+  } else if (state.currentMode === 'mesa') {
+    templateImg = assets.mesaTemplate;
+    isLoaded = assets.loaded.mesaTemplate;
+  } else {
+    templateImg = assets.paroTemplate;
+    isLoaded = assets.loaded.paroTemplate;
+  }
+
+  // Draw background image or fallback gradient
   if (isLoaded && templateImg.complete && templateImg.naturalWidth > 0) {
     ctx.drawImage(templateImg, 0, 0, width, height);
   } else {
-    // Fallback gradient if image not ready yet
     const grad = ctx.createLinearGradient(0, 0, 0, height);
     grad.addColorStop(0, '#2d1447');
     grad.addColorStop(0.5, '#1e0c30');
@@ -870,27 +1362,32 @@ function drawCanvasContent() {
     ctx.fillRect(0, 0, width, height);
   }
 
-  // 2. Render Text Content based on mode
+  // 2. Render Text Content based on currentMode
   if (state.currentMode === 'info') {
-    renderInfoContent(ctx, width, height);
+    renderBlockBasedContent(ctx, width, height, state.info);
+  } else if (state.currentMode === 'mesa') {
+    renderBlockBasedContent(ctx, width, height, state.mesa);
   } else {
     renderParoContent(ctx, width, height);
   }
 }
 
 /**
- * Render INFO / AVISO layout
+ * Universal Block-Based Renderer (used for INFO and MESA DE EXAMEN)
+ * Supports title, multi-badge list, and body with independent position & scale per block
  */
-function renderInfoContent(context, width, height) {
-  const { title, hasBadge, badgeVal, badgeSub, body, align, yOffset, scale } = state.info;
+function renderBlockBasedContent(context, width, height, data) {
+  const { title, titleY = 0, titleScale = 1.0, hasBadge, badges, body, bodyY = 0, bodyScale = 1.0, align, yOffset, scale } = data;
 
   let currentY = 530 + yOffset;
 
-  // --- Title Rendering ---
+  // --- 1. Title Rendering ---
   if (title && title.trim()) {
     const titleLines = title.split('\n');
-    const titleFontSize = Math.round(68 * scale);
+    const effectiveTitleScale = scale * titleScale;
+    const titleFontSize = Math.round(68 * effectiveTitleScale);
     const titleLineHeight = Math.round(titleFontSize * 1.22);
+    let titleCursorY = currentY + titleY;
 
     context.save();
     context.fillStyle = '#ffffff';
@@ -900,70 +1397,83 @@ function renderInfoContent(context, width, height) {
     for (let i = 0; i < titleLines.length; i++) {
       const line = titleLines[i].trim();
       if (!line) continue;
-      drawTextWithSpacing(context, line, 540, currentY, 1.2, 'center');
-      currentY += titleLineHeight;
+      drawTextWithSpacing(context, line, 540, titleCursorY, 1.2, 'center');
+      titleCursorY += titleLineHeight;
     }
     context.restore();
 
-    currentY += Math.round(45 * scale); // spacing after title
+    currentY = Math.max(currentY + titleLines.length * titleLineHeight, titleCursorY) + Math.round(45 * scale);
   }
 
-  // --- Badge + Subtitle Block ---
-  if (hasBadge && (badgeVal.trim() || badgeSub.trim())) {
-    const badgeHeight = Math.round(86 * scale);
-    const badgeY = currentY;
+  // --- 2. Multiple Badges (Bloques Destacados) ---
+  if (hasBadge && badges && badges.length > 0) {
+    const validBadges = badges.filter(b => (b.val && b.val.trim()) || (b.sub && b.sub.trim()));
 
-    // Measure badge text to auto-fit pill width
-    context.save();
-    const badgeFontSize = Math.round(46 * scale);
-    context.font = `800 ${badgeFontSize}px "Montserrat", sans-serif`;
-    const measuredBadgeTextWidth = context.measureText(badgeVal.trim()).width;
-    
-    const badgeWidth = Math.max(Math.round(210 * scale), measuredBadgeTextWidth + Math.round(48 * scale));
-    const badgeX = Math.round(135 * scale);
-    const badgeRadius = Math.round(20 * scale);
-    const borderWidth = Math.round(5.5 * scale);
+    for (let i = 0; i < validBadges.length; i++) {
+      const badge = validBadges[i];
+      const effectiveBadgeScale = scale * (badge.scale || 1.0);
+      const badgeHeight = Math.round(86 * effectiveBadgeScale);
+      const badgeY = currentY + (badge.yOffset || 0);
 
-    // Draw rounded badge outline
-    context.strokeStyle = '#ffffff';
-    context.lineWidth = borderWidth;
-    roundRect(context, badgeX, badgeY, badgeWidth, badgeHeight, badgeRadius);
-    context.stroke();
-
-    // Draw text inside badge
-    context.fillStyle = '#ffffff';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(badgeVal.trim(), badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + (2 * scale));
-    context.restore();
-
-    // Draw Subtitle beside badge
-    if (badgeSub && badgeSub.trim()) {
+      // Measure badge text to auto-fit pill width
       context.save();
-      const subFontSize = Math.round(36 * scale);
-      const subLineHeight = Math.round(subFontSize * 1.25);
-      context.font = `700 ${subFontSize}px "Montserrat", sans-serif`;
+      const badgeFontSize = Math.round(46 * effectiveBadgeScale);
+      context.font = `800 ${badgeFontSize}px "Montserrat", sans-serif`;
+      const valText = (badge.val || '').trim();
+      const measuredBadgeTextWidth = context.measureText(valText).width;
+
+      const badgeWidth = Math.max(Math.round(210 * effectiveBadgeScale), measuredBadgeTextWidth + Math.round(48 * effectiveBadgeScale));
+      const badgeX = Math.round(135 * effectiveBadgeScale);
+      const badgeRadius = Math.round(20 * effectiveBadgeScale);
+      const borderWidth = Math.round(5.5 * effectiveBadgeScale);
+
+      // Draw rounded outline capsule
+      context.strokeStyle = '#ffffff';
+      context.lineWidth = borderWidth;
+      roundRect(context, badgeX, badgeY, badgeWidth, badgeHeight, badgeRadius);
+      context.stroke();
+
+      // Draw text inside capsule
       context.fillStyle = '#ffffff';
-      context.textBaseline = 'top';
-
-      const subLines = badgeSub.split('\n');
-      const totalSubHeight = subLines.length * subLineHeight;
-      let subY = badgeY + (badgeHeight - totalSubHeight) / 2 + (2 * scale);
-      const subX = badgeX + badgeWidth + Math.round(36 * scale);
-
-      for (const line of subLines) {
-        drawTextWithSpacing(context, line.trim(), subX, subY, 0.5, 'left');
-        subY += subLineHeight;
-      }
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(valText, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + (2 * effectiveBadgeScale));
       context.restore();
+
+      // Draw Subtitle beside capsule
+      if (badge.sub && badge.sub.trim()) {
+        context.save();
+        const subFontSize = Math.round(36 * effectiveBadgeScale);
+        const subLineHeight = Math.round(subFontSize * 1.25);
+        context.font = `700 ${subFontSize}px "Montserrat", sans-serif`;
+        context.fillStyle = '#ffffff';
+        context.textBaseline = 'top';
+
+        const subLines = badge.sub.split('\n');
+        const totalSubHeight = subLines.length * subLineHeight;
+        let subY = badgeY + (badgeHeight - totalSubHeight) / 2 + (2 * effectiveBadgeScale);
+        const subX = badgeX + badgeWidth + Math.round(36 * effectiveBadgeScale);
+
+        for (const line of subLines) {
+          drawTextWithSpacing(context, line.trim(), subX, subY, 0.5, 'left');
+          subY += subLineHeight;
+        }
+        context.restore();
+      }
+
+      // Increment Y coordinate for next element
+      currentY = badgeY + badgeHeight + Math.round(32 * scale);
     }
 
-    currentY += badgeHeight + Math.round(55 * scale);
+    currentY += Math.round(20 * scale);
   }
 
-  // --- Body Text & Paragraphs ---
+  // --- 3. Body Text & Paragraphs ---
   if (body && body.trim()) {
     context.save();
+    const effectiveBodyScale = scale * bodyScale;
+    let bodyCursorY = currentY + bodyY;
+
     const bodyMarginX = Math.round(158 * scale);
     const bodyMaxWidth = width - (bodyMarginX * 2);
     const bodyCenterX = 540;
@@ -985,19 +1495,19 @@ function renderInfoContent(context, width, height) {
 
       // Draw Section Header (Bold)
       if (headerText) {
-        const headerFontSize = Math.round(38 * scale);
+        const headerFontSize = Math.round(38 * effectiveBodyScale);
         context.font = `800 ${headerFontSize}px "Montserrat", sans-serif`;
         context.fillStyle = '#ffffff';
         context.textBaseline = 'alphabetic';
 
         const hX = align === 'center' ? bodyCenterX : bodyMarginX;
-        drawTextWithSpacing(context, headerText, hX, currentY + headerFontSize, 0.8, align);
-        currentY += Math.round(headerFontSize * 1.4);
+        drawTextWithSpacing(context, headerText, hX, bodyCursorY + headerFontSize, 0.8, align);
+        bodyCursorY += Math.round(headerFontSize * 1.4);
       }
 
       // Draw Paragraph Body
       if (remainingText) {
-        const bodyFontSize = Math.round(34 * scale);
+        const bodyFontSize = Math.round(34 * effectiveBodyScale);
         const bodyLineHeight = Math.round(bodyFontSize * 1.38);
         context.font = `500 ${bodyFontSize}px "Montserrat", sans-serif`;
         context.fillStyle = '#ffffff';
@@ -1007,12 +1517,12 @@ function renderInfoContent(context, width, height) {
         const lines = wrapTextLines(context, remainingText, bodyMaxWidth);
         for (const line of lines) {
           const lineX = align === 'center' ? bodyCenterX : bodyMarginX;
-          context.fillText(line, lineX, currentY + bodyFontSize);
-          currentY += bodyLineHeight;
+          context.fillText(line, lineX, bodyCursorY + bodyFontSize);
+          bodyCursorY += bodyLineHeight;
         }
       }
 
-      currentY += Math.round(35 * scale);
+      bodyCursorY += Math.round(35 * effectiveBodyScale);
     }
 
     context.restore();
@@ -1027,18 +1537,13 @@ function renderParoContent(context, width, height) {
 
   let currentY = 570 + yOffset;
 
-  // Filter valid days
   const validDays = (days && days.length > 0) 
     ? days.filter(d => (d.day && d.day.trim()) || (d.date && d.date.trim())) 
     : [];
 
   if (validDays.length === 0) {
-    // Empty state placeholder
     currentY += 100;
   } else if (validDays.length === 1 || format === 'combined') {
-    // ==========================================
-    // 1 DAY or COMBINED MULTI-DAY FORMAT
-    // ==========================================
     let dayText = '';
     let dateText = '';
 
@@ -1050,16 +1555,17 @@ function renderParoContent(context, width, height) {
       const d1 = validDays[0].date.trim();
       const d2 = validDays[1].date.trim();
       if (d1.includes('/') && d2.includes('/') && d1.split('/')[1] === d2.split('/')[1]) {
-        dateText = `${d1.split('/')[0]} Y ${d2}`;
+        // e.g. "14  Y  16/10" with clean readable spacing
+        dateText = `${d1.split('/')[0]}  Y  ${d2}`;
       } else {
-        dateText = `${d1} Y ${d2}`;
+        dateText = `${d1}  Y  ${d2}`;
       }
     } else {
-      // 3 or more days
       const dayNames = validDays.map(d => d.day.trim().toUpperCase());
       const lastDay = dayNames.pop();
       dayText = `${dayNames.join(', ')} Y ${lastDay}`;
-      dateText = validDays.map(d => d.date.trim()).join(' • ');
+      // Separate multiple dates with spaces
+      dateText = validDays.map(d => d.date.trim()).join('   ');
     }
 
     // 1. Day of Week
@@ -1070,32 +1576,27 @@ function renderParoContent(context, width, height) {
       context.font = `800 ${dayFontSize}px "Montserrat", sans-serif`;
       context.fillStyle = '#ffffff';
       context.textBaseline = 'alphabetic';
-      // Native letter-spacing of 1.5px (clean, perfectly spaced)
       drawTextWithSpacing(context, dayText, 540, currentY + dayFontSize, 1.5, 'center');
       context.restore();
 
       currentY += Math.round(dayFontSize * 1.25);
     }
 
-    // 2. Date (Exact proportion and weight matching user reference)
+    // 2. Date
     if (dateText) {
       context.save();
-      // For 2 days: 108px with weight 800 matches reference '14 Y 16/10' without being overly thick/grueso
       const baseDateSize = validDays.length > 2 ? 88 : (validDays.length === 2 ? 108 : 152);
       const dateFontSize = Math.round(baseDateSize * scale);
       context.font = `800 ${dateFontSize}px "Montserrat", sans-serif`;
       context.fillStyle = '#ffffff';
       context.textBaseline = 'alphabetic';
-      // 0 letter spacing for native crisp numbers & slashes
       drawTextWithSpacing(context, dateText, 540, currentY + dateFontSize, 0, 'center');
       context.restore();
 
       currentY += Math.round(dateFontSize * 1.08);
     }
   } else {
-    // ==========================================
-    // STACKED MULTI-DAY FORMAT (Día por Día)
-    // ==========================================
+    // STACKED MULTI-DAY FORMAT
     context.save();
     const itemFontSize = Math.round(58 * scale);
     const itemLineHeight = Math.round(itemFontSize * 1.38);
@@ -1150,7 +1651,7 @@ function renderParoContent(context, width, height) {
     currentY += Math.round(135 * scale);
   }
 
-  // 5. Status / Consequence (Only rendered if NOT empty / "nada")
+  // 5. Status / Consequence
   if (status && status.trim()) {
     context.save();
     const statusFontSize = Math.round(46 * scale);
@@ -1189,19 +1690,14 @@ function renderParoContent(context, width, height) {
 }
 
 // ============================================================================
-// Helper Canvas Functions (Fixed typography & spacing engine)
+// Helper Canvas Functions
 // ============================================================================
-
-/**
- * Draw text with native typography, proper kerning, accents and parentheses
- */
 function drawTextWithSpacing(context, text, x, y, letterSpacing = 0, alignment = 'center') {
   if (!text) return;
 
   context.save();
   context.textAlign = alignment;
 
-  // Use native letterSpacing supported by modern Canvas 2D
   if (letterSpacing && 'letterSpacing' in context) {
     context.letterSpacing = `${letterSpacing}px`;
     context.fillText(text, x, y);
@@ -1215,7 +1711,6 @@ function drawTextWithSpacing(context, text, x, y, letterSpacing = 0, alignment =
     return;
   }
 
-  // Precise fallback for older engines: MUST use textAlign = 'left' when positioning characters sequentially
   context.textAlign = 'left';
   const chars = Array.from(text);
   const widths = chars.map(c => context.measureText(c).width);
@@ -1235,9 +1730,6 @@ function drawTextWithSpacing(context, text, x, y, letterSpacing = 0, alignment =
   context.restore();
 }
 
-/**
- * Multi-line word wrapper that honors explicit \n and line boundaries
- */
 function wrapTextLines(context, text, maxWidth) {
   const paragraphs = text.split('\n');
   const allLines = [];
@@ -1268,9 +1760,6 @@ function wrapTextLines(context, text, maxWidth) {
   return allLines;
 }
 
-/**
- * Path for rounded rectangle
- */
 function roundRect(context, x, y, width, height, radius) {
   context.beginPath();
   context.moveTo(x + radius, y);
@@ -1292,13 +1781,35 @@ function updateCaption() {
   let caption = '';
 
   if (state.currentMode === 'info') {
-    const title = state.info.title.replace(/\n/g, ' ').trim() || 'COMUNICADO IMPORTANTE';
-    caption = `🔔 IMPORTANTE | ${title}\n\n`;
-    if (state.info.hasBadge && (state.info.badgeVal || state.info.badgeSub)) {
-      caption += `🗓️ ${state.info.badgeVal.trim()} - ${state.info.badgeSub.replace(/\n/g, ' ').trim()}\n\n`;
+    const title = (state.info.title || '').replace(/\n/g, ' ').trim() || 'COMUNICADO IMPORTANTE';
+    const tplLabel = state.info.template === 'recordatorio' ? '⏰ RECORDATORIO' : '🔔 IMPORTANTE';
+    caption = `${tplLabel} | ${title}\n\n`;
+
+    if (state.info.hasBadge && state.info.badges && state.info.badges.length > 0) {
+      state.info.badges.forEach(b => {
+        if (b.val || b.sub) {
+          caption += `🗓️ ${b.val.trim()} - ${(b.sub || '').replace(/\n/g, ' ').trim()}\n`;
+        }
+      });
+      caption += '\n';
     }
     if (state.info.body) {
       caption += `${state.info.body.trim()}\n\n`;
+    }
+  } else if (state.currentMode === 'mesa') {
+    const title = (state.mesa.title || '').replace(/\n/g, ' ').trim() || 'MESAS DE EXAMEN';
+    caption = `📅 MESA DE EXAMEN | ${title}\n\n`;
+
+    if (state.mesa.hasBadge && state.mesa.badges && state.mesa.badges.length > 0) {
+      state.mesa.badges.forEach(b => {
+        if (b.val || b.sub) {
+          caption += `🗓️ ${b.val.trim()} - ${(b.sub || '').replace(/\n/g, ' ').trim()}\n`;
+        }
+      });
+      caption += '\n';
+    }
+    if (state.mesa.body) {
+      caption += `${state.mesa.body.trim()}\n\n`;
     }
   } else {
     const validDays = state.paro.days.filter(d => d.day.trim() || d.date.trim());
@@ -1354,16 +1865,17 @@ function fallbackCopy(text) {
 // ============================================================================
 // Export & Share (Instagram Stories)
 // ============================================================================
-
-/**
- * Download High-Resolution 1080x1920 PNG file
- */
 function downloadHighResStory() {
-  const firstDay = state.paro.days[0] || { date: 'paro' };
-  const dateStr = firstDay.date ? firstDay.date.replace('/', '-') : Date.now().toString().slice(-4);
-  const filename = state.currentMode === 'info'
-    ? `story-info-upl-${Date.now().toString().slice(-4)}.png`
-    : `story-paro-upl-${dateStr}.png`;
+  let filename = '';
+  if (state.currentMode === 'info') {
+    filename = `story-info-upl-${Date.now().toString().slice(-4)}.png`;
+  } else if (state.currentMode === 'mesa') {
+    filename = `story-mesa-examen-upl-${Date.now().toString().slice(-4)}.png`;
+  } else {
+    const firstDay = state.paro.days[0] || { date: 'paro' };
+    const dateStr = firstDay.date ? firstDay.date.replace('/', '-') : Date.now().toString().slice(-4);
+    filename = `story-paro-upl-${dateStr}.png`;
+  }
 
   dom.canvas.toBlob((blob) => {
     if (!blob) {
@@ -1382,11 +1894,12 @@ function downloadHighResStory() {
   }, 'image/png');
 }
 
-/**
- * Share Story using native Web Share API (Mobile phones / Instagram)
- */
 async function shareStory() {
-  const filename = state.currentMode === 'info' ? 'story-info-upl.png' : 'story-paro-upl.png';
+  let filename = 'story-upl.png';
+  if (state.currentMode === 'info') filename = 'story-info-upl.png';
+  else if (state.currentMode === 'mesa') filename = 'story-mesa-examen-upl.png';
+  else filename = 'story-paro-upl.png';
+
   const caption = dom.captionPreviewText.textContent;
 
   dom.canvas.toBlob(async (blob) => {
@@ -1432,7 +1945,7 @@ function toggleReferenceOverlay() {
 }
 
 function updateReferenceOverlayImage() {
-  dom.refOverlay.src = state.currentMode === 'info' ? './info-output-ref.png' : './paro-output-ref.png';
+  dom.refOverlay.src = state.currentMode === 'paro' ? './paro-output-ref.png' : './info-output-ref.png';
 }
 
 // ============================================================================
