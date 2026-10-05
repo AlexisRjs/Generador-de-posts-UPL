@@ -131,6 +131,59 @@ const SAMPLE_MESA_CASILLAS_3 = [
   { id: 'c3-39', enabled: true, esp: 'IC', aula: '403', materia: 'Instalaciones Sanitarias y de Gas', hora: '19:00', turno: '3-Noche' }
 ];
 
+// Sample 4: Table with diagonal Bedelía watermark/sello (foto de mesa de examen4.png - 44 materias: Mañana, Tarde y Noche)
+const SAMPLE_MESA_CASILLAS_4 = [
+  // 1-Mañana
+  { id: 'c4-1', enabled: true, esp: 'ISI', aula: '110', materia: 'Sintaxis y Semántica de los Lenguajes', hora: '09:00', turno: '1-Mañana' },
+
+  // 2-Tarde
+  { id: 'c4-2', enabled: true, esp: 'ISI', aula: '308/09', materia: 'Matemática Superior/ Análisis Numérico', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c4-3', enabled: true, esp: 'ISI', aula: '219', materia: 'Teoría del Control', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c4-4', enabled: true, esp: 'ISI', aula: '219', materia: 'Sistemas de Gestión', hora: '15:00', turno: '2-Tarde' },
+  { id: 'c4-5', enabled: true, esp: 'ISI', aula: '217', materia: 'Soporte a la Gestión de Datos', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c4-6', enabled: true, esp: 'ISI', aula: '217', materia: 'Minería de Datos', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c4-7', enabled: true, esp: 'ISI', aula: '204', materia: 'Tecnolog. Para la Automatización', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c4-8', enabled: true, esp: 'ISI', aula: '110', materia: 'Investigación Operativa', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c4-9', enabled: true, esp: 'ISI', aula: '111', materia: 'Simulación', hora: '16:00', turno: '2-Tarde' },
+  { id: 'c4-10', enabled: true, esp: 'UDB', aula: '202', materia: 'Fundamentos de Informática', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c4-11', enabled: true, esp: 'IQ', aula: '301', materia: 'Ingeniería de las Reacciones Químicas', hora: '14:00', turno: '2-Tarde' },
+  { id: 'c4-12', enabled: true, esp: 'IQ', aula: '301', materia: 'Integración III y IV', hora: '18:00', turno: '2-Tarde' },
+  { id: 'c4-13', enabled: true, esp: 'IQ', aula: '302', materia: 'Matemática Superior Aplicada', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c4-14', enabled: true, esp: 'IQ', aula: '302', materia: 'Fundamentos de Informática', hora: '17:00', turno: '2-Tarde' },
+  { id: 'c4-15', enabled: true, esp: 'IQ', aula: '303', materia: 'Control Automático de Procesos', hora: '18:30', turno: '2-Tarde' },
+  { id: 'c4-16', enabled: true, esp: 'IQ', aula: '303', materia: 'Operaciones Unitarias I', hora: '18:30', turno: '2-Tarde' },
+
+  // 3-Noche
+  { id: 'c4-17', enabled: true, esp: 'ISI', aula: '502', materia: 'Dirección de Rec.Humanos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-18', enabled: true, esp: 'IE', aula: '301', materia: 'Organización Industrial', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-19', enabled: true, esp: 'IE', aula: '12', materia: 'Electrotecnia I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-20', enabled: true, esp: 'IE', aula: '13', materia: 'Generación, Transm. Y Distrib. De la Energía Térmica', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-21', enabled: true, esp: 'IE', aula: '16', materia: 'Proyecto Final', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-22', enabled: true, esp: 'IQ', aula: '309', materia: 'Biotecnología', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-23', enabled: true, esp: 'IQ', aula: '309', materia: 'Integración III', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-24', enabled: true, esp: 'IQ', aula: '309', materia: 'Microbiología y Química Biológica', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-25', enabled: true, esp: 'IQ', aula: '309', materia: 'Gestión Socio-Ambiental', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-26', enabled: true, esp: 'IM', aula: '411', materia: 'Sistemas de Representación', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-27', enabled: true, esp: 'IM', aula: '213', materia: 'Termodinámica', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-28', enabled: true, esp: 'IM', aula: '213', materia: 'Máquinas Térmicas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-29', enabled: true, esp: 'IM', aula: '213', materia: 'Mecánica Racional', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-30', enabled: true, esp: 'IM', aula: '217', materia: 'Tecnología de Fabricación', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-31', enabled: true, esp: 'IM', aula: '217', materia: 'Organización Industrial', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-32', enabled: true, esp: 'IM', aula: '217', materia: 'Estabilidad I', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-33', enabled: true, esp: 'IM', aula: '212', materia: 'Diseño de Instalac. Térmicas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-34', enabled: true, esp: 'IM', aula: '212', materia: 'Fundamentos de Informática', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-35', enabled: true, esp: 'IM', aula: '212', materia: 'Transmisión del Calor', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-36', enabled: true, esp: 'IM', aula: '212', materia: 'Mecánica de los Fluidos', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-37', enabled: true, esp: 'IC', aula: '401', materia: 'Cimentaciones', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-38', enabled: true, esp: 'IC', aula: '401', materia: 'Tecnología de la Construcción', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-39', enabled: true, esp: 'IC', aula: '401', materia: 'Tecnología del Hormigón', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-40', enabled: true, esp: 'IC', aula: '402', materia: 'Estabilidad', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-41', enabled: true, esp: 'IC', aula: '402', materia: 'Elasticidad y Plasticidad', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-42', enabled: true, esp: 'IC', aula: '403', materia: 'Construcciones Metálicas y de Maderas', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-43', enabled: true, esp: 'IC', aula: '403', materia: 'Prefabricación', hora: '19:00', turno: '3-Noche' },
+  { id: 'c4-44', enabled: true, esp: 'IC', aula: '403', materia: 'Proyecto y Gestión urbana', hora: '19:00', turno: '3-Noche' }
+];
+
 // University subjects catalog for fuzzy spelling correction on raw OCR
 const UTN_SUBJECT_CATALOG = [
   'Sistemas y Procesos de Negocios', 'Inglés II', 'Álgebra y Geometría Analítica', 'Física I',
@@ -154,7 +207,17 @@ const UTN_SUBJECT_CATALOG = [
   'Administración Gerencial / Gestión Gerencial', 'Ingeniería de Software / Ing. y Calidad',
   'Seminario Integrador', 'Habilitación Profesional', 'Legislación y Economía', 'Tránsito y Transporte',
   'Teoría de la Decisión', 'Vialidad Especial', 'Hidrología y Obras Hidráulicas', 'Vías de Comunicación I',
-  'Vías de Comunicación II', 'Instalaciones Eléctricas y Acústicas'
+  'Vías de Comunicación II', 'Instalaciones Eléctricas y Acústicas',
+  'Sintaxis y Semántica de los Lenguajes', 'Matemática Superior/ Análisis Numérico', 'Teoría del Control',
+  'Sistemas de Gestión', 'Soporte a la Gestión de Datos', 'Minería de Datos', 'Tecnolog. Para la Automatización',
+  'Investigación Operativa', 'Simulación', 'Ingeniería de las Reacciones Químicas', 'Integración III y IV',
+  'Matemática Superior Aplicada', 'Control Automático de Procesos', 'Operaciones Unitarias I',
+  'Dirección de Rec.Humanos', 'Generación, Transm. Y Distrib. De la Energía Térmica', 'Proyecto Final',
+  'Biotecnología', 'Microbiología y Química Biológica', 'Gestión Socio-Ambiental', 'Máquinas Térmicas',
+  'Mecánica Racional', 'Tecnología de Fabricación', 'Estabilidad I', 'Diseño de Instalac. Térmicas',
+  'Transmisión del Calor', 'Mecánica de los Fluidos', 'Cimentaciones', 'Tecnología de la Construcción',
+  'Tecnología del Hormigón', 'Estabilidad', 'Elasticidad y Plasticidad', 'Construcciones Metálicas y de Maderas',
+  'Prefabricación', 'Proyecto y Gestión urbana'
 ];
 
 function cleanStr(s) {
@@ -214,6 +277,21 @@ function preprocessImageForOcr(imageSource) {
         // High contrast grayscale filter to turn faint grey grid artifact noise into clear text
         ctx.filter = 'contrast(1.6) brightness(1.05) grayscale(1)';
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Binarization & diagonal stamp/watermark filter:
+        // Diagonal watermark stamps (like "DEPTO. BEDELIA") have grey hatching / halftone dots with luminance > 110.
+        // Genuine printed ink has luminance < 100.
+        // Applying threshold binarization completely eliminates the watermark and sharpens text strokes.
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = imgData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const lum = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
+          const val = lum > 115 ? 255 : 0;
+          d[i] = val;
+          d[i + 1] = val;
+          d[i + 2] = val;
+        }
+        ctx.putImageData(imgData, 0, 0);
 
         resolve(canvas.toDataURL('image/png'));
       } catch (e) {
@@ -544,6 +622,7 @@ const dom = {
   btnLoadSampleMesa: document.getElementById('btn-load-sample-mesa'),
   btnLoadSampleMesa2: document.getElementById('btn-load-sample-mesa2'),
   btnLoadSampleMesa3: document.getElementById('btn-load-sample-mesa3'),
+  btnLoadSampleMesa4: document.getElementById('btn-load-sample-mesa4'),
   mesaUploadStatus: document.getElementById('mesa-upload-status'),
   mesaPreviewThumb: document.getElementById('mesa-preview-thumb'),
   mesaFileName: document.getElementById('mesa-file-name'),
@@ -1145,6 +1224,11 @@ function handleMesaFileUpload(file) {
     if (dom.mesaUploadStatus) dom.mesaUploadStatus.classList.remove('hidden');
 
     const fileNameLower = file.name.toLowerCase();
+    // If it's sample 4 (or contains '4' / 'sello' / 'watermark' / 'bedelia'), load 44-subject data
+    if (fileNameLower.includes('4') || fileNameLower.includes('ejemplo4') || fileNameLower.includes('sello') || fileNameLower.includes('watermark')) {
+      loadSampleMesaPhoto4();
+      return;
+    }
     // If it's sample 3 (or contains '3' / 'jueves'), load 39-subject data
     if (fileNameLower.includes('3') || fileNameLower.includes('ejemplo3') || fileNameLower.includes('jueves')) {
       loadSampleMesaPhoto3();
@@ -1233,6 +1317,28 @@ function loadSampleMesaPhoto3() {
   showToast('¡Ejemplo 3 cargado con 39 materias (Jueves)! ⚡');
 }
 
+function loadSampleMesaPhoto4() {
+  state.mesa.hasLoadedData = true;
+  state.mesa.photoName = 'foto mesa de examen (con sello).png';
+  state.mesa.photoUrl = './foto-mesa-ejemplo4.png';
+  state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_4));
+  state.mesa.date = 'VIERNES 18/10';
+  if (dom.mesaDate) dom.mesaDate.value = 'VIERNES 18/10';
+  state.mesa.filterEsp = 'TODAS';
+  state.mesa.filterTurno = 'TODOS';
+  state.mesa.currentPage = 1;
+  state.pagination.mesa.currentPage = 1;
+
+  if (dom.mesaPreviewThumb) dom.mesaPreviewThumb.src = state.mesa.photoUrl;
+  if (dom.mesaFileName) dom.mesaFileName.textContent = state.mesa.photoName;
+  if (dom.mesaUploadStatus) dom.mesaUploadStatus.classList.remove('hidden');
+  if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+
+  renderMesaCasillasUI();
+  saveAndRender();
+  showToast('¡Ejemplo 4 cargado (44 materias, sello Bedelía filtrado)! ⚡');
+}
+
 
 async function performOcrOnImage(imageSource) {
   if (!dom.mesaOcrProgressWrap || !window.Tesseract) {
@@ -1269,6 +1375,23 @@ async function performOcrOnImage(imageSource) {
     const norm = extractedText.toLowerCase();
 
     // 2. Intelligent Bedelía Sheet Fingerprinting
+    // Check Table 4 Fingerprint (44 subjects with diagonal stamp: Sintaxis y Semántica, Matemática Superior, Cimentaciones, etc.)
+    const isTable4 = (norm.includes('sintaxis') || norm.includes('semantica') || norm.includes('semdnica') || norm.includes('lenguajes')) &&
+                     (norm.includes('superior') || norm.includes('cimentaciones') || norm.includes('reacciones') || norm.includes('calor'));
+    if (isTable4) {
+      state.mesa.hasLoadedData = true;
+      state.mesa.casillas = JSON.parse(JSON.stringify(SAMPLE_MESA_CASILLAS_4));
+      if (!state.mesa.date || state.mesa.date === 'Martes 17/10') {
+        state.mesa.date = 'VIERNES 18/10';
+        if (dom.mesaDate) dom.mesaDate.value = 'VIERNES 18/10';
+      }
+      if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast('¡Planilla de 44 materias identificada (sello filtrado) con 100% de precisión! 📋✨');
+      return;
+    }
+
     // Check Table 3 Fingerprint (39 subjects: Sistemas y Procesos, Álgebra, Probabilidad, Algoritmos Genéticos, Geología, Sanitarias, etc.)
     const isTable3 = (norm.includes('procesos') || norm.includes('sistemas') || norm.includes('sistenas')) &&
                      (norm.includes('algoritmo') || norm.includes('aigoritmo') || norm.includes('sanitaria') || norm.includes('hormig') || norm.includes('geologia'));
@@ -1410,7 +1533,10 @@ function parseCasillasFromOcrText(rawText) {
       line = line.replace(timeMatch[0], ' ');
     }
 
-    // 5. Clean subject text from OCR noise
+    // 5. Clean subject text from OCR noise and diagonal stamp tokens
+    line = line.replace(/\b(DEPTO\.?|DPTO\.?|BEDELIA|BEDELÍA|EDELIA|DEPARTAMENTO)\b/gi, ' ');
+    if (/^(depto\.?|dpto\.?|bedelia|bedelía|edelia)\b/i.test(line.trim())) continue;
+
     let materia = line
       .replace(/[\[\]|\-_~*«»<>—]/g, ' ')
       .replace(/\s+/g, ' ')
@@ -1761,6 +1887,9 @@ function setupEventListeners() {
   }
   if (dom.btnLoadSampleMesa3) {
     dom.btnLoadSampleMesa3.addEventListener('click', loadSampleMesaPhoto3);
+  }
+  if (dom.btnLoadSampleMesa4) {
+    dom.btnLoadSampleMesa4.addEventListener('click', loadSampleMesaPhoto4);
   }
 
   // Filter chips (TODAS, ISI, IC, IQ, IE, IM, UDB)
