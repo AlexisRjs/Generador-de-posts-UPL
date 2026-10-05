@@ -2225,7 +2225,19 @@ function drawCanvasContent() {
  */
 
 function renderMesaCasillasContent(context, width, height) {
-  // Canvas rendering integration with filters for carrera and turno
+  if (!state.mesa.hasLoadedData || (state.mesa.casillas || []).length === 0) {
+    context.save();
+    context.fillStyle = 'rgba(255, 255, 255, 0.10)';
+    roundRect(context, 120, 600, 840, 440, 24);
+    context.fill();
+    context.fillStyle = '#ffffff';
+    context.font = '800 32px "Montserrat", sans-serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('PLANILLA DE EXÁMENES', 540, 795);
+    context.restore();
+    return;
+  }
 }
 function renderBlockBasedContent(context, width, height, data) {
   const { title, titleY = 0, titleScale = 1.0, hasBadge, badges, body, bodyY = 0, bodyScale = 1.0, align, yOffset, scale } = data;
