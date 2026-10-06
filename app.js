@@ -1587,36 +1587,99 @@ function handleMesaFileUpload(file) {
   reader.readAsDataURL(file);
 }
 
-function updateEngineBadge(isOnline) {
+let activeBackendBaseUrl = '';
+
+function getCandidateBackendUrls() {
+  const candidates = [];
+  
+  // 1. Manual override configured in localStorage
+  const saved = localStorage.getItem('upl_ocr_backend_url');
+  if (saved && saved.trim()) {
+    candidates.push(saved.trim().replace(/\/+$/, ''));
+  }
+
+  // 2. Relative API path (ideal for Vercel deployment: https://.../api/health)
+  candidates.push('');
+
+  const hostname = window.location.hostname;
+  // 3. Current host with port 8000 (if accessed from mobile on local Wi-Fi: http://192.168.x.x:5173)
+  if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
+      candidates.push(`http://${hostname}:8000`);
+    }
+  }
+
+  // 4. Local loopback ports
+  candidates.push('http://127.0.0.1:8000');
+  candidates.push('http://localhost:8000');
+
+  return [...new Set(candidates)];
+}
+
+function updateEngineBadge(isOnline, activeUrl = '') {
   const badge = dom.mesaEngineBadge || document.getElementById('mesa-engine-badge');
   const text = dom.mesaEngineText || document.getElementById('mesa-engine-text');
   if (!badge) return;
   if (isOnline) {
     badge.className = 'ocr-engine-badge online';
-    if (text) text.textContent = 'Python OCR: Activo ⚡';
-    badge.title = 'Motor Python conectado en http://127.0.0.1:8000 (OpenCV + RapidOCR ONNX)';
+    const label = activeUrl === '' ? 'Python OCR: Nube ⚡' : 'Python OCR: Activo ⚡';
+    if (text) text.textContent = label;
+    badge.title = `Motor Python conectado (${activeUrl || 'Vercel API'}). Toca para ver detalles o cambiar servidor.`;
   } else {
     badge.className = 'ocr-engine-badge offline';
     if (text) text.textContent = 'Python OCR: Desconectado ⚠️';
-    badge.title = 'Inicia el servidor en la terminal con "npm run python:server" para habilitar el OCR.';
+    badge.title = 'Servidor desconectado. Toca para configurar la IP de tu PC o reconectar.';
   }
 }
 
 async function checkPythonOcrHealth() {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const res = await fetch('http://127.0.0.1:8000/api/health', { method: 'GET', signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (res.ok) {
-      updateEngineBadge(true);
-      return true;
+  const candidates = getCandidateBackendUrls();
+
+  for (const base of candidates) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const url = `${base}/api/health`;
+      const res = await fetch(url, { method: 'GET', signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        activeBackendBaseUrl = base;
+        updateEngineBadge(true, base);
+        return true;
+      }
+    } catch (e) {
+      // continue testing candidates
     }
-  } catch (e) {
-    // offline
   }
+
   updateEngineBadge(false);
   return false;
+}
+
+function openBackendConfigPrompt() {
+  const currentSaved = localStorage.getItem('upl_ocr_backend_url') || (activeBackendBaseUrl || 'http://127.0.0.1:8000');
+  const userUrl = prompt(
+    '⚙️ CONFIGURACIÓN DEL MOTOR PYTHON (OCR)\n\n' +
+    '• Si estás en el celular y tu PC está en la misma red Wi-Fi, escribe la IP de tu PC (ej: http://192.168.1.35:8000).\n' +
+    '• Si usas Vercel en la nube, deja un punto (.) o vacío para usar el API de Vercel.',
+    currentSaved
+  );
+
+  if (userUrl !== null) {
+    const trimmed = userUrl.trim();
+    if (trimmed === '' || trimmed === '.') {
+      localStorage.removeItem('upl_ocr_backend_url');
+      showToast('Configuración reiniciada a automático / Vercel.');
+    } else {
+      let finalUrl = trimmed.replace(/\/+$/, '');
+      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = `http://${finalUrl}`;
+      }
+      localStorage.setItem('upl_ocr_backend_url', finalUrl);
+      showToast(`URL guardada: ${finalUrl}`);
+    }
+    checkPythonOcrHealth();
+  }
 }
 
 async function performOcrOnImage(imageSource, file = null) {
@@ -1648,44 +1711,65 @@ async function performOcrOnImage(imageSource, file = null) {
     if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '50%';
     if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Extrayendo materias con OpenCV + RapidOCR en Python...';
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    // Verify or discover active URL
+    if (!activeBackendBaseUrl) {
+      await checkPythonOcrHealth();
+    }
 
-    const pyResponse = await fetch('http://127.0.0.1:8000/api/ocr-mesa', {
-      method: 'POST',
-      body: formData,
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
+    const candidatesToTry = activeBackendBaseUrl
+      ? [activeBackendBaseUrl, ...getCandidateBackendUrls().filter(u => u !== activeBackendBaseUrl)]
+      : getCandidateBackendUrls();
 
-    if (pyResponse.ok) {
-      const pyData = await pyResponse.json();
-      if (pyData && pyData.success && Array.isArray(pyData.casillas) && pyData.casillas.length > 0) {
-        updateEngineBadge(true);
-        if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '100%';
-        if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = `¡Listo! ${pyData.casillas.length} materias detectadas ⚡`;
+    let pyData = null;
 
-        if (pyData.date) {
-          state.mesa.date = pyData.date;
-          if (dom.mesaDate) dom.mesaDate.value = pyData.date;
+    for (const base of candidatesToTry) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
+        const endpoint = `${base}/api/ocr-mesa`;
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && Array.isArray(data.casillas) && data.casillas.length > 0) {
+            activeBackendBaseUrl = base;
+            pyData = data;
+            break;
+          }
         }
-
-        state.mesa.hasLoadedData = true;
-        state.mesa.casillas = pyData.casillas;
-
-        setTimeout(() => {
-          if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
-        }, 800);
-
-        renderMesaCasillasUI();
-        saveAndRender();
-        showToast(`¡${pyData.casillas.length} materias extraídas exitosamente con Python! ⚡`);
-        return;
-      } else {
-        throw new Error('El motor no detectó materias en la imagen.');
+      } catch (err) {
+        // try next candidate
       }
+    }
+
+    if (pyData && pyData.success && Array.isArray(pyData.casillas) && pyData.casillas.length > 0) {
+      updateEngineBadge(true, activeBackendBaseUrl);
+      if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '100%';
+      if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = `¡Listo! ${pyData.casillas.length} materias detectadas ⚡`;
+
+      if (pyData.date) {
+        state.mesa.date = pyData.date;
+        if (dom.mesaDate) dom.mesaDate.value = pyData.date;
+      }
+
+      state.mesa.hasLoadedData = true;
+      state.mesa.casillas = pyData.casillas;
+
+      setTimeout(() => {
+        if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+      }, 800);
+
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast(`¡${pyData.casillas.length} materias extraídas exitosamente con Python! ⚡`);
+      return;
     } else {
-      throw new Error(`El servidor Python devolvió código ${pyResponse.status}`);
+      throw new Error('No se pudo conectar con el motor Python en ningún endpoint.');
     }
   } catch (err) {
     console.error('Error al procesar OCR con Python:', err);
@@ -1694,9 +1778,10 @@ async function performOcrOnImage(imageSource, file = null) {
     state.mesa.hasLoadedData = true;
     renderMesaCasillasUI();
     saveAndRender();
-    showToast('Inicia el servidor Python con "npm run python:server" en la terminal para procesar la imagen.', 'error');
+    showToast('No se pudo conectar con el motor Python. Toca el botón de estado OCR para configurar la IP o inicia el servidor.', 'error');
   }
 }
+
 
 
 // ============================================================================
@@ -2001,6 +2086,10 @@ function setupEventListeners() {
     dom.btnTriggerUploadMesa.addEventListener('click', () => {
       if (dom.mesaFileInput) dom.mesaFileInput.click();
     });
+  }
+
+  if (dom.mesaEngineBadge) {
+    dom.mesaEngineBadge.addEventListener('click', openBackendConfigPrompt);
   }
 
   if (dom.mesaFileInput) {
