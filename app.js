@@ -715,7 +715,7 @@ const state = {
     photoName: '',
     photoUrl: '',
     date: 'Martes 17/10',
-    filterEsp: 'TODAS', // 'TODAS' | 'ISI' | 'IC' | 'IQ' | 'IE' | 'IM' | 'UDB'
+    filterEsp: 'TODAS', // 'TODAS' | 'UBD' | 'ISI' | 'IC' | 'IM' | 'IEE' | 'IQ'
     filterTurno: 'TODOS', // 'TODOS' | '1-Mañana' | '2-Tarde' | '3-Noche'
     distribMode: 'auto', // 'auto' | 'pages' | 'all'
     currentPage: 1,
@@ -1316,10 +1316,20 @@ function getCarreraColor(esp) {
   if (e.includes('ISI')) return '#651c99'; // Purple UTN Sistemas
   if (e.includes('IC')) return '#00629b';  // Blue Civil
   if (e.includes('IQ')) return '#c24b00';  // Orange Quimica
-  if (e.includes('IE')) return '#d97706';  // Amber Electromecánica
+  if (e.includes('IEE') || e.includes('IE')) return '#d97706';  // Amber Electromecánica / Eléctrica
   if (e.includes('IM')) return '#b91c1c';  // Crimson Red Mecánica
-  if (e.includes('UDB')) return '#008552'; // Green Basicas
+  if (e.includes('UBD') || e.includes('UDB')) return '#008552'; // Green Basicas
   return '#4c1575';
+}
+
+function matchesEsp(itemEsp, filterEsp) {
+  if (!filterEsp || filterEsp === 'TODAS') return true;
+  const a = (itemEsp || '').toUpperCase().trim();
+  const b = filterEsp.toUpperCase().trim();
+  if (a === b) return true;
+  if ((a === 'UBD' || a === 'UDB') && (b === 'UBD' || b === 'UDB')) return true;
+  if ((a === 'IEE' || a === 'IE') && (b === 'IEE' || b === 'IE')) return true;
+  return false;
 }
 
 function renderMesaCasillasUI() {
@@ -1332,7 +1342,7 @@ function renderMesaCasillasUI() {
 
   // Filter casillas if specific carrera or turno is selected
   const displayedCasillas = allCasillas.filter(c => {
-    if (currentFilter !== 'TODAS' && (c.esp || '').toUpperCase().trim() !== currentFilter) {
+    if (!matchesEsp(c.esp, currentFilter)) {
       return false;
     }
     if (currentTurno !== 'TODOS') {
@@ -1347,7 +1357,7 @@ function renderMesaCasillasUI() {
 
   const activeInFlyerCount = allCasillas.filter(c => {
     if (c.enabled === false) return false;
-    if (currentFilter !== 'TODAS' && (c.esp || '').toUpperCase().trim() !== currentFilter) return false;
+    if (!matchesEsp(c.esp, currentFilter)) return false;
     if (currentTurno !== 'TODOS') {
       const cTurno = (c.turno || '').toUpperCase().trim();
       const searchTurno = currentTurno.replace('1-', '').replace('2-', '').replace('3-', '');
@@ -1412,12 +1422,12 @@ function renderMesaCasillasUI() {
           <input type="checkbox" class="casilla-checkbox" data-id="${casilla.id}" ${casilla.enabled !== false ? 'checked' : ''} title="Activar/Desactivar en flyer">
           <span class="casilla-num-badge">#${originalIndex + 1}</span>
           <select class="casilla-esp-select" data-id="${casilla.id}" style="border-left: 3px solid ${espColor};">
-            <option value="ISI" ${esp === 'ISI' ? 'selected' : ''}>ISI</option>
-            <option value="IC" ${esp === 'IC' ? 'selected' : ''}>IC</option>
-            <option value="IQ" ${esp === 'IQ' ? 'selected' : ''}>IQ</option>
-            <option value="IE" ${esp === 'IE' ? 'selected' : ''}>IE</option>
-            <option value="IM" ${esp === 'IM' ? 'selected' : ''}>IM</option>
-            <option value="UDB" ${esp === 'UDB' ? 'selected' : ''}>UDB</option>
+            <option value="UBD" ${matchesEsp(esp, 'UBD') ? 'selected' : ''}>UBD</option>
+            <option value="ISI" ${matchesEsp(esp, 'ISI') ? 'selected' : ''}>ISI</option>
+            <option value="IC" ${matchesEsp(esp, 'IC') ? 'selected' : ''}>IC</option>
+            <option value="IM" ${matchesEsp(esp, 'IM') ? 'selected' : ''}>IM</option>
+            <option value="IEE" ${matchesEsp(esp, 'IEE') ? 'selected' : ''}>IEE</option>
+            <option value="IQ" ${matchesEsp(esp, 'IQ') ? 'selected' : ''}>IQ</option>
           </select>
         </div>
         <button type="button" class="btn-remove-casilla" data-id="${casilla.id}" title="Eliminar esta casilla">✕</button>
@@ -1532,7 +1542,7 @@ function attachCasillasEventListeners() {
 function updateCasillaCounter() {
   const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
   const allCasillas = state.mesa.casillas || [];
-  const activeInFlyerCount = allCasillas.filter(c => c.enabled !== false && (currentFilter === 'TODAS' || (c.esp || '').toUpperCase().trim() === currentFilter)).length;
+  const activeInFlyerCount = allCasillas.filter(c => c.enabled !== false && matchesEsp(c.esp, currentFilter)).length;
   if (dom.mesaSelectedCount) {
     dom.mesaSelectedCount.textContent = `${activeInFlyerCount} de ${allCasillas.length} en flyer`;
   }
@@ -2155,7 +2165,7 @@ function setupEventListeners() {
       const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
       const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
       (state.mesa.casillas || []).forEach(c => {
-        let matchEsp = (currentFilter === 'TODAS' || (c.esp || '').toUpperCase().trim() === currentFilter);
+        let matchEsp = matchesEsp(c.esp, currentFilter);
         let matchTurno = (currentTurno === 'TODOS' || (c.turno || '').toUpperCase().includes(currentTurno.replace('1-', '').replace('2-', '').replace('3-', '')));
         if (matchEsp && matchTurno) {
           c.enabled = true;
@@ -2172,7 +2182,7 @@ function setupEventListeners() {
       const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
       const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
       (state.mesa.casillas || []).forEach(c => {
-        let matchEsp = (currentFilter === 'TODAS' || (c.esp || '').toUpperCase().trim() === currentFilter);
+        let matchEsp = matchesEsp(c.esp, currentFilter);
         let matchTurno = (currentTurno === 'TODOS' || (c.turno || '').toUpperCase().includes(currentTurno.replace('1-', '').replace('2-', '').replace('3-', '')));
         if (matchEsp && matchTurno) {
           c.enabled = false;
@@ -2848,7 +2858,7 @@ function renderMesaCasillasContent(context, width, height) {
 
   const activeCasillas = allCasillas.filter(c => {
     if (c.enabled === false) return false;
-    if (currentFilter !== 'TODAS' && (c.esp || '').toUpperCase().trim() !== currentFilter) {
+    if (!matchesEsp(c.esp, currentFilter)) {
       return false;
     }
     if (currentTurno !== 'TODOS') {
@@ -3886,8 +3896,7 @@ function updateCaption() {
 
     const activeCasillas = (state.mesa.casillas || []).filter(c => {
       if (c.enabled === false) return false;
-      if (state.mesa.filterEsp === 'TODAS') return true;
-      return (c.esp || '').toUpperCase().trim() === state.mesa.filterEsp.toUpperCase();
+      return matchesEsp(c.esp, state.mesa.filterEsp);
     });
 
     if (activeCasillas.length > 0) {

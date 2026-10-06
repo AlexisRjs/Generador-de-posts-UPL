@@ -99,39 +99,92 @@ UTN_SUBJECT_CATALOG = [
 ]
 
 UTN_SUBJECT_CAREER_MAP = {
-    "Análisis Matemático I": "UDB", "Álgebra y Geometría Analítica": "UDB", "Física I": "UDB", "Inglés I": "UDB",
+    # Materias Básicas / UBD
+    "Análisis Matemático I": "UBD", "Álgebra y Geometría Analítica": "UBD", "Física I": "UBD", "Inglés I": "UBD",
+    "Análisis Matemático II": "UBD", "Física II": "UBD", "Inglés II": "UBD",
+    "Probabilidad y Estadística": "UBD", "Economía": "UBD", "Legislación": "UBD", "Química General": "UBD",
+
+    # Sistemas de Información / ISI
     "Lógica y Esctructuras Discretas": "ISI", "Algoritmos y Estructuras de Datos": "ISI", "Arquitectura de Computadoras": "ISI",
-    "Sistemas y Procesos de Negocios": "ISI", "Sistemas y Procesos de Negocio": "ISI", "Análisis Matemático II": "UDB",
-    "Física II": "UDB", "Ingeniería y sociedad": "ISI", "Inglés II": "UDB", "Sintaxis y Semántica de los Lenguajes": "ISI",
-    "Paradigmas de Programación": "ISI", "Sistemas Operativos": "ISI", "Análisis de Sistemas de Información": "ISI",
-    "Probabilidad y Estadística": "UDB", "Economía": "UDB", "Bases de Datos": "ISI", "Desarrollo de Software": "ISI",
-    "Comunicación de Datos": "ISI", "Análisis Numérico": "ISI", "Diseño de Sistemas de Información": "ISI", "Legislación": "UDB",
+    "Sistemas y Procesos de Negocios": "ISI", "Sistemas y Procesos de Negocio": "ISI", "Ingeniería y sociedad": "ISI",
+    "Sintaxis y Semántica de los Lenguajes": "ISI", "Paradigmas de Programación": "ISI", "Sistemas Operativos": "ISI",
+    "Análisis de Sistemas de Información": "ISI", "Bases de Datos": "ISI", "Desarrollo de Software": "ISI",
+    "Comunicación de Datos": "ISI", "Análisis Numérico": "ISI", "Diseño de Sistemas de Información": "ISI",
     "Ingeniería y Calidad de Software": "ISI", "Redes de Datos": "ISI", "Investigación Operativa": "ISI", "Simulación": "ISI",
     "Tecnologías para la Automatización": "ISI", "Administración de Sistemas de Información": "ISI",
     "Inteligencia Artificial": "ISI", "Ciencia de Datos": "ISI", "Sistemas de Gestión": "ISI", "Gestión Gerencial": "ISI",
     "Seguridad en los Sistemas de Información": "ISI", "Proyecto Final": "ISI", "Entornos Gráficos": "ISI",
     "Algorítmos Genéticos": "ISI", "Algoritmos Genéticos": "ISI", "Administración de Recursos": "ISI",
     "Teoría del Control": "ISI", "Soporte a la Gestión de Datos": "ISI",
-    "Fenómenos de Transporte": "IQ", "Química Analítica": "IQ", "Química Analítica Aplicada": "IQ",
-    "Aplic. de Programación Matemática": "IQ", "Calidad de los Alimentos": "IQ", "Control Estadístico de Procesos": "IQ",
-    "Gestión de Calidad y Mejora Continua": "IQ", "Organización Industrial": "IQ", "Uso del Recurso Hídrico": "IQ",
-    "Cálculo Avanzado": "IM", "Ingeniería y Desarrollo": "IM", "Máquinas Térmicas": "IM", "Transmisión del Calor": "IM",
-    "Electrónica Aplicada": "IE", "Integración Eléctrica I": "IE", "Integración Eléctrica II": "IE",
-    "Integración III": "IE", "Integración IV": "IE", "Integración III y IV": "IE",
-    "Electrotecnia I": "IE", "Electrotecnia II": "IE", "Electrónica I": "IE", "Electrónica II": "IE",
-    "Máquinas Eléctricas I": "IE", "Máquinas Eléctricas II": "IE", "Electrónica y Sistemas de Control": "IE",
-    "Acondicionamientos y Controles Eléctricos": "IE", "Control Numérico, Robótica y Sistemas Intelig.": "IE",
-    "Control Numérico y Robótica": "IE",
-    "Organización y Conducción de Obras": "IC", "Ingeniería Civil I": "IC", "Ingeniería Civil II": "IC",
+
+    # Química / IQ
+    "Ciencia de los Materiales": "IQ", "Fisicoquímica": "IQ", "Fenómenos de Transporte": "IQ",
+    "Química Analítica": "IQ", "Química Analítica Aplicada": "IQ", "Microbiología y Química Biológica": "IQ",
+    "Química Aplicada": "IQ", "Diseño, Simulación, Opt. y Seg. de Proc.": "IQ", "Operaciones Unitarias I": "IQ",
+    "Tecnología de la Energía Térmica": "IQ", "Operaciones Unitarias II": "IQ",
+    "Ingeniería de las Reacciones Químicas": "IQ", "Organización Industrial": "IQ",
+    "Calidad y Control Estadístico de Procesos": "IQ", "Control Estadístico de Procesos": "IQ",
+    "Control Automático de Procesos": "IQ", "Mecánica Industrial": "IQ", "Ingeniería Ambiental": "IQ",
+    "Procesos Biotecnológicos": "IQ", "Higiene y Seguridad en el Trabajo": "IQ",
+    "Máquinas e Instalaciones Eléctricas": "IQ", "Introducción a la Tecnología de los Alimentos": "IQ",
+    "Gestión Socioambiental Urbana Sustentable": "IQ", "Gestión del Medio Ambiente y la Energía": "IQ",
+    "Control de Calidad de los Alimentos": "IQ", "Introducción a la Bromatología": "IQ",
+    "Química de los Alimentos": "IQ", "Liderazgo en Ingeniería": "IQ", "Calidad de los Alimentos": "IQ",
+    "Procesos Industriales I": "IQ", "Ingeniería Ambiental Aplicada a Medios Líquidos": "IQ",
+    "Ingeniería de Control de la Contaminación del Aire": "IQ", "Gestión de Tecnologías Sustentables": "IQ",
+    "Aplic. de Programación Matemática": "IQ", "Aplicación de Programación Matemática": "IQ",
+    "Uso del Recurso Hídrico": "IQ",
+
+    # Mecánica / IM
+    "Ingeniería Mecánica I": "IM", "Materiales No Metálicos": "IM", "Estabilidad I": "IM",
+    "Materiales Metálicos": "IM", "Ingeniería Ambiental y Seguridad Industrial": "IM",
+    "Ingeniería Mecánica II": "IM", "Mecánica Racional": "IM", "Estabilidad II": "IM",
+    "Mediciones y Ensayos": "IM", "Diseño Mecánico": "IM", "Cálculo Avanzado": "IM",
+    "Ingeniería Mecánica III": "IM", "Elementos de Máquinas": "IM", "Tecnología del Calor": "IM",
+    "Metrología e Ingeniería de la Calidad": "IM", "Mecánica de los Fluidos": "IM",
+    "Electrotecnia y Máquinas Eléctricas": "IM", "Electrónica y Sistemas de Control": "IM",
+    "Estabilidad III": "IM", "Tecnología de la Fabricación": "IM",
+    "Máquinas Alternativas y Turbomáquinas": "IM", "Instalaciones Industriales": "IM",
+    "Mantenimiento": "IM", "Metalografía y Tratamientos Térmicos": "IM",
+    "Máquinas de Elevación y Transporte": "IM", "Materiales de Ingeniería": "IM",
+    "Sistemas de Control en Instalaciones Térmicas": "IM", "Transferencia de Energia Térmica": "IM",
+    "Diseño de Instalaciones Térmicas": "IM", "Maquinaria Agrícola": "IM",
+    "Máquinas Térmicas": "IM", "Transmisión del Calor": "IM",
+
+    # Eléctrica / IEE
+    "Formación de Emprendedores": "IEE", "Formación de Emprendedores(Elec.)": "IEE",
+    "Formación de Emprendedores (Elec.)": "IEE", "Integración Eléctrica I": "IEE",
+    "Electrotecnia I": "IEE", "Mecánica Técnica": "IEE", "Integración Eléctrica II": "IEE",
+    "Integración III": "IEE", "Integración IV": "IEE", "Integración III y IV": "IEE",
+    "Cálculo Numérico": "IEE", "Tecnologías y Ensayo de Materiales Eléctricos": "IEE",
+    "Instrumentos y Mediciones Eléctricas": "IEE", "Teoría de los Campos": "IEE",
+    "Física III": "IEE", "Máquinas Eléctricas I": "IEE", "Máquinas Eléctricas II": "IEE",
+    "Electrotecnia II": "IEE", "Fundamentos para el Análisis de Señales": "IEE",
+    "Taller Interdisciplinario": "IEE", "Electrónica I": "IEE",
+    "Seguridad, Riesgo Eléctrico y Medio Ambiente": "IEE",
+    "Instalaciones Eléctricas y Luminotecnia": "IEE", "Control Automático": "IEE",
+    "Máquinas Térmicas, Hidráulicas y de Fluido": "IEE", "Electrónica II": "IEE",
+    "Generación, Transmisión y Distribución de la EE": "IEE", "Sistemas de Potencia": "IEE",
+    "Accionamientos y Controles Eléctricos": "IEE", "Acondicionamientos y Controles Eléctricos": "IEE",
+    "Organización y Administración de Empresas": "IEE", "Fuentes Renovables de Energía": "IEE",
+    "Control Numérico y Robótica": "IEE", "Control Numérico, Robótica y Sistemas Intelig.": "IEE",
+    "Electromedicina": "IEE", "Gestión de Calidad": "IEE", "Gestión de Calidad y Mejora Continua": "IEE",
+    "Transmisión de Datos en Sistemas Eléctricos": "IEE", "Mantenimiento de Plantas": "IEE",
+    "Instrumentación Industrial": "IEE", "Movilidad Eléctrica": "IEE",
+
+    # Civil / IC
+    "Ingeniería Civil": "IC", "Ingeniería Civil I": "IC", "Estabilidad": "IC",
+    "Ingeniería Civil II": "IC", "Organización y Conducción de Obras": "IC",
     "Análisis Estructural I": "IC", "Análisis Estructural II": "IC", "Análisis Estructural III": "IC",
-    "Fundamentos de Informática": "IC", "Tecnología de los Materiales": "IC", "Sistemas de Representación": "IC",
+    "Tecnología de los Materiales": "IC", "Instalaciones Sanitarias y de Gas": "IC",
     "Geología Aplicada": "IC", "Estructuras de Hormigón": "IC", "Estructuras de Hormigón I": "IC",
-    "Instalaciones Sanitarias y de Gas": "IC", "Cimentaciones": "IC", "Tecnología de la Construcción": "IC",
+    "Ingeniería y Desarrollo": "IC", "Cimentaciones": "IC", "Tecnología de la Construcción": "IC",
     "Tecnología del Hormigón": "IC", "Elasticidad y Plasticidad": "IC",
     "Construcciones Metálicas y de Madera": "IC", "Construcciones Metálicas y de Maderas": "IC",
     "Prefabricación": "IC", "Proyecto y Gestión Urbana": "IC", "Obras Fluviales y Marítimas": "IC",
     "Vialidad Especial": "IC", "Vías de Comunicación I": "IC", "Vías de Comunicación II": "IC",
-    "Instalaciones Eléctricas y Acústicas": "IC", "Hidráulica Aplicada": "IC", "Hidráulica General": "IC"
+    "Instalaciones Eléctricas y Acústicas": "IC", "Hidráulica Aplicada": "IC",
+    "Hidráulica General": "IC", "Fundamentos de Informática": "IC", "Sistemas de Representación": "IC"
 }
 
 def clean_str(s: str) -> str:
@@ -199,13 +252,14 @@ def is_classroom_string(s: str) -> bool:
 def normalize_esp_text(raw_esp: str) -> str:
     """
     Normaliza el código de especialidad leído en la columna Esp.
+    Opciones oficiales UTN: UBD, ISI, IC, IM, IEE, IQ
     """
     if not raw_esp:
         return "ISI"
     cleaned = raw_esp.upper().strip()
     if re.search(r'181|1S1|LSL|ISI', cleaned): return "ISI"
-    if re.search(r'UD8|U0B|UDB', cleaned): return "UDB"
-    if re.search(r'LE|1E|IE', cleaned): return "IE"
+    if re.search(r'UBD|UD8|U0B|UDB', cleaned): return "UBD"
+    if re.search(r'1EE|IEE|LE|1E|IE', cleaned): return "IEE"
     if re.search(r'LQ|1Q|IQ', cleaned): return "IQ"
     if re.search(r'LM|1M|IM', cleaned): return "IM"
     if re.search(r'LC|1C|IC', cleaned): return "IC"
@@ -362,23 +416,85 @@ def process_exam_sheet(image_bytes: bytes) -> dict:
     d3 = (h_aula[1] + 5.0) if h_aula else (w * 0.26)
     d4 = (h_hora[0] - 5.0) if h_hora else (w * 0.88)
 
-    # 3. Detectar bordes horizontales de celda en la columna Esp (para celdas combinadas)
+    # 3. Detectar etiquetas de Especialidad y bordes horizontales en la columna Esp
     esp_x0 = max(0, int(d1 - 6))
     esp_x1 = min(w, int(d2 + 6))
     esp_crop = gray[:, esp_x0:esp_x1]
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(5, int((esp_x1 - esp_x0) * 0.50)), 1))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(5, int((esp_x1 - esp_x0) * 0.45)), 1))
     h_lines = cv2.morphologyEx(~esp_crop, cv2.MORPH_OPEN, kernel)
     row_sums = np.sum(h_lines > 100, axis=1)
-    line_indices = np.where(row_sums > (esp_x1 - esp_x0) * 0.28)[0]
+    line_indices = np.where(row_sums > (esp_x1 - esp_x0) * 0.25)[0]
 
-    merged_borders = [0]
+    detected_borders = []
     for y in line_indices:
-        if (y - merged_borders[-1]) > 5:
-            merged_borders.append(int(y))
+        if not detected_borders or (y - detected_borders[-1]) > 5:
+            detected_borders.append(int(y))
         else:
-            merged_borders[-1] = (merged_borders[-1] + int(y)) // 2
-    if merged_borders[-1] < (h - 5):
-        merged_borders.append(h)
+            detected_borders[-1] = (detected_borders[-1] + int(y)) // 2
+
+    # Ejecutar pase enfocado sobre el recorte de la columna Esp para no perder etiquetas pequeñas
+    crop_res, _ = engine(img[:, esp_x0:esp_x1])
+    esp_labels = []
+    seen_y = []
+    for box, text, _ in (crop_res or []):
+        t = text.strip()
+        y0 = min(pt[1] for pt in box)
+        y1 = max(pt[1] for pt in box)
+        ymid = (y0 + y1) / 2.0
+        if ymid <= header_y_max:
+            continue
+        norm_esp = normalize_esp_text(t)
+        if norm_esp in ['UBD', 'ISI', 'IC', 'IM', 'IEE', 'IQ', 'UDB', 'IE']:
+            canonical = 'UBD' if norm_esp == 'UDB' else ('IEE' if norm_esp == 'IE' else norm_esp)
+            esp_labels.append({'text': canonical, 'y_mid': ymid, 'y0': y0, 'y1': y1})
+            seen_y.append(ymid)
+
+    # Si algún label fue detectado en el pase global y no en el crop, integrarlo
+    for box, text, _ in results:
+        t = text.strip()
+        x0 = min(pt[0] for pt in box)
+        x1 = max(pt[0] for pt in box)
+        xmid = (x0 + x1) / 2.0
+        y0 = min(pt[1] for pt in box)
+        y1 = max(pt[1] for pt in box)
+        ymid = (y0 + y1) / 2.0
+        if ymid <= header_y_max:
+            continue
+        if d1 <= xmid < d2 and not is_classroom_string(t):
+            norm_esp = normalize_esp_text(t)
+            if norm_esp in ['UBD', 'ISI', 'IC', 'IM', 'IEE', 'IQ', 'UDB', 'IE']:
+                canonical = 'UBD' if norm_esp == 'UDB' else ('IEE' if norm_esp == 'IE' else norm_esp)
+                if not any(abs(ymid - sy) < 12 for sy in seen_y):
+                    esp_labels.append({'text': canonical, 'y_mid': ymid, 'y0': y0, 'y1': y1})
+                    seen_y.append(ymid)
+
+    esp_labels.sort(key=lambda e: e['y_mid'])
+
+    # Calcular fronteras de partición vertical entre etiquetas consecutivas
+    boundaries = [header_y_max]
+    for i in range(len(esp_labels) - 1):
+        y_curr = esp_labels[i]['y_mid']
+        y_next = esp_labels[i + 1]['y_mid']
+        # Buscar borde horizontal detectado entre y_curr y y_next
+        cands = [b for b in detected_borders if (y_curr + 4) < b < (y_next - 4)]
+        if cands:
+            boundaries.append(float(cands[0]))
+        else:
+            boundaries.append((y_curr + y_next) / 2.0)
+    boundaries.append(float(h))
+
+    def get_esp_for_y(y):
+        """
+        Determina la Especialidad de la fila en Y respetando las delimitaciones verticales de celda.
+        """
+        for i in range(len(esp_labels)):
+            b_top = boundaries[i]
+            b_bot = boundaries[i + 1]
+            if b_top <= y <= b_bot:
+                return esp_labels[i]['text']
+        if esp_labels:
+            return min(esp_labels, key=lambda l: abs(l['y_mid'] - y))['text']
+        return "ISI"
 
     # 4. Clasificar elementos detectados por debajo del encabezado
     items = []
@@ -408,30 +524,6 @@ def process_exam_sheet(image_bytes: bytes) -> dict:
     # Columna 1: Turnos
     turnos = [it for it in items if it['x_mid'] < d1]
     turnos.sort(key=lambda t: t['y_mid'])
-
-    # Columna 2: Etiquetas de Especialidad
-    esp_labels = []
-    for it in items:
-        if d1 <= it['x_mid'] < d2 and not is_classroom_string(it['text']):
-            norm_esp = normalize_esp_text(it['text'])
-            esp_labels.append({'text': norm_esp, 'y_mid': it['y_mid']})
-    esp_labels.sort(key=lambda e: e['y_mid'])
-
-    def get_esp_for_y(y):
-        """
-        Determina la Especialidad de la fila en Y respetando las líneas de celda combinada.
-        """
-        for i in range(len(merged_borders) - 1):
-            top_b = merged_borders[i]
-            bot_b = merged_borders[i + 1]
-            if top_b <= y <= bot_b:
-                in_interval = [l for l in esp_labels if (top_b - 8) <= l['y_mid'] <= (bot_b + 8)]
-                if in_interval:
-                    return in_interval[0]['text']
-        if esp_labels:
-            closest = min(esp_labels, key=lambda l: abs(l['y_mid'] - y))
-            return closest['text']
-        return "ISI"
 
     # Columna 3: Aulas (entre D2 y D3, o códigos de aula cerca de D3)
     aulas = [it for it in items if (d2 <= it['x_mid'] < d3) or (is_classroom_string(it['text']) and it['x_mid'] < (d3 + 15))]
@@ -507,8 +599,12 @@ def process_exam_sheet(image_bytes: bytes) -> dict:
 
         final_materia = matched or raw_materia
 
-        # Si por alguna razón la imagen no tuviese Especialidad válida, usar fallback del catálogo
-        if not final_esp or final_esp not in ["ISI", "IQ", "IC", "IM", "IE", "UDB"]:
+        # Si por alguna razón la imagen no tuviese Especialidad válida, normalizar o usar fallback del catálogo
+        if final_esp == "UDB":
+            final_esp = "UBD"
+        elif final_esp == "IE":
+            final_esp = "IEE"
+        elif not final_esp or final_esp not in ["UBD", "ISI", "IC", "IM", "IEE", "IQ"]:
             final_esp = UTN_SUBJECT_CAREER_MAP.get(final_materia, "ISI")
 
         last_subject = final_materia
