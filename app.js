@@ -719,7 +719,7 @@ const state = {
     filterTurno: 'TODOS', // 'TODOS' | '1-Mañana' | '2-Tarde' | '3-Noche'
     distribMode: 'auto', // 'auto' | 'pages' | 'all'
     currentPage: 1,
-    itemsPerPage: 45,
+    itemsPerPage: 20,
     columns: 'auto', // 'auto' | '1' | '2' | '3'
     yOffset: 0,
     scale: 1.0,
@@ -998,6 +998,9 @@ const dom = {
   btnDistribPages: document.getElementById('btn-distrib-pages'),
   btnDistribAll: document.getElementById('btn-distrib-all'),
   distribHelperText: document.getElementById('distrib-helper-text'),
+  mesaDensityVal: document.getElementById('mesa-density-val'),
+  mesaItemsSlider: document.getElementById('mesa-items-slider'),
+  mesaItemsNumber: document.getElementById('mesa-items-number'),
   mesaPaginationWrap: document.getElementById('mesa-pagination-wrap'),
   btnPrevPage: document.getElementById('btn-prev-page'),
   btnNextPage: document.getElementById('btn-next-page'),
@@ -2054,8 +2057,8 @@ function setupEventListeners() {
     state.pagination.mesa.currentPage = 1;
     if (mode === 'all') {
       state.mesa.itemsPerPage = 45;
-    } else if (mode === 'pages' && (state.mesa.itemsPerPage || 45) >= 45) {
-      state.mesa.itemsPerPage = 24;
+    } else if (mode === 'pages' && (state.mesa.itemsPerPage || 20) >= 45) {
+      state.mesa.itemsPerPage = 20;
     }
     if (dom.btnDistribAuto) dom.btnDistribAuto.classList.toggle('active', mode === 'auto');
     if (dom.btnDistribPages) dom.btnDistribPages.classList.toggle('active', mode === 'pages');
@@ -2065,8 +2068,12 @@ function setupEventListeners() {
       else if (mode === 'all') dom.distribHelperText.textContent = 'Forzado: todas las materias en 1 historia sin cortar.';
       else dom.distribHelperText.textContent = 'Optimiza automáticamente la cantidad de historias según las materias seleccionadas.';
     }
+    const currentDensity = typeof state.mesa.itemsPerPage === 'number' ? state.mesa.itemsPerPage : 20;
+    if (dom.mesaDensityVal) dom.mesaDensityVal.textContent = String(currentDensity);
+    if (dom.mesaItemsSlider) dom.mesaItemsSlider.value = currentDensity;
+    if (dom.mesaItemsNumber) dom.mesaItemsNumber.value = currentDensity;
     document.querySelectorAll('.btn-density').forEach(b => {
-      b.classList.toggle('active', parseInt(b.dataset.density, 10) === (state.mesa.itemsPerPage || 45));
+      b.classList.toggle('active', parseInt(b.dataset.density, 10) === currentDensity);
     });
     saveAndRender();
   }
@@ -2095,24 +2102,53 @@ function setupEventListeners() {
     });
   }
 
-  // Density buttons (21, 24, 30, 45 materias por historia)
+  // Materias por historia handler (0 a 50 materias, default 20)
+  function updateMesaDensity(value, showToastMessage = false) {
+    const density = Math.max(0, Math.min(50, parseInt(value, 10) || 0));
+    state.mesa.itemsPerPage = density;
+    if (dom.mesaDensityVal) dom.mesaDensityVal.textContent = String(density);
+    if (dom.mesaItemsSlider && parseInt(dom.mesaItemsSlider.value, 10) !== density) {
+      dom.mesaItemsSlider.value = density;
+    }
+    if (dom.mesaItemsNumber && parseInt(dom.mesaItemsNumber.value, 10) !== density) {
+      dom.mesaItemsNumber.value = density;
+    }
+    if (density < 45 && state.mesa.distribMode === 'all') {
+      state.mesa.distribMode = 'auto';
+      if (dom.btnDistribAuto) dom.btnDistribAuto.classList.add('active');
+      if (dom.btnDistribAll) dom.btnDistribAll.classList.remove('active');
+      if (dom.btnDistribPages) dom.btnDistribPages.classList.remove('active');
+    }
+    document.querySelectorAll('.btn-density').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.density, 10) === density);
+    });
+    state.mesa.currentPage = 1;
+    state.pagination.mesa.currentPage = 1;
+    saveAndRender();
+    if (showToastMessage) {
+      showToast(`Materias por historia: ${density} 📋`);
+    }
+  }
+
+  if (dom.mesaItemsSlider) {
+    dom.mesaItemsSlider.addEventListener('input', (e) => {
+      updateMesaDensity(e.target.value, false);
+    });
+  }
+  if (dom.mesaItemsNumber) {
+    dom.mesaItemsNumber.addEventListener('input', (e) => {
+      updateMesaDensity(e.target.value, false);
+    });
+    dom.mesaItemsNumber.addEventListener('change', (e) => {
+      updateMesaDensity(e.target.value, true);
+    });
+  }
+
+  // Density buttons (15, 20, 24, 30, 45 materias por historia)
   document.querySelectorAll('.btn-density').forEach(btn => {
     btn.addEventListener('click', () => {
       const density = parseInt(btn.dataset.density, 10);
-      state.mesa.itemsPerPage = density;
-      if (density < 45 && state.mesa.distribMode === 'all') {
-        state.mesa.distribMode = 'auto';
-        if (dom.btnDistribAuto) dom.btnDistribAuto.classList.add('active');
-        if (dom.btnDistribAll) dom.btnDistribAll.classList.remove('active');
-        if (dom.btnDistribPages) dom.btnDistribPages.classList.remove('active');
-      }
-      document.querySelectorAll('.btn-density').forEach(b => {
-        b.classList.toggle('active', parseInt(b.dataset.density, 10) === density);
-      });
-      state.mesa.currentPage = 1;
-      state.pagination.mesa.currentPage = 1;
-      saveAndRender();
-      showToast(`Materias por historia: ${density} 📋`);
+      updateMesaDensity(density, true);
     });
   });
 
@@ -2193,6 +2229,8 @@ function setupEventListeners() {
       state.mesa.yOffset = 0;
       state.mesa.scale = 1.0;
       state.mesa.columns = 'auto';
+      state.mesa.itemsPerPage = 20;
+      state.mesa.distribMode = 'auto';
       syncFormToState();
       saveAndRender();
       showToast('Ajustes de casillas restablecidos');
@@ -2428,6 +2466,13 @@ function syncFormToState() {
     dom.mesaScale.value = Math.round((state.mesa.scale || 1.0) * 100);
     if (dom.mesaScaleVal) dom.mesaScaleVal.textContent = `${Math.round((state.mesa.scale || 1.0) * 100)}%`;
   }
+  const density = typeof state.mesa.itemsPerPage === 'number' ? state.mesa.itemsPerPage : 20;
+  if (dom.mesaDensityVal) dom.mesaDensityVal.textContent = String(density);
+  if (dom.mesaItemsSlider) dom.mesaItemsSlider.value = density;
+  if (dom.mesaItemsNumber) dom.mesaItemsNumber.value = density;
+  document.querySelectorAll('.btn-density').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.density, 10) === density);
+  });
   const cols = state.mesa.columns || 'auto';
   if (dom.btnColsAuto) dom.btnColsAuto.classList.toggle('active', cols === 'auto');
   if (dom.btnCols1) dom.btnCols1.classList.toggle('active', cols === '1');
@@ -2553,8 +2598,10 @@ function loadSavedState() {
       }
       if (parsed.mesa) {
         Object.assign(state.mesa, parsed.mesa);
-        if (state.mesa.itemsPerPage === 15 || state.mesa.itemsPerPage === 20) {
-          state.mesa.itemsPerPage = 24;
+        if (state.mesa.itemsPerPage === undefined || state.mesa.itemsPerPage === null) {
+          state.mesa.itemsPerPage = 20;
+        } else {
+          state.mesa.itemsPerPage = Math.max(0, Math.min(50, state.mesa.itemsPerPage));
         }
       }
       if (!state.mesa.date) {
@@ -2819,15 +2866,17 @@ function renderMesaCasillasContent(context, width, height) {
 
   // Determine pagination: based on distribMode and itemsPerPage (Materias por historia)
   let totalPages = 1;
-  const itemsPerPage = state.mesa.itemsPerPage || 45;
+  const itemsPerPage = typeof state.mesa.itemsPerPage === 'number' ? state.mesa.itemsPerPage : 20;
 
-  if (state.mesa.distribMode === 'all') {
+  if (itemsPerPage === 0) {
+    totalPages = 1;
+  } else if (state.mesa.distribMode === 'all') {
     totalPages = 1;
   } else if (state.mesa.distribMode === 'pages') {
     if (itemsPerPage < 45) {
       totalPages = Math.max(2, Math.ceil(activeCasillas.length / itemsPerPage));
     } else {
-      totalPages = Math.max(2, Math.ceil(activeCasillas.length / 24));
+      totalPages = Math.max(2, Math.ceil(activeCasillas.length / 20));
     }
   } else {
     // Auto mode: divided strictly by itemsPerPage selected by the user!
@@ -2840,7 +2889,9 @@ function renderMesaCasillasContent(context, width, height) {
   state.mesa.currentPage = currentPage;
 
   let pageCasillas = activeCasillas;
-  if (totalPages > 1) {
+  if (itemsPerPage === 0) {
+    pageCasillas = [];
+  } else if (totalPages > 1) {
     let perPage = itemsPerPage;
     if (state.mesa.distribMode === 'pages' && itemsPerPage >= 45) {
       perPage = Math.ceil(activeCasillas.length / totalPages);
@@ -2937,7 +2988,7 @@ function renderMesaCasillasContent(context, width, height) {
     // <= 8 subjects: 1 column
     // <= 22 subjects: 2 columns
     // > 22 subjects: 3 columns (e.g. 45 subjects in 15 rows fit in 1 story)
-    numCols = pageCasillas.length <= 8 ? 1 : (pageCasillas.length <= 22 ? 2 : 3);
+    numCols = pageCasillas.length <= 8 ? 1 : (pageCasillas.length <= 24 ? 2 : 3);
   }
 
   if (numCols === 1) {
@@ -2980,12 +3031,12 @@ function renderMesaCasillasContent(context, width, height) {
       context.restore();
 
       // Badge Especialidad (ISI, IC, etc.)
-      const pillH = Math.min(38 * scale, Math.max(26 * scale, Math.round(cardH * 0.36)));
+      const pillH = Math.min(42 * scale, Math.max(28 * scale, Math.round(cardH * 0.38)));
       const pillY = cardY + Math.round((cardH - pillH) / 2);
       const pillX = cardX + Math.round(22 * scale);
 
       context.save();
-      const espFontSize = Math.min(20 * scale, Math.max(14 * scale, Math.round(pillH * 0.55)));
+      const espFontSize = Math.min(24 * scale, Math.max(17 * scale, Math.round(pillH * 0.66)));
       context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
       const espText = (c.esp || 'ISI').toUpperCase();
       const espTextW = context.measureText(espText).width;
@@ -3004,7 +3055,7 @@ function renderMesaCasillasContent(context, width, height) {
       // Badge Aula
       const aulaX = pillX + pillW + Math.round(14 * scale);
       context.save();
-      const aulaFontSize = Math.min(18 * scale, Math.max(13 * scale, Math.round(pillH * 0.52)));
+      const aulaFontSize = Math.min(22 * scale, Math.max(16 * scale, Math.round(pillH * 0.62)));
       context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
       const aulaText = `AULA ${c.aula || 'TBA'}`.toUpperCase();
       const aulaTextW = context.measureText(aulaText).width;
@@ -3021,7 +3072,7 @@ function renderMesaCasillasContent(context, width, height) {
       context.restore();
 
       // Horario (Right aligned - BIG & BOLD)
-      const horaPillW = Math.round(155 * scale);
+      const horaPillW = Math.round(175 * scale);
       const horaX = cardX + cardW - horaPillW - Math.round(20 * scale);
 
       context.save();
@@ -3033,7 +3084,7 @@ function renderMesaCasillasContent(context, width, height) {
       context.stroke();
 
       context.fillStyle = '#4a044e';
-      const horaFontSize = Math.min(22 * scale, Math.max(16 * scale, Math.round(cardH * 0.25)));
+      const horaFontSize = Math.min(26 * scale, Math.max(19 * scale, Math.round(cardH * 0.30)));
       context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
       context.textAlign = 'center';
       context.textBaseline = 'middle';
@@ -3046,7 +3097,7 @@ function renderMesaCasillasContent(context, width, height) {
 
       context.save();
       context.fillStyle = '#0f0322';
-      const materiaFontSize = Math.min(26 * scale, Math.max(18 * scale, Math.round(cardH * 0.28)));
+      const materiaFontSize = Math.min(31 * scale, Math.max(22 * scale, Math.round(cardH * 0.34)));
       context.font = `800 ${materiaFontSize}px "Montserrat", sans-serif`;
       context.textAlign = 'left';
       context.textBaseline = 'middle';
@@ -3082,7 +3133,7 @@ function renderMesaCasillasContent(context, width, height) {
 
     const maxCardH = 100 * scale;
     const rawH = Math.floor((availH - (rows - 1) * gapY) / rows);
-    const cardH = Math.max(52 * scale, Math.min(maxCardH, rawH));
+    const cardH = Math.max(54 * scale, Math.min(maxCardH, rawH));
 
     const totalBlockH = (rows - 1) * gapY + rows * cardH;
     const extraH = availH - totalBlockH;
@@ -3118,7 +3169,7 @@ function renderMesaCasillasContent(context, width, height) {
       const materiaX = cardX + Math.max(8, Math.round(10 * scale));
       const materiaY = cardY + Math.round(cardH * 0.32);
       const materiaMaxW = cardW - Math.max(14, Math.round(18 * scale));
-      const materiaFontSize = Math.min(21 * scale, Math.max(13 * scale, Math.round(cardH * 0.255)));
+      const materiaFontSize = Math.min(25 * scale, Math.max(16 * scale, Math.round(cardH * 0.31)));
 
       context.save();
       context.fillStyle = '#0f0322';
@@ -3137,16 +3188,16 @@ function renderMesaCasillasContent(context, width, height) {
 
       // --- ROW 2: Especialidad + Aula + Horario ---
       const bottomCenterY = cardY + cardH - Math.round(cardH * 0.30);
-      const pillH = Math.min(24 * scale, Math.max(18 * scale, Math.round(cardH * 0.34)));
+      const pillH = Math.min(28 * scale, Math.max(20 * scale, Math.round(cardH * 0.38)));
       const pillY = bottomCenterY - Math.round(pillH / 2);
 
       // Esp Pill
       const espX = materiaX;
       context.save();
-      const espFontSize = Math.min(13.5 * scale, Math.max(10.5 * scale, Math.round(pillH * 0.58)));
+      const espFontSize = Math.min(16.5 * scale, Math.max(13 * scale, Math.round(pillH * 0.68)));
       context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
       const espText = (c.esp || 'ISI').toUpperCase();
-      const espW = context.measureText(espText).width + Math.max(7, Math.round(9 * scale));
+      const espW = context.measureText(espText).width + Math.max(8, Math.round(10 * scale));
       context.fillStyle = espColor;
       roundRect(context, espX, pillY, espW, pillH, Math.max(4, Math.round(5 * scale)));
       context.fill();
@@ -3160,7 +3211,7 @@ function renderMesaCasillasContent(context, width, height) {
       // Aula Pill
       const aulaX = espX + espW + Math.max(4, Math.round(5 * scale));
       context.save();
-      const aulaFontSize = Math.min(13 * scale, Math.max(10 * scale, Math.round(pillH * 0.55)));
+      const aulaFontSize = Math.min(16 * scale, Math.max(12 * scale, Math.round(pillH * 0.66)));
       context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
       const aulaText = `${c.aula || 'TBA'}`;
       const aulaW = context.measureText(aulaText).width + Math.max(8, Math.round(10 * scale));
@@ -3176,7 +3227,7 @@ function renderMesaCasillasContent(context, width, height) {
 
       // Horario (Right aligned)
       const horaRightX = cardX + cardW - Math.max(6, Math.round(8 * scale));
-      const horaFontSize = Math.min(17 * scale, Math.max(13 * scale, Math.round(cardH * 0.255)));
+      const horaFontSize = Math.min(21 * scale, Math.max(16 * scale, Math.round(cardH * 0.30)));
       context.save();
       context.fillStyle = '#4a044e';
       context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;
@@ -3205,7 +3256,7 @@ function renderMesaCasillasContent(context, width, height) {
 
     const maxCardH = 120 * scale;
     const rawH = Math.floor((availH - (rows - 1) * gapY) / rows);
-    const cardH = Math.max(50 * scale, Math.min(maxCardH, rawH));
+    const cardH = Math.max(54 * scale, Math.min(maxCardH, rawH));
 
     const totalBlockH = (rows - 1) * gapY + rows * cardH;
     const extraH = availH - totalBlockH;
@@ -3241,7 +3292,7 @@ function renderMesaCasillasContent(context, width, height) {
       const materiaX = cardX + Math.max(12, Math.round(15 * scale));
       const materiaY = cardY + Math.round(cardH * 0.32);
       const materiaMaxW = cardW - Math.max(20, Math.round(26 * scale));
-      const materiaFontSize = Math.min(24 * scale, Math.max(15 * scale, Math.round(cardH * 0.26)));
+      const materiaFontSize = Math.min(29 * scale, Math.max(18 * scale, Math.round(cardH * 0.31)));
 
       context.save();
       context.fillStyle = '#0f0322';
@@ -3260,13 +3311,13 @@ function renderMesaCasillasContent(context, width, height) {
 
       // --- ROW 2: Especialidad + Aula + BIG Horario ---
       const bottomCenterY = cardY + cardH - Math.round(cardH * 0.29);
-      const pillH = Math.min(28 * scale, Math.max(20 * scale, Math.round(cardH * 0.32)));
+      const pillH = Math.min(32 * scale, Math.max(22 * scale, Math.round(cardH * 0.36)));
       const pillY = bottomCenterY - Math.round(pillH / 2);
 
       // Esp Pill
       const espX = materiaX;
       context.save();
-      const espFontSize = Math.min(15 * scale, Math.max(11 * scale, Math.round(pillH * 0.58)));
+      const espFontSize = Math.min(18 * scale, Math.max(13 * scale, Math.round(pillH * 0.68)));
       context.font = `800 ${espFontSize}px "Montserrat", sans-serif`;
       const espText = (c.esp || 'ISI').toUpperCase();
       const espW = context.measureText(espText).width + Math.max(12, Math.round(15 * scale));
@@ -3283,7 +3334,7 @@ function renderMesaCasillasContent(context, width, height) {
       // Aula Pill
       const aulaX = espX + espW + Math.max(6, Math.round(8 * scale));
       context.save();
-      const aulaFontSize = Math.min(14.5 * scale, Math.max(10.5 * scale, Math.round(pillH * 0.55)));
+      const aulaFontSize = Math.min(17.5 * scale, Math.max(13 * scale, Math.round(pillH * 0.66)));
       context.font = `800 ${aulaFontSize}px "Montserrat", sans-serif`;
       const aulaText = `Aula ${c.aula || 'TBA'}`;
       const aulaW = context.measureText(aulaText).width + Math.max(12, Math.round(15 * scale));
@@ -3299,7 +3350,7 @@ function renderMesaCasillasContent(context, width, height) {
 
       // Horario (Right aligned - BIG & BOLD)
       const horaRightX = cardX + cardW - Math.max(10, Math.round(14 * scale));
-      const horaFontSize = Math.min(21 * scale, Math.max(15 * scale, Math.round(cardH * 0.25)));
+      const horaFontSize = Math.min(25 * scale, Math.max(18 * scale, Math.round(cardH * 0.30)));
       context.save();
       context.fillStyle = '#4a044e';
       context.font = `800 ${horaFontSize}px "Montserrat", sans-serif`;

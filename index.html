@@ -270,16 +270,22 @@
                 <span class="helper-text" id="distrib-helper-text">Optimiza automáticamente la densidad y columnas según la cantidad de materias.</span>
               </div>
 
-              <!-- Materias por Historia (Siempre visible) -->
+              <!-- Materias por Historia (Editable: 0 a 50, default 20) -->
               <div class="slider-group" id="density-control-group">
                 <div class="slider-header">
                   <span>Materias por historia</span>
+                  <span id="mesa-density-val" class="slider-num">20</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                  <input type="range" id="mesa-items-slider" min="0" max="50" value="20" step="1" class="range-slider" style="flex: 1;">
+                  <input type="number" id="mesa-items-number" min="0" max="50" value="20" class="input-text text-center font-bold" style="width: 70px; padding: 6px 8px; font-size: 0.95rem;" title="Indicar cantidad exacta (0 a 50)">
                 </div>
                 <div class="format-toggle-group">
-                  <button type="button" class="format-btn btn-density" data-density="21">21</button>
+                  <button type="button" class="format-btn btn-density" data-density="15">15</button>
+                  <button type="button" class="format-btn btn-density active" data-density="20">20</button>
                   <button type="button" class="format-btn btn-density" data-density="24">24</button>
                   <button type="button" class="format-btn btn-density" data-density="30">30</button>
-                  <button type="button" class="format-btn btn-density active" data-density="45">45</button>
+                  <button type="button" class="format-btn btn-density" data-density="45">45</button>
                 </div>
               </div>
 
