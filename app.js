@@ -1602,18 +1602,28 @@ function updateEngineBadge(isOnline) {
   }
 }
 
+let activeOcrUrl = 'http://127.0.0.1:8000';
+
 async function checkPythonOcrHealth() {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const res = await fetch('http://127.0.0.1:8000/api/health', { method: 'GET', signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (res.ok) {
-      updateEngineBadge(true);
-      return true;
+  const candidates = ['http://127.0.0.1:8000', 'http://localhost:8000'];
+  if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    candidates.push(`http://${window.location.hostname}:8000`);
+  }
+
+  for (const url of candidates) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch(`${url}/api/health`, { method: 'GET', signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        activeOcrUrl = url;
+        updateEngineBadge(true);
+        return true;
+      }
+    } catch (e) {
+      // continue to next candidate
     }
-  } catch (e) {
-    // offline
   }
   updateEngineBadge(false);
   return false;
@@ -1649,9 +1659,9 @@ async function performOcrOnImage(imageSource, file = null) {
     if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Extrayendo materias con OpenCV + RapidOCR en Python...';
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-    const pyResponse = await fetch('http://127.0.0.1:8000/api/ocr-mesa', {
+    const pyResponse = await fetch(`${activeOcrUrl}/api/ocr-mesa`, {
       method: 'POST',
       body: formData,
       signal: controller.signal
