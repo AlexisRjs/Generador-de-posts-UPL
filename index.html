@@ -746,67 +746,6 @@
       </button>
     </footer>
 
-    <!-- Modal de Configuración de Motor OCR para Celular / Nube -->
-    <div id="ocr-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="ocr-modal-title">
-      <div class="modal-card">
-        <div class="modal-header">
-          <div class="modal-title" id="ocr-modal-title">
-            <span style="font-size: 1.3rem;">⚡</span>
-            <span>Motor Python OCR (Mesa de Examen)</span>
-          </div>
-          <button type="button" id="btn-close-ocr-modal" class="modal-close-btn" aria-label="Cerrar modal">✕</button>
-        </div>
-
-        <div class="modal-status-box">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span id="modal-status-dot" class="engine-dot"></span>
-            <div>
-              <div id="modal-status-title" style="font-weight: 700; font-size: 0.9rem;">Verificando conexión...</div>
-              <div id="modal-status-subtitle" style="font-size: 0.76rem; color: var(--text-muted);">Sin conexión activa</div>
-            </div>
-          </div>
-          <button type="button" id="btn-test-ocr-conn" class="btn-text-action" style="padding: 6px 12px; background: rgba(255,255,255,0.08); border-radius: var(--radius-xs);">
-            ⚡ Probar
-          </button>
-        </div>
-
-        <div class="field-group">
-          <label for="ocr-server-input" class="field-label">
-            <span>URL del Servidor OCR</span>
-            <span class="label-hint">HTTPS en Nube o IP Local</span>
-          </label>
-          <div style="display: flex; gap: 6px;">
-            <input type="text" id="ocr-server-input" class="input-text" placeholder="https://mi-backend.onrender.com o http://192.168.1.5:8000" style="flex: 1;">
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 8px;">
-          <button type="button" id="btn-save-ocr-url" class="action-btn btn-primary" style="flex: 1; padding: 10px;">
-            <span>Guardar y Conectar</span>
-          </button>
-          <button type="button" id="btn-reset-ocr-url" class="btn-action-upload" style="padding: 10px 14px;" title="Restaurar detección automática">
-            <span>Automático</span>
-          </button>
-        </div>
-
-        <div class="modal-guide-box">
-          <div style="font-weight: 700; margin-bottom: 6px; color: #ffffff;">📱 ¿Cómo usar OCR desde el celular en cualquier red?</div>
-          <div style="margin-bottom: 8px;">
-            <strong>🌐 Opción 1: Nube 24/7 (Cualquier red 4G/5G/Wi-Fi)</strong><br>
-            Despliega el backend gratis en <em>Render.com</em> o <em>Hugging Face</em> usando el <code>Dockerfile</code> o <code>render.yaml</code> del repositorio. Pega tu URL HTTPS aquí y quedará guardada en tu celular para siempre.
-          </div>
-          <div style="margin-bottom: 8px;">
-            <strong>🔗 Opción 2: Túnel HTTPS desde tu PC (npm run tunnel)</strong><br>
-            En la terminal de tu PC ejecuta <code>npm run tunnel</code>. Te dará una URL pública HTTPS temporal que podés pegar aquí para procesar desde el celular en cualquier lugar.
-          </div>
-          <div>
-            <strong>📶 Opción 3: Misma red Wi-Fi</strong><br>
-            En tu PC corre <code>npm run dev</code> y en el celular abrí directamente <code>http://192.168.1.5:5173</code> (por HTTP local conecta automáticamente).
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 

@@ -24,15 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {
-        "status": "ok",
-        "service": "UPL Mesas OCR Backend",
-        "engine": "Python + OpenCV + RapidOCR (ONNX Runtime)",
-        "endpoints": ["/api/health", "/api/ocr-mesa"]
-    }
-
 @app.get("/api/health")
 async def health_check():
     return {
@@ -57,7 +48,5 @@ async def ocr_mesa(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Error procesando la imagen: {str(e)}")
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 8000))
-    print(f"[UPL OCR] Iniciando Servidor UPL Mesas OCR en http://0.0.0.0:{port}...")
-    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
+    print("[UPL OCR] Iniciando Servidor UPL Mesas OCR en http://127.0.0.1:8000 ...")
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=False)

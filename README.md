@@ -70,36 +70,22 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Ejecución y Uso desde Celular
+## ▶️ Ejecución
 
-### 1. En tu computadora (Desarrollo Local)
-Inicia el motor OCR de Python en una terminal:
+Para disfrutar de la máxima velocidad y precisión del OCR con Python, inicia el servidor en una terminal:
+
 ```bash
 npm run python:server
 # O alternativamente: python server.py
 ```
-> El servidor iniciará en `http://0.0.0.0:8000`.
+> El servidor iniciará en `http://127.0.0.1:8000`.
 
-En otra terminal, inicia el frontend con Vite:
+En otra terminal, inicia el frontend web con Vite:
+
 ```bash
 npm run dev
 ```
-
-### 2. Acceso desde Celular en Cualquier Red (4G / 5G / Wi-Fi externo)
-Para usar el OCR desde tu celular sin importar a qué red esté conectado:
-
-- **Opción A (Túnel HTTPS instantáneo desde tu PC):**
-  Ejecuta en una terminal:
-  ```bash
-  npm run tunnel
-  ```
-  Te generará una URL pública segura (ej: `https://xxxx.loca.lt`). En tu celular abrí la web, toca el botón de estado **OCR** e ingresa esa URL. ¡El celular conectará directo a tu motor Python desde cualquier lugar del mundo!
-
-- **Opción B (Nube 24/7 sin PC):**
-  Puedes desplegar el backend gratis en **Render.com** o **Hugging Face Spaces** utilizando el `Dockerfile` y `render.yaml` incluidos en el repositorio. Una vez desplegado, ingresas la URL HTTPS en tu celular una sola vez y queda guardada para siempre.
-
-- **Opción C (Misma Red Wi-Fi):**
-  Con `npm run dev` activo en tu PC, abre desde el celular `http://192.168.1.5:5173`. Conectará de forma local directa.
+> Abre tu navegador en la URL indicada por Vite (usualmente `http://localhost:5173`).
 
 ---
 

@@ -1587,205 +1587,36 @@ function handleMesaFileUpload(file) {
   reader.readAsDataURL(file);
 }
 
-let activeBackendBaseUrl = '';
-
-function getCandidateBackendUrls() {
-  const candidates = [];
-  
-  // 1. Manual override configured in localStorage
-  const saved = localStorage.getItem('upl_ocr_backend_url');
-  if (saved && saved.trim()) {
-    candidates.push(saved.trim().replace(/\/+$/, ''));
-  }
-
-  // 2. Relative API path (ideal for Vercel deployment: https://.../api/health)
-  candidates.push('');
-
-  const hostname = window.location.hostname;
-  // 3. Current host with port 8000 (if accessed from mobile on local Wi-Fi: http://192.168.x.x:5173)
-  if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
-    if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
-      candidates.push(`http://${hostname}:8000`);
-    }
-  }
-
-  // 4. Local loopback ports
-  candidates.push('http://127.0.0.1:8000');
-  candidates.push('http://localhost:8000');
-
-  return [...new Set(candidates)];
-}
-
-function updateEngineBadge(isOnline, activeUrl = '') {
+function updateEngineBadge(isOnline) {
   const badge = dom.mesaEngineBadge || document.getElementById('mesa-engine-badge');
   const text = dom.mesaEngineText || document.getElementById('mesa-engine-text');
   if (!badge) return;
   if (isOnline) {
     badge.className = 'ocr-engine-badge online';
-    const label = activeUrl === '' ? 'Python OCR: Nube ⚡' : 'Python OCR: Activo ⚡';
-    if (text) text.textContent = label;
-    badge.title = `Motor Python conectado (${activeUrl || 'Vercel API'}). Toca para ver detalles o cambiar servidor.`;
+    if (text) text.textContent = 'Python OCR: Activo ⚡';
+    badge.title = 'Motor Python conectado en http://127.0.0.1:8000 (OpenCV + RapidOCR ONNX)';
   } else {
     badge.className = 'ocr-engine-badge offline';
     if (text) text.textContent = 'Python OCR: Desconectado ⚠️';
-    badge.title = 'Servidor desconectado. Toca para configurar la IP de tu PC o reconectar.';
+    badge.title = 'Inicia el servidor en la terminal con "npm run python:server" para habilitar el OCR.';
   }
 }
 
 async function checkPythonOcrHealth() {
-  const candidates = getCandidateBackendUrls();
-
-  for (const base of candidates) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-      const url = `${base}/api/health`;
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: { 'Bypass-Tunnel-Reminder': 'true' },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const data = await res.json().catch(() => null);
-        if (data && data.status === 'ok') {
-          activeBackendBaseUrl = base;
-          updateEngineBadge(true, base);
-          return true;
-        }
-      }
-    } catch (e) {
-      // continue testing candidates
-    }
-  }
-
-  updateEngineBadge(false);
-  return false;
-}
-
-function openOcrConfigModal() {
-  const modal = document.getElementById('ocr-modal');
-  const input = document.getElementById('ocr-server-input');
-  const statusTitle = document.getElementById('modal-status-title');
-  const statusSub = document.getElementById('modal-status-subtitle');
-  const statusDot = document.getElementById('modal-status-dot');
-  if (!modal) return;
-
-  const currentSaved = localStorage.getItem('upl_ocr_backend_url') || '';
-  if (input) input.value = currentSaved || activeBackendBaseUrl || '';
-
-  if (activeBackendBaseUrl) {
-    if (statusTitle) statusTitle.textContent = 'Motor Python Conectado ⚡';
-    if (statusSub) statusSub.textContent = `Activo: ${activeBackendBaseUrl || 'Ruta relativa'}`;
-    if (statusDot) {
-      statusDot.className = 'engine-dot';
-      statusDot.style.background = '#22c55e';
-    }
-  } else {
-    if (statusTitle) statusTitle.textContent = 'Motor Desconectado ⚠️';
-    if (statusSub) statusSub.textContent = 'Ingresa tu URL de nube o túnel para conectar';
-    if (statusDot) {
-      statusDot.className = 'engine-dot';
-      statusDot.style.background = '#ef4444';
-    }
-  }
-
-  modal.classList.remove('hidden');
-}
-
-function closeOcrConfigModal() {
-  const modal = document.getElementById('ocr-modal');
-  if (modal) modal.classList.add('hidden');
-}
-
-async function testOcrConnectionFromModal() {
-  const input = document.getElementById('ocr-server-input');
-  const statusTitle = document.getElementById('modal-status-title');
-  const statusSub = document.getElementById('modal-status-subtitle');
-  const statusDot = document.getElementById('modal-status-dot');
-  const btn = document.getElementById('btn-test-ocr-conn');
-
-  const rawUrl = input ? input.value.trim().replace(/\/+$/, '') : '';
-  let testUrl = rawUrl;
-  if (testUrl && !testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
-    testUrl = `http://${testUrl}`;
-  }
-
-  if (btn) btn.textContent = '⏳ Probando...';
-  if (statusTitle) statusTitle.textContent = 'Probando conexión...';
-  if (statusSub) statusSub.textContent = `Enviando ping a ${testUrl || 'servidor'}...`;
-
-  const startTime = performance.now();
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const target = testUrl ? `${testUrl}/api/health` : '/api/health';
-    const res = await fetch(target, {
-      method: 'GET',
-      headers: { 'Bypass-Tunnel-Reminder': 'true' },
-      signal: controller.signal
-    });
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch('http://127.0.0.1:8000/api/health', { method: 'GET', signal: controller.signal });
     clearTimeout(timeoutId);
-
     if (res.ok) {
-      const data = await res.json().catch(() => null);
-      if (data && data.status === 'ok') {
-        const elapsed = Math.round(performance.now() - startTime);
-        if (statusTitle) statusTitle.textContent = '¡Conexión Exitosa! ⚡';
-        if (statusSub) statusSub.textContent = `Respuesta en ${elapsed}ms (${data.engine || 'FastAPI'})`;
-        if (statusDot) statusDot.style.background = '#22c55e';
-        showToast(`¡Conexión verificada exitosamente! (${elapsed}ms)`);
-        if (btn) btn.textContent = '⚡ Probar';
-        return true;
-      }
+      updateEngineBadge(true);
+      return true;
     }
-  } catch (err) {
-    // continue
+  } catch (e) {
+    // offline
   }
-
-  if (statusTitle) statusTitle.textContent = 'No se pudo conectar ❌';
-  if (statusSub) statusSub.textContent = 'Verifica que la URL sea válida y esté en ejecución.';
-  if (statusDot) statusDot.style.background = '#ef4444';
-  showToast('No se pudo establecer conexión con esa URL.', 'error');
-  if (btn) btn.textContent = '⚡ Probar';
+  updateEngineBadge(false);
   return false;
-}
-
-async function saveOcrUrlFromModal() {
-  const input = document.getElementById('ocr-server-input');
-  const raw = input ? input.value.trim() : '';
-
-  if (!raw || raw === '.') {
-    localStorage.removeItem('upl_ocr_backend_url');
-    showToast('Configuración reiniciada a detección automática.');
-  } else {
-    let finalUrl = raw.replace(/\/+$/, '');
-    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-      finalUrl = `http://${finalUrl}`;
-    }
-    localStorage.setItem('upl_ocr_backend_url', finalUrl);
-    showToast(`URL guardada: ${finalUrl}`);
-  }
-
-  const ok = await checkPythonOcrHealth();
-  if (ok) {
-    closeOcrConfigModal();
-  } else {
-    await testOcrConnectionFromModal();
-  }
-}
-
-function resetOcrUrlFromModal() {
-  const input = document.getElementById('ocr-server-input');
-  localStorage.removeItem('upl_ocr_backend_url');
-  if (input) input.value = '';
-  showToast('Restaurado a automático.');
-  checkPythonOcrHealth();
-  testOcrConnectionFromModal();
-}
-
-function openBackendConfigPrompt() {
-  openOcrConfigModal();
 }
 
 async function performOcrOnImage(imageSource, file = null) {
@@ -1817,66 +1648,44 @@ async function performOcrOnImage(imageSource, file = null) {
     if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '50%';
     if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Extrayendo materias con OpenCV + RapidOCR en Python...';
 
-    // Verify or discover active URL
-    if (!activeBackendBaseUrl) {
-      await checkPythonOcrHealth();
-    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    const candidatesToTry = activeBackendBaseUrl
-      ? [activeBackendBaseUrl, ...getCandidateBackendUrls().filter(u => u !== activeBackendBaseUrl)]
-      : getCandidateBackendUrls();
+    const pyResponse = await fetch('http://127.0.0.1:8000/api/ocr-mesa', {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
 
-    let pyData = null;
+    if (pyResponse.ok) {
+      const pyData = await pyResponse.json();
+      if (pyData && pyData.success && Array.isArray(pyData.casillas) && pyData.casillas.length > 0) {
+        updateEngineBadge(true);
+        if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '100%';
+        if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = `¡Listo! ${pyData.casillas.length} materias detectadas ⚡`;
 
-    for (const base of candidatesToTry) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 20000);
-        const endpoint = `${base}/api/ocr-mesa`;
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          body: formData,
-          headers: { 'Bypass-Tunnel-Reminder': 'true' },
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.success && Array.isArray(data.casillas) && data.casillas.length > 0) {
-            activeBackendBaseUrl = base;
-            pyData = data;
-            break;
-          }
+        if (pyData.date) {
+          state.mesa.date = pyData.date;
+          if (dom.mesaDate) dom.mesaDate.value = pyData.date;
         }
-      } catch (err) {
-        // try next candidate
+
+        state.mesa.hasLoadedData = true;
+        state.mesa.casillas = pyData.casillas;
+
+        setTimeout(() => {
+          if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
+        }, 800);
+
+        renderMesaCasillasUI();
+        saveAndRender();
+        showToast(`¡${pyData.casillas.length} materias extraídas exitosamente con Python! ⚡`);
+        return;
+      } else {
+        throw new Error('El motor no detectó materias en la imagen.');
       }
-    }
-
-    if (pyData && pyData.success && Array.isArray(pyData.casillas) && pyData.casillas.length > 0) {
-      updateEngineBadge(true, activeBackendBaseUrl);
-      if (dom.mesaOcrProgress) dom.mesaOcrProgress.style.width = '100%';
-      if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = `¡Listo! ${pyData.casillas.length} materias detectadas ⚡`;
-
-      if (pyData.date) {
-        state.mesa.date = pyData.date;
-        if (dom.mesaDate) dom.mesaDate.value = pyData.date;
-      }
-
-      state.mesa.hasLoadedData = true;
-      state.mesa.casillas = pyData.casillas;
-
-      setTimeout(() => {
-        if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
-      }, 800);
-
-      renderMesaCasillasUI();
-      saveAndRender();
-      showToast(`¡${pyData.casillas.length} materias extraídas exitosamente con Python! ⚡`);
-      return;
     } else {
-      throw new Error('No se pudo conectar con el motor Python en ningún endpoint.');
+      throw new Error(`El servidor Python devolvió código ${pyResponse.status}`);
     }
   } catch (err) {
     console.error('Error al procesar OCR con Python:', err);
@@ -1885,11 +1694,9 @@ async function performOcrOnImage(imageSource, file = null) {
     state.mesa.hasLoadedData = true;
     renderMesaCasillasUI();
     saveAndRender();
-    showToast('No se pudo conectar con el motor Python. Abriendo opciones de conexión...', 'error');
-    openOcrConfigModal();
+    showToast('Inicia el servidor Python con "npm run python:server" en la terminal para procesar la imagen.', 'error');
   }
 }
-
 
 
 // ============================================================================
@@ -2193,30 +2000,6 @@ function setupEventListeners() {
   if (dom.btnTriggerUploadMesa) {
     dom.btnTriggerUploadMesa.addEventListener('click', () => {
       if (dom.mesaFileInput) dom.mesaFileInput.click();
-    });
-  }
-
-  if (dom.mesaEngineBadge) {
-    dom.mesaEngineBadge.addEventListener('click', openBackendConfigPrompt);
-  }
-
-  // OCR Modal event listeners
-  const btnCloseOcrModal = document.getElementById('btn-close-ocr-modal');
-  if (btnCloseOcrModal) btnCloseOcrModal.addEventListener('click', closeOcrConfigModal);
-
-  const btnTestOcrModal = document.getElementById('btn-test-ocr-conn');
-  if (btnTestOcrModal) btnTestOcrModal.addEventListener('click', testOcrConnectionFromModal);
-
-  const btnSaveOcrModal = document.getElementById('btn-save-ocr-url');
-  if (btnSaveOcrModal) btnSaveOcrModal.addEventListener('click', saveOcrUrlFromModal);
-
-  const btnResetOcrModal = document.getElementById('btn-reset-ocr-url');
-  if (btnResetOcrModal) btnResetOcrModal.addEventListener('click', resetOcrUrlFromModal);
-
-  const modalOcrEl = document.getElementById('ocr-modal');
-  if (modalOcrEl) {
-    modalOcrEl.addEventListener('click', (e) => {
-      if (e.target === modalOcrEl) closeOcrConfigModal();
     });
   }
 
