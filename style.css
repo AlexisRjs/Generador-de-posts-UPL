@@ -260,10 +260,18 @@ body {
 /* Main Container Grid */
 .main-container {
   display: grid;
-  grid-template-columns: 1fr 480px;
+  grid-template-columns: 1fr minmax(460px, 520px);
   gap: 24px;
   padding: 16px 20px;
   flex: 1;
+}
+
+@media (min-width: 1440px) {
+  .main-container {
+    grid-template-columns: 1fr 560px;
+    gap: 32px;
+    padding: 20px 32px;
+  }
 }
 
 /* Forms and Panes */
@@ -1107,7 +1115,7 @@ details[open] .chevron-icon {
 
 .preview-toolbar {
   width: 100%;
-  max-width: 380px;
+  max-width: 440px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1160,7 +1168,7 @@ details[open] .chevron-icon {
 /* Multi-Story Navigation Bar */
 .story-parts-bar {
   width: 100%;
-  max-width: 380px;
+  max-width: 440px;
   background: linear-gradient(135deg, rgba(88, 28, 135, 0.4), rgba(45, 16, 75, 0.6));
   border: 1px solid rgba(168, 85, 247, 0.4);
   border-radius: var(--radius-sm);
@@ -1225,23 +1233,39 @@ details[open] .chevron-icon {
 /* Smartphone Mockup Frame */
 .phone-frame {
   width: 100%;
-  max-width: 360px;
+  max-width: 430px;
+  max-height: calc(100vh - 145px);
   aspect-ratio: 9 / 16;
   background: #000000;
-  border-radius: 36px;
-  padding: 10px;
+  border-radius: 40px;
+  padding: 11px;
   box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.12),
-    0 20px 50px rgba(0, 0, 0, 0.7),
-    0 0 40px rgba(139, 61, 255, 0.15);
+    0 0 0 2px rgba(255, 255, 255, 0.14),
+    0 24px 60px rgba(0, 0, 0, 0.75),
+    0 0 45px rgba(139, 61, 255, 0.20);
   position: relative;
   display: flex;
   flex-direction: column;
+  transition: max-width 0.2s ease;
+}
+
+@media (min-width: 1440px) {
+  .phone-frame {
+    max-width: 480px;
+    max-height: calc(100vh - 140px);
+    border-radius: 44px;
+    padding: 12px;
+  }
+  .preview-toolbar,
+  .story-parts-bar,
+  .caption-card {
+    max-width: 480px;
+  }
 }
 
 .phone-speaker {
-  width: 60px;
-  height: 4px;
+  width: 70px;
+  height: 5px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-full);
   position: absolute;
@@ -1254,7 +1278,7 @@ details[open] .chevron-icon {
 .canvas-container {
   width: 100%;
   height: 100%;
-  border-radius: 28px;
+  border-radius: 30px;
   overflow: hidden;
   position: relative;
   background: #19092c;
@@ -1317,7 +1341,7 @@ details[open] .chevron-icon {
 /* Caption card */
 .caption-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 440px;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -2150,7 +2174,8 @@ details[open] .chevron-icon {
   }
 
   .phone-frame {
-    max-width: 320px;
+    max-width: min(390px, 92vw);
+    max-height: calc(100dvh - 180px);
   }
 }
 

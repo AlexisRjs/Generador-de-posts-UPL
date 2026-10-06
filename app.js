@@ -2103,7 +2103,7 @@ function setupEventListeners() {
   }
 
   // Materias por historia handler (0 a 50 materias, default 20)
-  function updateMesaDensity(value, showToastMessage = false) {
+  function updateMesaDensity(value) {
     const density = Math.max(0, Math.min(50, parseInt(value, 10) || 0));
     state.mesa.itemsPerPage = density;
     if (dom.mesaDensityVal) dom.mesaDensityVal.textContent = String(density);
@@ -2125,22 +2125,19 @@ function setupEventListeners() {
     state.mesa.currentPage = 1;
     state.pagination.mesa.currentPage = 1;
     saveAndRender();
-    if (showToastMessage) {
-      showToast(`Materias por historia: ${density} 📋`);
-    }
   }
 
   if (dom.mesaItemsSlider) {
     dom.mesaItemsSlider.addEventListener('input', (e) => {
-      updateMesaDensity(e.target.value, false);
+      updateMesaDensity(e.target.value);
     });
   }
   if (dom.mesaItemsNumber) {
     dom.mesaItemsNumber.addEventListener('input', (e) => {
-      updateMesaDensity(e.target.value, false);
+      updateMesaDensity(e.target.value);
     });
     dom.mesaItemsNumber.addEventListener('change', (e) => {
-      updateMesaDensity(e.target.value, true);
+      updateMesaDensity(e.target.value);
     });
   }
 
@@ -2148,7 +2145,7 @@ function setupEventListeners() {
   document.querySelectorAll('.btn-density').forEach(btn => {
     btn.addEventListener('click', () => {
       const density = parseInt(btn.dataset.density, 10);
-      updateMesaDensity(density, true);
+      updateMesaDensity(density);
     });
   });
 
@@ -4083,6 +4080,10 @@ async function shareStory() {
 // Toast Notification
 // ============================================================================
 function showToast(message, isError = false) {
+  if (!dom.toastContainer) return;
+  while (dom.toastContainer.firstChild) {
+    dom.toastContainer.removeChild(dom.toastContainer.firstChild);
+  }
   const toast = document.createElement('div');
   toast.className = 'toast';
   if (isError) toast.style.borderColor = '#ef4444';
@@ -4091,7 +4092,7 @@ function showToast(message, isError = false) {
   dom.toastContainer.appendChild(toast);
   setTimeout(() => {
     if (toast.parentNode) toast.parentNode.removeChild(toast);
-  }, 3000);
+  }, 2400);
 }
 
 // Start application
