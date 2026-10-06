@@ -1643,9 +1643,12 @@ async function checkPythonOcrHealth() {
       const res = await fetch(url, { method: 'GET', signal: controller.signal });
       clearTimeout(timeoutId);
       if (res.ok) {
-        activeBackendBaseUrl = base;
-        updateEngineBadge(true, base);
-        return true;
+        const data = await res.json().catch(() => null);
+        if (data && data.status === 'ok') {
+          activeBackendBaseUrl = base;
+          updateEngineBadge(true, base);
+          return true;
+        }
       }
     } catch (e) {
       // continue testing candidates
@@ -1658,10 +1661,19 @@ async function checkPythonOcrHealth() {
 
 function openBackendConfigPrompt() {
   const currentSaved = localStorage.getItem('upl_ocr_backend_url') || (activeBackendBaseUrl || 'http://127.0.0.1:8000');
+  const isHttps = window.location.protocol === 'https:';
+  const httpsWarning = isHttps
+    ? '\n\n⚠️ NOTA HTTPS (Vercel): Los navegadores móviles bloquean "http://" por seguridad (Mixed Content).\n' +
+      'Para usar OCR desde tu celular te recomendamos:\n' +
+      '1. Abrir en el celular tu IP local por HTTP (ej: http://192.168.1.5:5173)\n' +
+      '2. O ingresar una URL HTTPS segura (ej: ngrok, Cloudflare Tunnel o servicio en la nube).'
+    : '';
+
   const userUrl = prompt(
     '⚙️ CONFIGURACIÓN DEL MOTOR PYTHON (OCR)\n\n' +
-    '• Si estás en el celular y tu PC está en la misma red Wi-Fi, escribe la IP de tu PC (ej: http://192.168.1.35:8000).\n' +
-    '• Si usas Vercel en la nube, deja un punto (.) o vacío para usar el API de Vercel.',
+    '• Si estás en el celular y en la misma red Wi-Fi que tu PC, ingresa la IP de tu PC con puerto 8000 (ej: http://192.168.1.5:8000).\n' +
+    '• Para restaurar la detección automática, deja el campo vacío o escribe un punto (.).' +
+    httpsWarning,
     currentSaved
   );
 
@@ -1669,7 +1681,7 @@ function openBackendConfigPrompt() {
     const trimmed = userUrl.trim();
     if (trimmed === '' || trimmed === '.') {
       localStorage.removeItem('upl_ocr_backend_url');
-      showToast('Configuración reiniciada a automático / Vercel.');
+      showToast('Configuración reiniciada a detección automática.');
     } else {
       let finalUrl = trimmed.replace(/\/+$/, '');
       if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
