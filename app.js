@@ -2316,7 +2316,7 @@ function setupEventListeners() {
 
   if (dom.btnLaunchOcr) {
     dom.btnLaunchOcr.addEventListener('click', () => {
-      const batContent = `@echo off\r\ntitle UPL - Servidor OCR Python\r\ncd /d "%~dp0"\r\necho ===================================================\r\necho   Iniciando Servidor Python OCR (OpenCV + RapidOCR)\r\necho ===================================================\r\necho   Escuchando en http://127.0.0.1:8000\r\necho   Deja esta ventana abierta mientras utilices la app.\r\necho ===================================================\r\nif exist "dist\\UPL_OCR\\UPL_OCR.exe" (\r\n  dist\\UPL_OCR\\UPL_OCR.exe\r\n) else (\r\n  python server.py\r\n)\r\npause\r\n`;
+      const batContent = `@echo off\r\ntitle UPL - Servidor OCR Python\r\ncd /d "%~dp0"\r\nif not exist "server.py" if not exist "dist\\\\UPL_OCR\\\\UPL_OCR.exe" (\r\n  cd /d "C:\\dev\\Redes UPL"\r\n)\r\necho ===================================================\r\necho   Iniciando Servidor Python OCR (OpenCV + RapidOCR)\r\necho ===================================================\r\necho   Escuchando en http://127.0.0.1:8000\r\necho   Deja esta ventana abierta mientras utilices la app.\r\necho ===================================================\r\nif exist "dist\\\\UPL_OCR\\\\UPL_OCR.exe" (\r\n  "dist\\\\UPL_OCR\\\\UPL_OCR.exe"\r\n) else (\r\n  python server.py\r\n)\r\npause\r\n`;
       const blob = new Blob([batContent], { type: 'application/x-bat' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
