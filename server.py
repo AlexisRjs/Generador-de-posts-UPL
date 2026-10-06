@@ -49,4 +49,4 @@ async def ocr_mesa(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     print("[UPL OCR] Iniciando Servidor UPL Mesas OCR en http://127.0.0.1:8000 ...")
-    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

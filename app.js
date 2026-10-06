@@ -1084,6 +1084,7 @@ const dom = {
   btnTriggerUploadMesa: document.getElementById('btn-trigger-upload-mesa'),
   mesaEngineBadge: document.getElementById('mesa-engine-badge'),
   mesaEngineText: document.getElementById('mesa-engine-text'),
+  btnLaunchOcr: document.getElementById('btn-launch-ocr'),
   mesaUploadStatus: document.getElementById('mesa-upload-status'),
   mesaPreviewThumb: document.getElementById('mesa-preview-thumb'),
   mesaFileName: document.getElementById('mesa-file-name'),
@@ -2312,6 +2313,22 @@ function setupEventListeners() {
     dom.btnTriggerUploadMesa.addEventListener('click', () => {
       if (dom.mesaFileInput) dom.mesaFileInput.click();
     });
+
+  if (dom.btnLaunchOcr) {
+    dom.btnLaunchOcr.addEventListener('click', () => {
+      const batContent = `@echo off\r\ntitle UPL - Servidor OCR Python\r\ncd /d "%~dp0"\r\necho ===================================================\r\necho   Iniciando Servidor Python OCR (OpenCV + RapidOCR)\r\necho ===================================================\r\necho   Escuchando en http://127.0.0.1:8000\r\necho   Deja esta ventana abierta mientras utilices la app.\r\necho ===================================================\r\nif exist "dist\\UPL_OCR\\UPL_OCR.exe" (\r\n  dist\\UPL_OCR\\UPL_OCR.exe\r\n) else (\r\n  python server.py\r\n)\r\npause\r\n`;
+      const blob = new Blob([batContent], { type: 'application/x-bat' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'iniciar_ocr.bat';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Descargando iniciar_ocr.bat. ¡Hazle doble clic para encender el servidor! ⚡');
+    });
+  }
   }
 
   if (dom.mesaFileInput) {

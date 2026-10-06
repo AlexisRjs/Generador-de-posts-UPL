@@ -1623,6 +1623,35 @@ details[open] .chevron-icon {
   animation: pulse-dot 2s infinite ease-in-out;
 }
 
+.btn-launch-ocr {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(147, 51, 234, 0.15);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  color: #c084fc;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-launch-ocr:hover {
+  background: rgba(147, 51, 234, 0.28);
+  border-color: rgba(147, 51, 234, 0.65);
+  color: #e9d5ff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+}
+
+.btn-launch-ocr:active {
+  transform: translateY(0);
+}
+
 .btn-action-sample {
   flex: 1;
   display: inline-flex;

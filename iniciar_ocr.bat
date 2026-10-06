@@ -7,5 +7,9 @@ echo ===================================================
 echo   Escuchando en http://127.0.0.1:8000
 echo   Deja esta ventana abierta mientras utilices la app.
 echo ===================================================
-python server.py
+if exist "dist\UPL_OCR\UPL_OCR.exe" (
+  dist\UPL_OCR\UPL_OCR.exe
+) else (
+  python server.py
+)
 pause
