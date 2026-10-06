@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "python:server": "python server.py"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "pngjs": "^7.0.0",
     "tesseract.js": "^7.0.0",
     "vite": "^8.3.2"
   }
