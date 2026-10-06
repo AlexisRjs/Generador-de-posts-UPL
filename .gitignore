@@ -1,5 +1,7 @@
-# Dependencies
+# Dependencies & Builds
 node_modules/
+dist/
+build/
 
 # Tesseract traineddata binaries
 *.traineddata
