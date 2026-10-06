@@ -38,7 +38,6 @@ Permite diseñar y exportar en segundos placas informativas de alta calidad para
   - HTML5 Canvas Engine (Renderizado nativo a 1080×1920 px, 60fps)
   - Vanilla CSS3 (Diseño responsivo, modo oscuro, glassmorphism)
   - [Vite](https://vitejs.dev/) como bundler y entorno de desarrollo local.
-  - Tesseract.js (Motor de respaldo en navegador para funcionamiento 100% offline o estático).
 
 - **Backend OCR (Python):**
   - **FastAPI** & **Uvicorn** (API REST ultrarrápida con CORS).
@@ -87,8 +86,6 @@ En otra terminal, inicia el frontend web con Vite:
 npm run dev
 ```
 > Abre tu navegador en la URL indicada por Vite (usualmente `http://localhost:5173`).
-
-*(Nota: si no inicias el servidor Python, el frontend cuenta con un motor de respaldo automático en el navegador con Tesseract.js).*
 
 ---
 
