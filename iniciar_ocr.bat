@@ -1,9 +1,9 @@
 @echo off
 title UPL - Servidor OCR Python
 
-:: Intentar ir a la carpeta actual del bat, o a C:\dev\Redes UPL si se abrió desde Descargas/Escritorio
+:: Cambiar al directorio del script o a C:\dev\Redes UPL
 cd /d "%~dp0"
-if not exist "server.py" if not exist "dist\UPL_OCR\UPL_OCR.exe" (
+if not exist "server.py" if not exist "bin_server\UPL_OCR\UPL_OCR.exe" (
   cd /d "C:\dev\Redes UPL"
 )
 
@@ -14,8 +14,8 @@ echo   Escuchando en http://127.0.0.1:8000
 echo   Deja esta ventana abierta mientras utilices la app.
 echo ===================================================
 
-if exist "dist\UPL_OCR\UPL_OCR.exe" (
-  "dist\UPL_OCR\UPL_OCR.exe"
+if exist "bin_server\UPL_OCR\UPL_OCR.exe" (
+  "bin_server\UPL_OCR\UPL_OCR.exe"
 ) else (
   python server.py
 )
