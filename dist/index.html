@@ -23,8 +23,8 @@
 
   <!-- Tesseract.js for OCR table extraction -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script type="module" crossorigin src="/assets/index-Dm03pv_r.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BlLleENS.css">
+  <script type="module" crossorigin src="/assets/index-DWZqgRrT.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BDNKHfFB.css">
 </head>
 
 <body>
@@ -167,18 +167,10 @@
                 </svg>
                 <span>Subir Foto</span>
               </button>
-              <button type="button" id="btn-load-sample-mesa" class="btn-action-sample" title="Cargar planilla estándar">
-                <span>⚡ Ejemplo 1 (20 materias)</span>
-              </button>
-              <button type="button" id="btn-load-sample-mesa2" class="btn-action-sample" style="border-color: #9333ea; background: rgba(147, 51, 234, 0.12);" title="Cargar planilla completa de 45 materias con todos los turnos">
-                <span>⚡ Ejemplo 2 (45 materias)</span>
-              </button>
-              <button type="button" id="btn-load-sample-mesa3" class="btn-action-sample" style="border-color: #06b6d4; background: rgba(6, 182, 212, 0.12);" title="Cargar planilla de 39 materias (Jueves)">
-                <span>⚡ Ejemplo 3 (39 materias)</span>
-              </button>
-              <button type="button" id="btn-load-sample-mesa4" class="btn-action-sample" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.12);" title="Cargar planilla de 44 materias con sello de Bedelía">
-                <span>⚡ Ejemplo 4 (44 materias)</span>
-              </button>
+              <div id="mesa-engine-badge" class="ocr-engine-badge offline" title="Verificando motor OCR...">
+                <span class="engine-dot"></span>
+                <span id="mesa-engine-text">OCR: Local</span>
+              </div>
             </div>
 
             <!-- Estado de carga / Progreso / Thumbnail -->
@@ -281,24 +273,29 @@
                 <span class="helper-text" id="distrib-helper-text">Optimiza automáticamente la densidad y columnas según la cantidad de materias.</span>
               </div>
 
+              <!-- Materias por Historia (Siempre visible) -->
+              <div class="slider-group" id="density-control-group">
+                <div class="slider-header">
+                  <span>Materias por historia</span>
+                </div>
+                <div class="format-toggle-group">
+                  <button type="button" class="format-btn btn-density" data-density="15">15</button>
+                  <button type="button" class="format-btn btn-density" data-density="20">20</button>
+                  <button type="button" class="format-btn btn-density" data-density="30">30</button>
+                  <button type="button" class="format-btn btn-density active" data-density="45">45 (Todas)</button>
+                </div>
+              </div>
+
               <!-- Paginador de Historias (Visible cuando se divide en partes) -->
               <div id="mesa-pagination-wrap" class="mesa-pagination-wrap hidden">
                 <div class="pagination-header">
-                  <span class="field-label-sm" style="font-weight: 700;">Navegación de Partes</span>
-                  <span id="mesa-page-info" class="page-info-badge">Parte 1 de 3 (16 materias)</span>
+                  <span class="field-label-sm" style="font-weight: 700;">Navegación de Historias</span>
+                  <span id="mesa-page-info" class="page-info-badge">Historia 1 de 2</span>
                 </div>
                 <div class="pagination-controls">
                   <button type="button" id="btn-prev-page" class="btn-page-nav" title="Parte anterior">◀ Anterior</button>
                   <div id="mesa-page-pills" class="page-pills-list"></div>
                   <button type="button" id="btn-next-page" class="btn-page-nav" title="Parte siguiente">Siguiente ▶</button>
-                </div>
-                <div class="pagination-density-row">
-                  <span class="field-label-sm">Materias por historia:</span>
-                  <div class="density-buttons">
-                    <button type="button" class="btn-density" data-density="20">20</button>
-                    <button type="button" class="btn-density" data-density="30">30</button>
-                    <button type="button" class="btn-density active" data-density="45">45</button>
-                  </div>
                 </div>
               </div>
 
