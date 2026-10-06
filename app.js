@@ -2055,7 +2055,7 @@ function setupEventListeners() {
     if (mode === 'all') {
       state.mesa.itemsPerPage = 45;
     } else if (mode === 'pages' && (state.mesa.itemsPerPage || 45) >= 45) {
-      state.mesa.itemsPerPage = 20;
+      state.mesa.itemsPerPage = 24;
     }
     if (dom.btnDistribAuto) dom.btnDistribAuto.classList.toggle('active', mode === 'auto');
     if (dom.btnDistribPages) dom.btnDistribPages.classList.toggle('active', mode === 'pages');
@@ -2095,7 +2095,7 @@ function setupEventListeners() {
     });
   }
 
-  // Density buttons (15, 20, 30, 45 materias por historia)
+  // Density buttons (21, 24, 30, 45 materias por historia)
   document.querySelectorAll('.btn-density').forEach(btn => {
     btn.addEventListener('click', () => {
       const density = parseInt(btn.dataset.density, 10);
@@ -2553,6 +2553,9 @@ function loadSavedState() {
       }
       if (parsed.mesa) {
         Object.assign(state.mesa, parsed.mesa);
+        if (state.mesa.itemsPerPage === 15 || state.mesa.itemsPerPage === 20) {
+          state.mesa.itemsPerPage = 24;
+        }
       }
       if (!state.mesa.date) {
         state.mesa.date = 'Martes 17/10';
@@ -2824,7 +2827,7 @@ function renderMesaCasillasContent(context, width, height) {
     if (itemsPerPage < 45) {
       totalPages = Math.max(2, Math.ceil(activeCasillas.length / itemsPerPage));
     } else {
-      totalPages = Math.max(2, Math.ceil(activeCasillas.length / 22));
+      totalPages = Math.max(2, Math.ceil(activeCasillas.length / 24));
     }
   } else {
     // Auto mode: divided strictly by itemsPerPage selected by the user!
