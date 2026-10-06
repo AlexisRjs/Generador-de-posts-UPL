@@ -1607,26 +1607,35 @@ function updateEngineBadge(isOnline) {
   if (isOnline) {
     badge.className = 'ocr-engine-badge online';
     if (text) text.textContent = 'Python OCR: Activo ⚡';
-    badge.title = 'Motor Python conectado en http://127.0.0.1:8000 (OpenCV + RapidOCR ONNX)';
+    badge.title = `Motor Python conectado en ${activeOcrUrl} (OpenCV + RapidOCR ONNX)`;
   } else {
     badge.className = 'ocr-engine-badge offline';
-    if (text) text.textContent = 'Python OCR: Desconectado ⚠️';
-    badge.title = 'Inicia el servidor en la terminal con "npm run python:server" para habilitar el OCR.';
+    if (text) text.textContent = 'Python OCR: Conectando / Desconectado ⚠️';
+    badge.title = 'Servidor OCR no disponible. Verifica el servicio en Render o inicia el servidor local con "npm run python:server".';
   }
 }
 
-let activeOcrUrl = 'http://127.0.0.1:8000';
+const RENDER_OCR_URL = 'https://generador-de-posts-upl.onrender.com';
+let activeOcrUrl = RENDER_OCR_URL;
 
 async function checkPythonOcrHealth() {
-  const candidates = ['http://127.0.0.1:8000', 'http://localhost:8000'];
-  if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  
+  // Si estamos en localhost damos prioridad a la instancia local, en producción damos prioridad a Render
+  const candidates = isLocalHost
+    ? ['http://127.0.0.1:8000', 'http://localhost:8000', RENDER_OCR_URL]
+    : [RENDER_OCR_URL, 'http://127.0.0.1:8000', 'http://localhost:8000'];
+
+  if (!isLocalHost && window.location.hostname) {
     candidates.push(`http://${window.location.hostname}:8000`);
   }
 
   for (const url of candidates) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      // Render free tier puede demorar unos segundos en "despertar" (spin up), le damos 8s de margen si es Render
+      const timeoutMs = url.includes('onrender.com') ? 8000 : 2000;
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
       const res = await fetch(`${url}/api/health`, { method: 'GET', signal: controller.signal });
       clearTimeout(timeoutId);
       if (res.ok) {
@@ -1635,7 +1644,7 @@ async function checkPythonOcrHealth() {
         return true;
       }
     } catch (e) {
-      // continue to next candidate
+      // continuar con el siguiente candidato
     }
   }
   updateEngineBadge(false);
@@ -1672,7 +1681,7 @@ async function performOcrOnImage(imageSource, file = null) {
     if (dom.mesaOcrStatusText) dom.mesaOcrStatusText.textContent = 'Extrayendo materias con OpenCV + RapidOCR en Python...';
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
+    const timeoutId = setTimeout(() => controller.abort(), 45000);
 
     const pyResponse = await fetch(`${activeOcrUrl}/api/ocr-mesa`, {
       method: 'POST',
