@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: upl-mesas-ocr-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: ohio
+    envVars:
+      - key: PORT
+        value: 8000

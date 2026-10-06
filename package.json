@@ -7,7 +7,8 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "python:server": "python server.py"
+    "python:server": "python server.py",
+    "tunnel": "npx localtunnel --port 8000"
   },
   "keywords": [],
   "author": "",

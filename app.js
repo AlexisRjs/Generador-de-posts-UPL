@@ -1640,7 +1640,11 @@ async function checkPythonOcrHealth() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2500);
       const url = `${base}/api/health`;
-      const res = await fetch(url, { method: 'GET', signal: controller.signal });
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { 'Bypass-Tunnel-Reminder': 'true' },
+        signal: controller.signal
+      });
       clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json().catch(() => null);
@@ -1659,39 +1663,129 @@ async function checkPythonOcrHealth() {
   return false;
 }
 
-function openBackendConfigPrompt() {
-  const currentSaved = localStorage.getItem('upl_ocr_backend_url') || (activeBackendBaseUrl || 'http://127.0.0.1:8000');
-  const isHttps = window.location.protocol === 'https:';
-  const httpsWarning = isHttps
-    ? '\n\n⚠️ NOTA HTTPS (Vercel): Los navegadores móviles bloquean "http://" por seguridad (Mixed Content).\n' +
-      'Para usar OCR desde tu celular te recomendamos:\n' +
-      '1. Abrir en el celular tu IP local por HTTP (ej: http://192.168.1.5:5173)\n' +
-      '2. O ingresar una URL HTTPS segura (ej: ngrok, Cloudflare Tunnel o servicio en la nube).'
-    : '';
+function openOcrConfigModal() {
+  const modal = document.getElementById('ocr-modal');
+  const input = document.getElementById('ocr-server-input');
+  const statusTitle = document.getElementById('modal-status-title');
+  const statusSub = document.getElementById('modal-status-subtitle');
+  const statusDot = document.getElementById('modal-status-dot');
+  if (!modal) return;
 
-  const userUrl = prompt(
-    '⚙️ CONFIGURACIÓN DEL MOTOR PYTHON (OCR)\n\n' +
-    '• Si estás en el celular y en la misma red Wi-Fi que tu PC, ingresa la IP de tu PC con puerto 8000 (ej: http://192.168.1.5:8000).\n' +
-    '• Para restaurar la detección automática, deja el campo vacío o escribe un punto (.).' +
-    httpsWarning,
-    currentSaved
-  );
+  const currentSaved = localStorage.getItem('upl_ocr_backend_url') || '';
+  if (input) input.value = currentSaved || activeBackendBaseUrl || '';
 
-  if (userUrl !== null) {
-    const trimmed = userUrl.trim();
-    if (trimmed === '' || trimmed === '.') {
-      localStorage.removeItem('upl_ocr_backend_url');
-      showToast('Configuración reiniciada a detección automática.');
-    } else {
-      let finalUrl = trimmed.replace(/\/+$/, '');
-      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-        finalUrl = `http://${finalUrl}`;
-      }
-      localStorage.setItem('upl_ocr_backend_url', finalUrl);
-      showToast(`URL guardada: ${finalUrl}`);
+  if (activeBackendBaseUrl) {
+    if (statusTitle) statusTitle.textContent = 'Motor Python Conectado ⚡';
+    if (statusSub) statusSub.textContent = `Activo: ${activeBackendBaseUrl || 'Ruta relativa'}`;
+    if (statusDot) {
+      statusDot.className = 'engine-dot';
+      statusDot.style.background = '#22c55e';
     }
-    checkPythonOcrHealth();
+  } else {
+    if (statusTitle) statusTitle.textContent = 'Motor Desconectado ⚠️';
+    if (statusSub) statusSub.textContent = 'Ingresa tu URL de nube o túnel para conectar';
+    if (statusDot) {
+      statusDot.className = 'engine-dot';
+      statusDot.style.background = '#ef4444';
+    }
   }
+
+  modal.classList.remove('hidden');
+}
+
+function closeOcrConfigModal() {
+  const modal = document.getElementById('ocr-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function testOcrConnectionFromModal() {
+  const input = document.getElementById('ocr-server-input');
+  const statusTitle = document.getElementById('modal-status-title');
+  const statusSub = document.getElementById('modal-status-subtitle');
+  const statusDot = document.getElementById('modal-status-dot');
+  const btn = document.getElementById('btn-test-ocr-conn');
+
+  const rawUrl = input ? input.value.trim().replace(/\/+$/, '') : '';
+  let testUrl = rawUrl;
+  if (testUrl && !testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
+    testUrl = `http://${testUrl}`;
+  }
+
+  if (btn) btn.textContent = '⏳ Probando...';
+  if (statusTitle) statusTitle.textContent = 'Probando conexión...';
+  if (statusSub) statusSub.textContent = `Enviando ping a ${testUrl || 'servidor'}...`;
+
+  const startTime = performance.now();
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const target = testUrl ? `${testUrl}/api/health` : '/api/health';
+    const res = await fetch(target, {
+      method: 'GET',
+      headers: { 'Bypass-Tunnel-Reminder': 'true' },
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json().catch(() => null);
+      if (data && data.status === 'ok') {
+        const elapsed = Math.round(performance.now() - startTime);
+        if (statusTitle) statusTitle.textContent = '¡Conexión Exitosa! ⚡';
+        if (statusSub) statusSub.textContent = `Respuesta en ${elapsed}ms (${data.engine || 'FastAPI'})`;
+        if (statusDot) statusDot.style.background = '#22c55e';
+        showToast(`¡Conexión verificada exitosamente! (${elapsed}ms)`);
+        if (btn) btn.textContent = '⚡ Probar';
+        return true;
+      }
+    }
+  } catch (err) {
+    // continue
+  }
+
+  if (statusTitle) statusTitle.textContent = 'No se pudo conectar ❌';
+  if (statusSub) statusSub.textContent = 'Verifica que la URL sea válida y esté en ejecución.';
+  if (statusDot) statusDot.style.background = '#ef4444';
+  showToast('No se pudo establecer conexión con esa URL.', 'error');
+  if (btn) btn.textContent = '⚡ Probar';
+  return false;
+}
+
+async function saveOcrUrlFromModal() {
+  const input = document.getElementById('ocr-server-input');
+  const raw = input ? input.value.trim() : '';
+
+  if (!raw || raw === '.') {
+    localStorage.removeItem('upl_ocr_backend_url');
+    showToast('Configuración reiniciada a detección automática.');
+  } else {
+    let finalUrl = raw.replace(/\/+$/, '');
+    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+      finalUrl = `http://${finalUrl}`;
+    }
+    localStorage.setItem('upl_ocr_backend_url', finalUrl);
+    showToast(`URL guardada: ${finalUrl}`);
+  }
+
+  const ok = await checkPythonOcrHealth();
+  if (ok) {
+    closeOcrConfigModal();
+  } else {
+    await testOcrConnectionFromModal();
+  }
+}
+
+function resetOcrUrlFromModal() {
+  const input = document.getElementById('ocr-server-input');
+  localStorage.removeItem('upl_ocr_backend_url');
+  if (input) input.value = '';
+  showToast('Restaurado a automático.');
+  checkPythonOcrHealth();
+  testOcrConnectionFromModal();
+}
+
+function openBackendConfigPrompt() {
+  openOcrConfigModal();
 }
 
 async function performOcrOnImage(imageSource, file = null) {
@@ -1742,6 +1836,7 @@ async function performOcrOnImage(imageSource, file = null) {
         const res = await fetch(endpoint, {
           method: 'POST',
           body: formData,
+          headers: { 'Bypass-Tunnel-Reminder': 'true' },
           signal: controller.signal
         });
         clearTimeout(timeoutId);
@@ -1790,7 +1885,8 @@ async function performOcrOnImage(imageSource, file = null) {
     state.mesa.hasLoadedData = true;
     renderMesaCasillasUI();
     saveAndRender();
-    showToast('No se pudo conectar con el motor Python. Toca el botón de estado OCR para configurar la IP o inicia el servidor.', 'error');
+    showToast('No se pudo conectar con el motor Python. Abriendo opciones de conexión...', 'error');
+    openOcrConfigModal();
   }
 }
 
@@ -2102,6 +2198,26 @@ function setupEventListeners() {
 
   if (dom.mesaEngineBadge) {
     dom.mesaEngineBadge.addEventListener('click', openBackendConfigPrompt);
+  }
+
+  // OCR Modal event listeners
+  const btnCloseOcrModal = document.getElementById('btn-close-ocr-modal');
+  if (btnCloseOcrModal) btnCloseOcrModal.addEventListener('click', closeOcrConfigModal);
+
+  const btnTestOcrModal = document.getElementById('btn-test-ocr-conn');
+  if (btnTestOcrModal) btnTestOcrModal.addEventListener('click', testOcrConnectionFromModal);
+
+  const btnSaveOcrModal = document.getElementById('btn-save-ocr-url');
+  if (btnSaveOcrModal) btnSaveOcrModal.addEventListener('click', saveOcrUrlFromModal);
+
+  const btnResetOcrModal = document.getElementById('btn-reset-ocr-url');
+  if (btnResetOcrModal) btnResetOcrModal.addEventListener('click', resetOcrUrlFromModal);
+
+  const modalOcrEl = document.getElementById('ocr-modal');
+  if (modalOcrEl) {
+    modalOcrEl.addEventListener('click', (e) => {
+      if (e.target === modalOcrEl) closeOcrConfigModal();
+    });
   }
 
   if (dom.mesaFileInput) {
