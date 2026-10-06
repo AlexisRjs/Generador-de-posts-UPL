@@ -3,6 +3,7 @@ node_modules/
 dist/
 build/
 bin_server/
+bin_desktop/
 
 # Tesseract traineddata binaries
 *.traineddata
