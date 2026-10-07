@@ -772,6 +772,7 @@ const state = {
     columns: 'auto', // 'auto' | '1' | '2' | '3'
     yOffset: 0,
     scale: 1.0,
+    careerOrder: [],
     casillas: []
   },
 
@@ -1125,6 +1126,7 @@ async function init() {
   setupEventListeners();
   renderDaysInputs();
   renderBadgesUI('info');
+  updateMesaFilterChipsUI();
   renderMesaCasillasUI();
   syncFormToState();
   checkPythonOcrHealth();
@@ -1382,39 +1384,79 @@ function matchesEsp(itemEsp, filterEsp) {
   return false;
 }
 
-// Orden oficial jerárquico solicitado: UBD, luego ISI, IQ, IC, IM, IEE
-const CAREER_ORDER = ['UBD', 'ISI', 'IQ', 'IC', 'IM', 'IEE'];
+// El orden por especialidad se basa en cómo esté ordenado en la foto que se suba de la mesa
+function getCareerOrderFromCasillas(casillas) {
+  const order = [];
+  (casillas || []).forEach(c => {
+    let esp = (c.esp || '').toUpperCase().trim();
+    if (esp === 'UDB') esp = 'UBD';
+    if (esp === 'IE') esp = 'IEE';
+    if (esp && !order.includes(esp)) {
+      order.push(esp);
+    }
+  });
+  return order;
+}
 
 function getCareerRank(esp) {
-  const norm = (esp || '').toUpperCase().trim();
-  if (norm === 'UBD' || norm === 'UDB') return 0;
-  if (norm === 'ISI') return 1;
-  if (norm === 'IQ') return 2;
-  if (norm === 'IC') return 3;
-  if (norm === 'IM') return 4;
-  if (norm === 'IEE' || norm === 'IE') return 5;
-  return 999;
+  let norm = (esp || '').toUpperCase().trim();
+  if (norm === 'UDB') norm = 'UBD';
+  if (norm === 'IE') norm = 'IEE';
+  const order = (state.mesa && Array.isArray(state.mesa.careerOrder) && state.mesa.careerOrder.length > 0)
+    ? state.mesa.careerOrder
+    : getCareerOrderFromCasillas(state.mesa.casillas);
+  const idx = order.indexOf(norm);
+  return idx !== -1 ? idx : 999;
 }
 
 function sortMesaCasillas(casillas) {
   if (!Array.isArray(casillas)) return [];
+  // Ordena por especialidad según el orden detectado en la foto,
+  // y dentro de cada especialidad preserva el orden relativo original de la foto.
+  const allCasillas = state.mesa.casillas || [];
   return [...casillas].sort((a, b) => {
     const rankA = getCareerRank(a.esp);
     const rankB = getCareerRank(b.esp);
     if (rankA !== rankB) {
       return rankA - rankB;
     }
-    const matA = (a.materia || '').trim();
-    const matB = (b.materia || '').trim();
-    const matCompare = matA.localeCompare(matB, 'es', { sensitivity: 'base', numeric: true });
-    if (matCompare !== 0) return matCompare;
+    const idxA = allCasillas.findIndex(c => c.id === a.id);
+    const idxB = allCasillas.findIndex(c => c.id === b.id);
+    if (idxA !== -1 && idxB !== -1) {
+      return idxA - idxB;
+    }
+    return (a.id || '').localeCompare(b.id || '', undefined, { numeric: true });
+  });
+}
 
-    // Desempate por hora y aula
-    const horaA = (a.hora || '').trim();
-    const horaB = (b.hora || '').trim();
-    if (horaA !== horaB) return horaA.localeCompare(horaB);
+function updateMesaFilterChipsUI() {
+  const container = dom.mesaFilterChips || document.getElementById('mesa-filter-chips');
+  if (!container) return;
+  const currentFilter = (state.mesa.filterEsp || 'TODAS').toUpperCase();
+  const order = (state.mesa && Array.isArray(state.mesa.careerOrder) && state.mesa.careerOrder.length > 0)
+    ? state.mesa.careerOrder
+    : getCareerOrderFromCasillas(state.mesa.casillas);
 
-    return (a.aula || '').trim().localeCompare((b.aula || '').trim(), 'es', { numeric: true });
+  const displayOrder = order.length > 0 ? order : ['ISI', 'UBD', 'IQ', 'IC', 'IM', 'IEE'];
+
+  container.innerHTML = `
+    <button type="button" class="chip-filter ${currentFilter === 'TODAS' ? 'active' : ''}" data-esp="TODAS">TODAS</button>
+    ${displayOrder.map(esp => `
+      <button type="button" class="chip-filter ${matchesEsp(esp, currentFilter) && currentFilter !== 'TODAS' ? 'active' : ''}" data-esp="${esp}">${esp}</button>
+    `).join('')}
+  `;
+
+  // Attach click listeners to chips
+  container.querySelectorAll('.chip-filter').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const esp = chip.dataset.esp;
+      state.mesa.filterEsp = esp;
+      state.mesa.currentPage = 1;
+      state.pagination.mesa.currentPage = 1;
+      renderMesaCasillasUI();
+      saveAndRender();
+      showToast(`Filtrado por carrera: ${esp}`);
+    });
   });
 }
 
@@ -1789,13 +1831,20 @@ async function performOcrOnImage(imageSource, file = null) {
             if (dom.mesaDate) dom.mesaDate.value = pyData.date;
           }
 
+          if (pyData.career_order && Array.isArray(pyData.career_order) && pyData.career_order.length > 0) {
+            state.mesa.careerOrder = pyData.career_order;
+          } else {
+            state.mesa.careerOrder = getCareerOrderFromCasillas(pyData.casillas);
+          }
+
           state.mesa.hasLoadedData = true;
-          state.mesa.casillas = sortMesaCasillas(pyData.casillas);
+          state.mesa.casillas = pyData.casillas;
 
           setTimeout(() => {
             if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
           }, 800);
 
+          updateMesaFilterChipsUI();
           renderMesaCasillasUI();
           saveAndRender();
           showToast(`¡${pyData.casillas.length} materias extraídas con motor Python (OpenCV + RapidOCR)! ⚡`);
@@ -1853,7 +1902,9 @@ async function performOcrOnImage(imageSource, file = null) {
 
     state.mesa.hasLoadedData = true;
     if (parsed.length > 0) {
-      state.mesa.casillas = sortMesaCasillas(parsed);
+      state.mesa.careerOrder = getCareerOrderFromCasillas(parsed);
+      state.mesa.casillas = parsed;
+      updateMesaFilterChipsUI();
       showToast(`¡${parsed.length} materias detectadas en navegador! ✨ (Para mayor precisión inicia "npm run python:server")`);
     } else {
       state.mesa.casillas = [];
@@ -1997,7 +2048,7 @@ function parseCasillasFromOcrText(rawText) {
     });
   }
 
-  return sortMesaCasillas(results);
+  return results;
 }
 
 // ============================================================================
@@ -2100,7 +2151,7 @@ function attachDayInputListeners() {
 
 function addDay() {
   const lastItem = state.paro.days[state.paro.days.length - 1] || { day: 'MIÉRCOLES', date: '15/10' };
-  
+
   let nextDay = 'JUEVES';
   const lastDayIndex = DAYS_SEQUENCE.indexOf(lastItem.day.toUpperCase());
   if (lastDayIndex >= 0 && lastDayIndex < DAYS_SEQUENCE.length - 1) {
@@ -2304,21 +2355,21 @@ function setupEventListeners() {
       if (dom.mesaFileInput) dom.mesaFileInput.click();
     });
 
-  if (dom.btnLaunchOcr) {
-    dom.btnLaunchOcr.addEventListener('click', () => {
-      const batContent = `@echo off\r\ntitle UPL - Servidor OCR Python\r\ncd /d "%~dp0"\r\nif not exist "server.py" if not exist "bin_server\\\\UPL_OCR\\\\UPL_OCR.exe" (\r\n  cd /d "C:\\dev\\Redes UPL"\r\n)\r\necho ===================================================\r\necho   Iniciando Servidor Python OCR (OpenCV + RapidOCR)\r\necho ===================================================\r\necho   Escuchando en http://127.0.0.1:8000\r\necho   Deja esta ventana abierta mientras utilices la app.\r\necho ===================================================\r\nif exist "bin_server\\\\UPL_OCR\\\\UPL_OCR.exe" (\r\n  "bin_server\\\\UPL_OCR\\\\UPL_OCR.exe"\r\n) else (\r\n  python server.py\r\n)\r\npause\r\n`;
-      const blob = new Blob([batContent], { type: 'application/x-bat' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'iniciar_ocr.bat';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('Descargando iniciar_ocr.bat. ¡Hazle doble clic para encender el servidor! ⚡');
-    });
-  }
+    if (dom.btnLaunchOcr) {
+      dom.btnLaunchOcr.addEventListener('click', () => {
+        const batContent = `@echo off\r\ntitle UPL - Servidor OCR Python\r\ncd /d "%~dp0"\r\nif not exist "server.py" if not exist "bin_server\\\\UPL_OCR\\\\UPL_OCR.exe" (\r\n  cd /d "C:\\dev\\Redes UPL"\r\n)\r\necho ===================================================\r\necho   Iniciando Servidor Python OCR (OpenCV + RapidOCR)\r\necho ===================================================\r\necho   Escuchando en http://127.0.0.1:8000\r\necho   Deja esta ventana abierta mientras utilices la app.\r\necho ===================================================\r\nif exist "bin_server\\\\UPL_OCR\\\\UPL_OCR.exe" (\r\n  "bin_server\\\\UPL_OCR\\\\UPL_OCR.exe"\r\n) else (\r\n  python server.py\r\n)\r\npause\r\n`;
+        const blob = new Blob([batContent], { type: 'application/x-bat' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'iniciar_ocr.bat';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Descargando iniciar_ocr.bat. ¡Hazle doble clic para encender el servidor! ⚡');
+      });
+    }
   }
 
   if (dom.mesaFileInput) {
@@ -2933,8 +2984,9 @@ function loadSavedState() {
   }
   if (!state.mesa.casillas || !Array.isArray(state.mesa.casillas)) {
     state.mesa.casillas = [];
-  } else if (state.mesa.casillas.length > 0) {
-    state.mesa.casillas = sortMesaCasillas(state.mesa.casillas);
+  }
+  if (!state.mesa.careerOrder || !Array.isArray(state.mesa.careerOrder) || state.mesa.careerOrder.length === 0) {
+    state.mesa.careerOrder = getCareerOrderFromCasillas(state.mesa.casillas);
   }
   // Clear any residual sample data from previous demo sessions in localStorage
   if (state.mesa.photoUrl && (state.mesa.photoUrl.includes('foto-mesa-ejemplo') || (state.mesa.photoName && state.mesa.photoName.includes('ejemplo')) || (state.mesa.photoName && state.mesa.photoName.includes('(con sello)')))) {
@@ -3036,8 +3088,8 @@ function updateStoryPartsUI() {
       dom.btnDownloadAll.classList.remove('hidden');
       const allSpan = dom.btnDownloadAll.querySelector('span');
       if (allSpan) {
-        allSpan.textContent = totalPages === 2 
-          ? 'Descargar Ambas Historias (2 PNGs HD)' 
+        allSpan.textContent = totalPages === 2
+          ? 'Descargar Ambas Historias (2 PNGs HD)'
           : `Descargar Todas las Historias (${totalPages} PNGs HD)`;
       }
     }
@@ -3421,7 +3473,7 @@ function renderMesaCasillasContent(context, width, height) {
   } else if (numCols === 3) {
     // 3-Column Grid Layout (Optimized for 45 subjects in 1 story, and adapts for fewer)
     const rows = Math.ceil(pageCasillas.length / 3);
-    
+
     // Adaptive gaps & card height
     let targetGap;
     if (rows <= 5) targetGap = 16;
@@ -3546,7 +3598,7 @@ function renderMesaCasillasContent(context, width, height) {
   } else {
     // 2-Column Grid Layout (Optimized for maximum readability and visual breathing space)
     const rows = Math.ceil(pageCasillas.length / 2);
-    
+
     // Adaptive gaps & card height
     let targetGap;
     if (rows <= 5) targetGap = 18;
@@ -3909,8 +3961,8 @@ function renderBlockBasedContent(context, width, height, data) {
 function renderParoContent(context, width, height) {
   const { days, format, hasLine, gremium, status, extra, yOffset, scale } = state.paro;
 
-  const validDays = (days && days.length > 0) 
-    ? days.filter(d => (d.day && d.day.trim()) || (d.date && d.date.trim())) 
+  const validDays = (days && days.length > 0)
+    ? days.filter(d => (d.day && d.day.trim()) || (d.date && d.date.trim()))
     : [];
 
   // Multi-story check for PARO

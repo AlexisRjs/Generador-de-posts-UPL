@@ -620,20 +620,21 @@ def process_exam_sheet(image_bytes: bytes) -> dict:
             "turno": cur_turno
         })
 
-    # Ordenar por materias: primero las de UBD, luego ISI, IQ, IC, IM, IEE y alfabéticamente por materia
-    career_priority = {"UBD": 0, "ISI": 1, "IQ": 2, "IC": 3, "IM": 4, "IEE": 5}
-    def sort_casilla_key(c):
+    # Orden por especialidad en base a cómo esté ordenado en la foto que se suba de la mesa
+    photo_career_order = []
+    for c in casillas:
         esp = (c.get("esp") or "").strip().upper()
         if esp == "UDB":
             esp = "UBD"
         elif esp == "IE":
             esp = "IEE"
-        rank = career_priority.get(esp, 999)
-        mat = unicodedata.normalize('NFKD', (c.get("materia") or "").strip().lower()).encode('ASCII', 'ignore').decode('utf-8')
-        hora = (c.get("hora") or "").strip()
-        return (rank, mat, hora)
+        if esp and esp not in photo_career_order:
+            photo_career_order.append(esp)
 
-    casillas.sort(key=sort_casilla_key)
+    # Ordenar por especialidad según el orden de aparición en la foto (preservando orden relativo)
+    career_rank_map = {esp: i for i, esp in enumerate(photo_career_order)}
+    casillas.sort(key=lambda c: career_rank_map.get((c.get("esp") or "").strip().upper(), 999))
+
     for idx, c in enumerate(casillas, 1):
         c["id"] = f"py-{idx}"
 
@@ -641,5 +642,6 @@ def process_exam_sheet(image_bytes: bytes) -> dict:
         "success": True,
         "date": detected_date,
         "count": len(casillas),
+        "career_order": photo_career_order,
         "casillas": casillas
     }
