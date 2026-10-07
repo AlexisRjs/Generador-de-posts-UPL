@@ -7,6 +7,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
+    "ocr": "python server.py",
     "python:server": "python server.py"
   },
   "keywords": [],

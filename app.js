@@ -673,88 +673,33 @@ function preprocessImageForOcr(imageSource) {
         const origW = img.naturalWidth || img.width;
         const origH = img.naturalHeight || img.height;
 
-        // 1. Draw 1:1 original on unscaled canvas to detect and suppress table borders/grid lines
-        // Table cell borders confuse Tesseract's block segmentation, causing it to skip entire rows.
-        const canvas1x = document.createElement('canvas');
-        canvas1x.width = origW;
-        canvas1x.height = origH;
-        const ctx1x = canvas1x.getContext('2d', { willReadFrequently: true });
-        ctx1x.drawImage(img, 0, 0);
-
-        const imgData = ctx1x.getImageData(0, 0, origW, origH);
-        const data = imgData.data;
-
-        function getLum(x, y) {
-          const idx = (y * origW + x) * 4;
-          return (data[idx] * 299 + data[idx + 1] * 587 + data[idx + 2] * 114) / 1000;
-        }
-
-        // Horizontal line suppression: continuous dark pixel run >= 60px
-        for (let y = 0; y < origH; y++) {
-          let runStart = -1;
-          for (let x = 0; x < origW; x++) {
-            if (getLum(x, y) < 130) {
-              if (runStart === -1) runStart = x;
-            } else {
-              if (runStart !== -1) {
-                if ((x - runStart) >= 60) {
-                  for (let rx = runStart; rx < x; rx++) {
-                    const idx = (y * origW + rx) * 4;
-                    data[idx] = 255; data[idx + 1] = 255; data[idx + 2] = 255;
-                  }
-                }
-                runStart = -1;
-              }
-            }
-          }
-          if (runStart !== -1 && (origW - runStart) >= 60) {
-            for (let rx = runStart; rx < origW; rx++) {
-              const idx = (y * origW + rx) * 4;
-              data[idx] = 255; data[idx + 1] = 255; data[idx + 2] = 255;
-            }
-          }
-        }
-
-        // Vertical line suppression: continuous dark pixel run >= 45px
-        for (let x = 0; x < origW; x++) {
-          let runStart = -1;
-          for (let y = 0; y < origH; y++) {
-            if (getLum(x, y) < 130) {
-              if (runStart === -1) runStart = y;
-            } else {
-              if (runStart !== -1) {
-                if ((y - runStart) >= 45) {
-                  for (let ry = runStart; ry < y; ry++) {
-                    const idx = (ry * origW + x) * 4;
-                    data[idx] = 255; data[idx + 1] = 255; data[idx + 2] = 255;
-                  }
-                }
-                runStart = -1;
-              }
-            }
-          }
-          if (runStart !== -1 && (origH - runStart) >= 45) {
-            for (let ry = runStart; ry < origH; ry++) {
-              const idx = (ry * origW + x) * 4;
-              data[idx] = 255; data[idx + 1] = 255; data[idx + 2] = 255;
-            }
-          }
-        }
-
-        ctx1x.putImageData(imgData, 0, 0);
-
-        // 2. High-DPI Upscale (Optimal scale up to 2400px so character strokes reach 20-25px tall for Tesseract LSTM)
+        // High-DPI Upscale (Optimal scale up to 2400px so character strokes reach 20-25px tall for OCR)
         const maxDim = Math.max(origW, origH);
-        const scale = Math.max(1.5, Math.min(3.0, 2400 / maxDim));
+        const scale = Math.max(1.2, Math.min(2.5, 2400 / maxDim));
+        const w = Math.round(origW * scale);
+        const h = Math.round(origH * scale);
 
         const upCanvas = document.createElement('canvas');
-        upCanvas.width = Math.round(origW * scale);
-        upCanvas.height = Math.round(origH * scale);
-        const upCtx = upCanvas.getContext('2d');
+        upCanvas.width = w;
+        upCanvas.height = h;
+        const upCtx = upCanvas.getContext('2d', { willReadFrequently: true });
         upCtx.imageSmoothingEnabled = true;
         upCtx.imageSmoothingQuality = 'high';
-        upCtx.drawImage(canvas1x, 0, 0, upCanvas.width, upCanvas.height);
+        upCtx.drawImage(img, 0, 0, w, h);
 
+        const imgData = upCtx.getImageData(0, 0, w, h);
+        const data = imgData.data;
+
+        // Mejorar contraste en escala de grises para resaltar el texto impreso sin borrar trazos de letras
+        for (let i = 0; i < data.length; i += 4) {
+          const lum = (data[i] * 299 + data[i + 1] * 587 + data[i + 2] * 114) / 1000;
+          let adjusted = lum < 155 ? Math.max(0, lum * 0.75) : Math.min(255, 210 + (lum - 155) * 1.5);
+          data[i] = adjusted;
+          data[i + 1] = adjusted;
+          data[i + 2] = adjusted;
+        }
+
+        upCtx.putImageData(imgData, 0, 0);
         resolve(upCanvas.toDataURL('image/png'));
       } catch (e) {
         resolve(imageSource);
@@ -819,7 +764,7 @@ const state = {
     photoName: '',
     photoUrl: '',
     date: 'Martes 17/10',
-    filterEsp: 'TODAS', // 'TODAS' | 'UBD' | 'ISI' | 'IC' | 'IM' | 'IEE' | 'IQ'
+    filterEsp: 'TODAS', // 'TODAS' | 'UBD' | 'ISI' | 'IQ' | 'IC' | 'IM' | 'IEE'
     filterTurno: 'TODOS', // 'TODOS' | '1-Mañana' | '2-Tarde' | '3-Noche'
     distribMode: 'auto', // 'auto' | 'pages' | 'all'
     currentPage: 1,
@@ -1437,6 +1382,42 @@ function matchesEsp(itemEsp, filterEsp) {
   return false;
 }
 
+// Orden oficial jerárquico solicitado: UBD, luego ISI, IQ, IC, IM, IEE
+const CAREER_ORDER = ['UBD', 'ISI', 'IQ', 'IC', 'IM', 'IEE'];
+
+function getCareerRank(esp) {
+  const norm = (esp || '').toUpperCase().trim();
+  if (norm === 'UBD' || norm === 'UDB') return 0;
+  if (norm === 'ISI') return 1;
+  if (norm === 'IQ') return 2;
+  if (norm === 'IC') return 3;
+  if (norm === 'IM') return 4;
+  if (norm === 'IEE' || norm === 'IE') return 5;
+  return 999;
+}
+
+function sortMesaCasillas(casillas) {
+  if (!Array.isArray(casillas)) return [];
+  return [...casillas].sort((a, b) => {
+    const rankA = getCareerRank(a.esp);
+    const rankB = getCareerRank(b.esp);
+    if (rankA !== rankB) {
+      return rankA - rankB;
+    }
+    const matA = (a.materia || '').trim();
+    const matB = (b.materia || '').trim();
+    const matCompare = matA.localeCompare(matB, 'es', { sensitivity: 'base', numeric: true });
+    if (matCompare !== 0) return matCompare;
+
+    // Desempate por hora y aula
+    const horaA = (a.hora || '').trim();
+    const horaB = (b.hora || '').trim();
+    if (horaA !== horaB) return horaA.localeCompare(horaB);
+
+    return (a.aula || '').trim().localeCompare((b.aula || '').trim(), 'es', { numeric: true });
+  });
+}
+
 function renderMesaCasillasUI() {
   if (!dom.mesaCasillasContainer) return;
   dom.mesaCasillasContainer.innerHTML = '';
@@ -1446,7 +1427,7 @@ function renderMesaCasillasUI() {
   const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
 
   // Filter casillas if specific carrera or turno is selected
-  const displayedCasillas = allCasillas.filter(c => {
+  const filteredCasillas = allCasillas.filter(c => {
     if (!matchesEsp(c.esp, currentFilter)) {
       return false;
     }
@@ -1459,6 +1440,9 @@ function renderMesaCasillasUI() {
     }
     return true;
   });
+
+  // Ordenar según especificación: primero UBD, luego ISI, IQ, IC, IM, IEE, y por materia
+  const displayedCasillas = sortMesaCasillas(filteredCasillas);
 
   const activeInFlyerCount = allCasillas.filter(c => {
     if (c.enabled === false) return false;
@@ -1512,8 +1496,7 @@ function renderMesaCasillasUI() {
     return;
   }
 
-  displayedCasillas.forEach((casilla) => {
-    const originalIndex = allCasillas.findIndex(c => c.id === casilla.id);
+  displayedCasillas.forEach((casilla, index) => {
     const card = document.createElement('div');
     card.className = `casilla-edit-card ${casilla.enabled !== false ? 'is-enabled' : 'is-disabled'}`;
     card.dataset.id = casilla.id;
@@ -1525,14 +1508,14 @@ function renderMesaCasillasUI() {
       <div class="casilla-card-header">
         <div class="casilla-header-left">
           <input type="checkbox" class="casilla-checkbox" data-id="${casilla.id}" ${casilla.enabled !== false ? 'checked' : ''} title="Activar/Desactivar en flyer">
-          <span class="casilla-num-badge">#${originalIndex + 1}</span>
+          <span class="casilla-num-badge">#${index + 1}</span>
           <select class="casilla-esp-select" data-id="${casilla.id}" style="border-left: 3px solid ${espColor};">
             <option value="UBD" ${matchesEsp(esp, 'UBD') ? 'selected' : ''}>UBD</option>
             <option value="ISI" ${matchesEsp(esp, 'ISI') ? 'selected' : ''}>ISI</option>
+            <option value="IQ" ${matchesEsp(esp, 'IQ') ? 'selected' : ''}>IQ</option>
             <option value="IC" ${matchesEsp(esp, 'IC') ? 'selected' : ''}>IC</option>
             <option value="IM" ${matchesEsp(esp, 'IM') ? 'selected' : ''}>IM</option>
             <option value="IEE" ${matchesEsp(esp, 'IEE') ? 'selected' : ''}>IEE</option>
-            <option value="IQ" ${matchesEsp(esp, 'IQ') ? 'selected' : ''}>IQ</option>
           </select>
         </div>
         <button type="button" class="btn-remove-casilla" data-id="${casilla.id}" title="Eliminar esta casilla">✕</button>
@@ -1587,7 +1570,8 @@ function attachCasillasEventListeners() {
       const target = state.mesa.casillas.find(c => c.id === id);
       if (target) {
         target.esp = e.target.value;
-        e.target.style.borderLeft = `3px solid ${getCarreraColor(target.esp)}`;
+        state.mesa.casillas = sortMesaCasillas(state.mesa.casillas);
+        renderMesaCasillasUI();
         saveAndRender();
       }
     });
@@ -1602,6 +1586,11 @@ function attachCasillasEventListeners() {
         target.materia = e.target.value;
         saveAndRender();
       }
+    });
+    inp.addEventListener('change', () => {
+      state.mesa.casillas = sortMesaCasillas(state.mesa.casillas);
+      renderMesaCasillasUI();
+      saveAndRender();
     });
   });
 
@@ -1668,6 +1657,7 @@ function addCasillaManual() {
   };
 
   state.mesa.casillas.push(newCasilla);
+  state.mesa.casillas = sortMesaCasillas(state.mesa.casillas);
   renderMesaCasillasUI();
   saveAndRender();
   showToast('¡Casilla manual añadida! ✨');
@@ -1800,7 +1790,7 @@ async function performOcrOnImage(imageSource, file = null) {
           }
 
           state.mesa.hasLoadedData = true;
-          state.mesa.casillas = pyData.casillas;
+          state.mesa.casillas = sortMesaCasillas(pyData.casillas);
 
           setTimeout(() => {
             if (dom.mesaOcrProgressWrap) dom.mesaOcrProgressWrap.classList.add('hidden');
@@ -1863,7 +1853,7 @@ async function performOcrOnImage(imageSource, file = null) {
 
     state.mesa.hasLoadedData = true;
     if (parsed.length > 0) {
-      state.mesa.casillas = parsed;
+      state.mesa.casillas = sortMesaCasillas(parsed);
       showToast(`¡${parsed.length} materias detectadas en navegador! ✨ (Para mayor precisión inicia "npm run python:server")`);
     } else {
       state.mesa.casillas = [];
@@ -2007,7 +1997,7 @@ function parseCasillasFromOcrText(rawText) {
     });
   }
 
-  return results;
+  return sortMesaCasillas(results);
 }
 
 // ============================================================================
@@ -2943,6 +2933,8 @@ function loadSavedState() {
   }
   if (!state.mesa.casillas || !Array.isArray(state.mesa.casillas)) {
     state.mesa.casillas = [];
+  } else if (state.mesa.casillas.length > 0) {
+    state.mesa.casillas = sortMesaCasillas(state.mesa.casillas);
   }
   // Clear any residual sample data from previous demo sessions in localStorage
   if (state.mesa.photoUrl && (state.mesa.photoUrl.includes('foto-mesa-ejemplo') || (state.mesa.photoName && state.mesa.photoName.includes('ejemplo')) || (state.mesa.photoName && state.mesa.photoName.includes('(con sello)')))) {
@@ -3161,7 +3153,7 @@ function renderMesaCasillasContent(context, width, height) {
   const currentTurno = (state.mesa.filterTurno || 'TODOS').toUpperCase();
   const allCasillas = state.mesa.casillas || [];
 
-  const activeCasillas = allCasillas.filter(c => {
+  const filteredCasillas = allCasillas.filter(c => {
     if (c.enabled === false) return false;
     if (!matchesEsp(c.esp, currentFilter)) {
       return false;
@@ -3175,6 +3167,9 @@ function renderMesaCasillasContent(context, width, height) {
     }
     return true;
   });
+
+  // Ordenar según especificación: primero UBD, luego ISI, IQ, IC, IM, IEE, y por materia
+  const activeCasillas = sortMesaCasillas(filteredCasillas);
 
   // Determine pagination: based on distribMode and itemsPerPage (Materias por historia)
   let totalPages = 1;
@@ -4199,10 +4194,11 @@ function updateCaption() {
     const dateLine = state.mesa.date && state.mesa.date.trim() ? `🗓️ FECHA: ${state.mesa.date.trim()}\n` : '';
     caption = `📋 MESA DE EXAMEN | UTN FRRO\n${dateLine}📍 DISTRIBUCIÓN DE AULAS Y HORARIOS (${filterTxt})\n\n`;
 
-    const activeCasillas = (state.mesa.casillas || []).filter(c => {
+    const filteredCasillas = (state.mesa.casillas || []).filter(c => {
       if (c.enabled === false) return false;
       return matchesEsp(c.esp, state.mesa.filterEsp);
     });
+    const activeCasillas = sortMesaCasillas(filteredCasillas);
 
     if (activeCasillas.length > 0) {
       activeCasillas.forEach(c => {

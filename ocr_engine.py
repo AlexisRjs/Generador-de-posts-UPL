@@ -11,6 +11,7 @@ Columna 5: Horario
 import re
 import cv2
 import numpy as np
+import unicodedata
 from rapidocr_onnxruntime import RapidOCR
 
 # Inicialización diferida del motor RapidOCR
@@ -618,6 +619,23 @@ def process_exam_sheet(image_bytes: bytes) -> dict:
             "hora": cur_hora,
             "turno": cur_turno
         })
+
+    # Ordenar por materias: primero las de UBD, luego ISI, IQ, IC, IM, IEE y alfabéticamente por materia
+    career_priority = {"UBD": 0, "ISI": 1, "IQ": 2, "IC": 3, "IM": 4, "IEE": 5}
+    def sort_casilla_key(c):
+        esp = (c.get("esp") or "").strip().upper()
+        if esp == "UDB":
+            esp = "UBD"
+        elif esp == "IE":
+            esp = "IEE"
+        rank = career_priority.get(esp, 999)
+        mat = unicodedata.normalize('NFKD', (c.get("materia") or "").strip().lower()).encode('ASCII', 'ignore').decode('utf-8')
+        hora = (c.get("hora") or "").strip()
+        return (rank, mat, hora)
+
+    casillas.sort(key=sort_casilla_key)
+    for idx, c in enumerate(casillas, 1):
+        c["id"] = f"py-{idx}"
 
     return {
         "success": True,
